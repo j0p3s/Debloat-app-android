@@ -139,4 +139,12 @@ class MergedListTest {
             assertTrue("$id ${before.level} -> ${after.level}", after.level.ordinal >= before.level.ordinal)
         }
     }
+
+    @Test
+    fun summaryDoesNotRepeatTheName() {
+        val e = merged.get("cn.nubia.photoeditor", 34)!!
+        assertEquals("Photo Editor", e.name)
+        assertFalse("summary: ${e.description}", e.description.startsWith("Photo Editor Photo Editor"))
+        assertTrue(e.description.isNotBlank())
+    }
 }

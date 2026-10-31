@@ -21,6 +21,9 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.InputChip
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -31,7 +34,6 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -73,15 +75,23 @@ fun DebloatScreen(vm: MainViewModel) {
     val expert by vm.prefs.expertMode.collectAsStateWithLifecycle()
     val selection by vm.debloatSelection.collectAsStateWithLifecycle()
 
-    val tabs = remember(expert) {
+    val tiers = remember(expert) {
         buildList {
             add(SafetyLevel.RECOMMENDED); add(SafetyLevel.SAFE); add(SafetyLevel.EXTREME)
             if (expert) { add(SafetyLevel.EXPERT); add(SafetyLevel.UNSAFE); add(SafetyLevel.UNKNOWN) }
         }
     }
-    var tab by rememberSaveable { mutableIntStateOf(0) }
-    if (tab >= tabs.size) tab = 0
-    val level = tabs[tab]
+    val allTiers = tiers.toSet()
+    // The tiers shown in the list. Tabs set it to all tiers or one tier; the vendor buttons set it to
+    // exactly what they select (e.g. Recommended + Safe). Saved as names so it survives rotation.
+    var scopeNames by rememberSaveable { mutableStateOf("") }
+    val scope: Set<SafetyLevel> = scopeNames.split(',').mapNotNull { n -> SafetyLevel.entries.firstOrNull { it.name == n } }
+        .filter { it in allTiers }.toSet().ifEmpty { allTiers }
+    fun setScope(levels: Set<SafetyLevel>) { scopeNames = levels.joinToString(",") { it.name } }
+    val isAll = scope == allTiers
+    val single: SafetyLevel? = scope.singleOrNull()
+    // Tab 0 is "All"; tabs 1.. are the tiers. A combined scope (e.g. Recommended + Safe) highlights "All".
+    val selectedTab = if (single != null && !isAll) tiers.indexOf(single) + 1 else 0
     var query by rememberSaveable { mutableStateOf("") }
     var showChanged by rememberSaveable { mutableStateOf(false) }
     var vendor by rememberSaveable { mutableStateOf<String?>(null) }
@@ -90,18 +100,18 @@ fun DebloatScreen(vm: MainViewModel) {
     val deviceVendor = vm.repo.deviceVendor?.name
 
     // Apps that can appear in any of the visible tabs, used for vendor counts and quick selection.
-    val inTabs = remember(apps, tabs) {
-        apps.filter { a -> a.level in tabs && (a.level != SafetyLevel.UNKNOWN || a.isSystem) }
+    val inTabs = remember(apps, tiers) {
+        apps.filter { a -> a.level in tiers && (a.level != SafetyLevel.UNKNOWN || a.isSystem) }
     }
     val vendorCounts = remember(inTabs, showChanged) {
         inTabs.filter { showChanged || it.state == AppState.ENABLED }.groupingBy { it.vendor }.eachCount()
     }
 
-    val visible = remember(apps, level, query, showChanged, vendor, sort) {
+    val visible = remember(apps, scope, query, showChanged, vendor, sort) {
         apps.filter { a ->
-            a.level == level &&
+            a.level in scope &&
                 (vendor == null || a.vendor == vendor) &&
-                (level != SafetyLevel.UNKNOWN || a.isSystem) &&
+                (a.level != SafetyLevel.UNKNOWN || a.isSystem) &&
                 (showChanged || a.state == AppState.ENABLED) &&
                 (query.isBlank() || a.label.contains(query, true) || a.packageName.contains(query, true) ||
                     a.entry?.vendor?.contains(query, true) == true)
@@ -131,13 +141,18 @@ fun DebloatScreen(vm: MainViewModel) {
         },
     ) { pad ->
         Column(Modifier.padding(pad).fillMaxSize()) {
-            PrimaryScrollableTabRow(selectedTabIndex = tab, edgePadding = 8.dp) {
-                tabs.forEachIndexed { i, l ->
-                    val count = apps.count {
-                        it.level == l && it.state == AppState.ENABLED && (l != SafetyLevel.UNKNOWN || it.isSystem) &&
-                            (vendor == null || it.vendor == vendor)
-                    }
-                    Tab(selected = i == tab, onClick = { tab = i }, text = { Text("${l.title} ($count)", color = levelColor(l, dark)) })
+            PrimaryScrollableTabRow(selectedTabIndex = selectedTab, edgePadding = 8.dp) {
+                fun count(levels: Set<SafetyLevel>) = apps.count {
+                    it.level in levels && it.state == AppState.ENABLED && (it.level != SafetyLevel.UNKNOWN || it.isSystem) &&
+                        (vendor == null || it.vendor == vendor)
+                }
+                Tab(selected = selectedTab == 0, onClick = { setScope(allTiers) }, text = { Text("All (${count(allTiers)})") })
+                tiers.forEachIndexed { i, l ->
+                    Tab(
+                        selected = selectedTab == i + 1,
+                        onClick = { setScope(setOf(l)) },
+                        text = { Text("${l.title} (${count(setOf(l))})", color = levelColor(l, dark)) },
+                    )
                 }
             }
             LazyColumn(Modifier.fillMaxSize()) {
@@ -154,19 +169,39 @@ fun DebloatScreen(vm: MainViewModel) {
                                 isThisPhone = v == deviceVendor,
                                 apps = inTabs.filter { it.vendor == v && it.state == AppState.ENABLED && isSelectable(it, expert) },
                                 selection = selection,
-                                onSelect = { vm.setDebloatSelection(it) },
+                                onSelect = { newSelection, levels ->
+                                    vm.setDebloatSelection(newSelection)
+                                    // Show exactly the apps the button is about.
+                                    setScope(levels ?: allTiers)
+                                },
+                            )
+                        }
+                        if (!isAll && single == null) {
+                            InputChip(
+                                selected = true,
+                                onClick = { setScope(allTiers) },
+                                label = { Text("Showing: ${tiers.filter { it in scope }.joinToString(" + ") { it.title }}") },
+                                trailingIcon = { Icon(Icons.Default.Close, contentDescription = "Show all tiers", modifier = Modifier.size(18.dp)) },
                             )
                         }
                         Card(
                             colors = CardDefaults.cardColors(
-                                containerColor = levelColor(level, dark).copy(alpha = 0.12f),
+                                containerColor = (single?.let { levelColor(it, dark) } ?: MaterialTheme.colorScheme.secondary).copy(alpha = 0.12f),
                             ),
                         ) {
                             Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                                Text(levelInfo(level), style = MaterialTheme.typography.bodyMedium)
-                                val active = apps.filter { it.level == level && it.state == AppState.ENABLED && (level != SafetyLevel.UNKNOWN || it.isSystem) }
                                 Text(
-                                    "${active.size} active apps use ${OperationEngine.fmtSize(active.sumOf { it.totalBytes })} " +
+                                    single?.let { levelInfo(it) }
+                                        ?: "Every tier together: each app shows its tier (Recommended, Safe, Extreme…). Read the warnings on Extreme and higher before removing.",
+                                    style = MaterialTheme.typography.bodyMedium,
+                                )
+                                // Respects the vendor filter, like the list below.
+                                val active = apps.filter {
+                                    it.level in scope && it.state == AppState.ENABLED && (it.level != SafetyLevel.UNKNOWN || it.isSystem) &&
+                                        (vendor == null || it.vendor == vendor)
+                                }
+                                Text(
+                                    "${active.size} active ${vendor?.let { "$it " } ?: ""}apps use ${OperationEngine.fmtSize(active.sumOf { it.totalBytes })} " +
                                         "(${OperationEngine.fmtSize(active.sumOf { it.appBytes })} app + ${OperationEngine.fmtSize(active.sumOf { it.dataBytes })} data)",
                                     style = MaterialTheme.typography.labelMedium,
                                 )
@@ -196,7 +231,7 @@ fun DebloatScreen(vm: MainViewModel) {
                 } else if (visible.isEmpty()) {
                     item {
                         Text(
-                            "No ${level.title.lowercase()} packages ${vendor?.let { "from $it " } ?: ""}${if (showChanged) "" else "left "}on this device.",
+                            "No ${if (single != null) single.title.lowercase() + " " else ""}packages ${vendor?.let { "from $it " } ?: ""}${if (showChanged) "" else "left "}on this device.",
                             Modifier.padding(24.dp), style = MaterialTheme.typography.bodyMedium,
                         )
                     }
@@ -226,7 +261,8 @@ private fun VendorQuickSelect(
     isThisPhone: Boolean,
     apps: List<AppInfo>,
     selection: Set<String>,
-    onSelect: (Set<String>) -> Unit,
+    /** New selection, and the tiers the list should show (null = all tiers). */
+    onSelect: (Set<String>, Set<SafetyLevel>?) -> Unit,
 ) {
     val dark = isSystemInDarkTheme()
     val rec = apps.filter { it.level == SafetyLevel.RECOMMENDED }
@@ -245,16 +281,16 @@ private fun VendorQuickSelect(
                 horizontalArrangement = Arrangement.spacedBy(6.dp),
                 verticalArrangement = Arrangement.spacedBy(2.dp),
             ) {
-                OutlinedButton(onClick = { onSelect(selection - vendorPkgs + rec.map { it.packageName }) }, enabled = rec.isNotEmpty()) {
+                OutlinedButton(onClick = { onSelect(selection - vendorPkgs + rec.map { it.packageName }, setOf(SafetyLevel.RECOMMENDED)) }, enabled = rec.isNotEmpty()) {
                     Text("Recommended (${rec.size})", color = levelColor(SafetyLevel.RECOMMENDED, dark))
                 }
-                OutlinedButton(onClick = { onSelect(selection - vendorPkgs + (rec + safe).map { it.packageName }) }, enabled = rec.size + safe.size > 0) {
+                OutlinedButton(onClick = { onSelect(selection - vendorPkgs + (rec + safe).map { it.packageName }, setOf(SafetyLevel.RECOMMENDED, SafetyLevel.SAFE)) }, enabled = rec.size + safe.size > 0) {
                     Text("+ Safe (${rec.size + safe.size})", color = levelColor(SafetyLevel.SAFE, dark))
                 }
-                OutlinedButton(onClick = { onSelect(selection + vendorPkgs) }, enabled = apps.isNotEmpty()) {
+                OutlinedButton(onClick = { onSelect(selection + vendorPkgs, null) }, enabled = apps.isNotEmpty()) {
                     Text("Everything (${apps.size})", color = levelColor(SafetyLevel.EXTREME, dark))
                 }
-                TextButton(onClick = { onSelect(selection - vendorPkgs) }, enabled = selectedHere > 0) { Text("Clear") }
+                TextButton(onClick = { onSelect(selection - vendorPkgs, null) }, enabled = selectedHere > 0) { Text("Clear") }
             }
             if (apps.any { it.level.isRisky }) {
                 Text(

@@ -78,7 +78,7 @@ class DebloatDatabase private constructor(private val entries: Map<String, Deblo
                             name = nameFrom(details, pkg),
                             vendor = vendorFor(pkg, o.optString("list")),
                             level = level,
-                            description = summaryFrom(details),
+                            description = summaryFrom(details, pkg),
                             warning = uadWarning(level),
                             details = details,
                             neededBy = neededBy,
@@ -121,7 +121,7 @@ class DebloatDatabase private constructor(private val entries: Map<String, Deblo
                             name = label ?: nameFrom(desc, pkg),
                             vendor = vendorFor(pkg, ""),
                             level = level,
-                            description = summaryFrom(desc),
+                            description = summaryFrom(desc, pkg),
                             warning = warning ?: adlWarning(level),
                             details = desc,
                             neededBy = o.optJSONArray("required_by").strings(),
@@ -144,7 +144,7 @@ class DebloatDatabase private constructor(private val entries: Map<String, Deblo
                                 else -> existing.warning ?: warning ?: adlWarning(merged)
                             },
                             details = existing.details ?: desc,
-                            description = existing.description.ifBlank { summaryFrom(desc) },
+                            description = existing.description.ifBlank { summaryFrom(desc, pkg) },
                             neededBy = (existing.neededBy + o.optJSONArray("required_by").strings()).distinct(),
                             dependencies = (existing.dependencies + o.optJSONArray("dependencies").strings()).distinct(),
                             sources = existing.sources + SOURCE_ADL,
@@ -263,9 +263,11 @@ class DebloatDatabase private constructor(private val entries: Map<String, Deblo
         }
 
         /** A short summary for list rows: the first sentence or two lines, at most 220 characters. */
-        private fun summaryFrom(details: String?): String {
+        private fun summaryFrom(details: String?, pkg: String = ""): String {
             if (details == null) return ""
-            val lines = details.lines().map { it.trim() }.filter { it.isNotEmpty() && !it.startsWith("http") }
+            var lines = details.lines().map { it.trim() }.filter { it.isNotEmpty() && !it.startsWith("http") }
+            // When the first line is the app name (used as the title), don't repeat it in the summary.
+            if (lines.size > 1 && nameFrom(details, pkg) == lines.first()) lines = lines.drop(1)
             val text = lines.take(2).joinToString(" ")
             return if (text.length > 220) text.take(217).trimEnd() + "…" else text
         }
