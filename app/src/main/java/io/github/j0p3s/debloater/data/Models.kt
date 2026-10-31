@@ -36,6 +36,14 @@ enum class SafetyLevel(val title: String) {
     }
 }
 
+/** A replacement app suggested by the Android Debloat List. [source] letters: f=F-Droid, g=Play, a=Amazon, s=Galaxy Store. */
+data class Alternative(val packageName: String, val label: String, val source: String, val repo: String?, val reason: String?) {
+    val sources: String
+        get() = source.mapNotNull {
+            when (it) { 'f' -> "F-Droid"; 'g' -> "Google Play"; 'a' -> "Amazon"; 's' -> "Galaxy Store"; else -> null }
+        }.joinToString()
+}
+
 data class SdkOverride(val fromSdk: Int, val toSdk: Int?, val level: SafetyLevel, val warning: String?)
 
 data class DebloatEntry(
@@ -56,7 +64,17 @@ data class DebloatEntry(
     val sources: List<String> = emptyList(),
     /** Known to fail with pm uninstall on some ROMs; disabling usually works. */
     val oftenCantUninstall: Boolean = false,
+    /** Rating in the Android Debloat List (delete, replace, caution, unsafe), null if not listed there. */
+    val adlRemoval: String? = null,
+    /** Links from ADL: store pages, investigation reports… */
+    val webLinks: List<String> = emptyList(),
+    /** Open-source replacement apps suggested by ADL. */
+    val alternatives: List<Alternative> = emptyList(),
 ) {
+    val inAdl: Boolean get() = adlRemoval != null
+
+    /** Page about this package on the Android Debloat List website. */
+    val adlUrl: String get() = "https://adl.muntashir.dev/bloatware/$packageName.html"
     /** Applies Android-version-specific overrides (e.g. a package that became a system module). */
     fun forSdk(sdk: Int): DebloatEntry {
         val o = overrides.firstOrNull { sdk >= it.fromSdk && (it.toSdk == null || sdk <= it.toSdk) } ?: return this

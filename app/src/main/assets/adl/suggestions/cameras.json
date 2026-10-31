@@ -1,0 +1,14 @@
+[
+    {
+        "id": "app.grapheneos.camera",
+        "label": "Camera",
+        "repo": "https://github.com/GrapheneOS/Camera"
+    },
+    {
+        "id": "net.sourceforge.opencamera",
+        "label": "Open Camera",
+        "source": "fg",
+        "reason": "A more advanced camera app",
+        "repo": "https://sourceforge.net/projects/opencamera/"
+    }
+]

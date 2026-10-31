@@ -1,0 +1,15 @@
+[
+    {
+        "id": "com.aurora.store",
+        "label": "Aurora Store",
+        "reason": "Alternative Google Play Store client with privacy in mind.\nhttps://aurora-oss.vercel.app/faq/#aurora-store",
+        "source": "f",
+        "repo": "https://gitlab.com/AuroraOSS/AuroraStore"
+    },
+    {
+        "id": "com.looker.droidify",
+        "label": "Droid-ify",
+        "source": "f",
+        "repo": "https://github.com/Iamlooker/Droid-ify"
+    }
+]

@@ -1,0 +1,8 @@
+[
+    {
+        "id": "org.tasks",
+        "label": "Tasks",
+        "source": "fg",
+        "repo": "https://github.com/tasks/tasks"
+    }
+]

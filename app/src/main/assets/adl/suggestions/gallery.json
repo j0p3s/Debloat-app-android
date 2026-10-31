@@ -1,0 +1,14 @@
+[
+    {
+        "id": "org.fossify.gallery",
+        "label": "Fossify Gallery",
+        "source": "fg",
+        "repo": "https://github.com/FossifyOrg/Gallery"
+    },
+    {
+        "id": "deckers.thibault.aves.libre",
+        "label": "Aves Libre",
+        "source": "f",
+        "repo": "https://github.com/deckerst/aves"
+    }
+]

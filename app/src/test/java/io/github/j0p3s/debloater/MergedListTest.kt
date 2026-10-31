@@ -13,7 +13,11 @@ import java.io.File
 class MergedListTest {
     private fun read(name: String) = File("src/main/assets/$name").readText()
     private val own = read("debloat_list.json")
-    private val merged = DebloatDatabase.load(own, read("uad_lists.json"), read("uad_overrides.json"))
+    private val adl = DebloatDatabase.ADL_FILES.map { read("adl/$it.json") }
+    private val suggestions = File("src/main/assets/adl/suggestions").listFiles()!!
+        .filter { it.name.endsWith(".json") }.associate { it.name.removeSuffix(".json") to it.readText() }
+    private val merged = DebloatDatabase.load(own, read("uad_lists.json"), read("uad_overrides.json"), adl, suggestions)
+    private val adlIds = adl.flatMap { json -> org.json.JSONArray(json).let { a -> List(a.length()) { a.getJSONObject(it).getString("id") } } }
     private val ownOnly = DebloatDatabase.load(own)
     // Top-level keys only (the file has a few duplicate keys, which JSONObject rejects).
     private val uadIds = Regex("""(?m)^  "([^"]+)": \{""").findAll(read("uad_lists.json")).map { it.groupValues[1] }.toList()
@@ -88,5 +92,51 @@ class MergedListTest {
         assertEquals(SafetyLevel.EXTREME, SafetyLevel.stricter(SafetyLevel.SAFE, SafetyLevel.EXTREME))
         assertEquals(SafetyLevel.SAFE, SafetyLevel.stricter(SafetyLevel.UNKNOWN, SafetyLevel.SAFE))
         assertEquals(SafetyLevel.UNSAFE, SafetyLevel.stricter(SafetyLevel.UNSAFE, SafetyLevel.RECOMMENDED))
+    }
+
+    @Test
+    fun androidDebloatListIsMerged() {
+        assertTrue("adl ids ${adlIds.size}", adlIds.size > 4500)
+        assertEquals(adlIds.size, merged.countFrom(DebloatDatabase.SOURCE_ADL))
+        val e = merged.get("com.facebook.appmanager", 34)!!
+        assertTrue(e.inAdl)
+        assertEquals("https://adl.muntashir.dev/bloatware/com.facebook.appmanager.html", e.adlUrl)
+    }
+
+    @Test
+    fun adlLabelsAndAlternatives() {
+        val e = merged.get("com.chrome.beta", 34)!!
+        assertEquals("Chrome Beta", e.name)
+        assertEquals("replace", e.adlRemoval)
+        assertTrue("alternatives: ${e.alternatives}", e.alternatives.isNotEmpty())
+        assertTrue(e.alternatives.all { it.label.isNotBlank() && it.packageName.isNotBlank() })
+    }
+
+    @Test
+    fun adlMapping() {
+        assertEquals(SafetyLevel.RECOMMENDED, DebloatDatabase.adlLevel("delete"))
+        assertEquals(SafetyLevel.SAFE, DebloatDatabase.adlLevel("replace"))
+        assertEquals(SafetyLevel.EXTREME, DebloatDatabase.adlLevel("caution"))
+        assertEquals(SafetyLevel.UNSAFE, DebloatDatabase.adlLevel("unsafe"))
+    }
+
+    @Test
+    fun adlEntriesWithRiskHaveWarnings() {
+        for (id in adlIds) {
+            val e = merged.get(id, 34) ?: continue
+            if (e.level == SafetyLevel.EXTREME || e.level == SafetyLevel.EXPERT || e.level == SafetyLevel.UNSAFE) {
+                assertFalse("$id needs a warning", e.warning.isNullOrBlank())
+            }
+        }
+    }
+
+    @Test
+    fun adlNeverLowersUadRating() {
+        val uadOnly = DebloatDatabase.load(own, read("uad_lists.json"), read("uad_overrides.json"))
+        for (id in uadIds) {
+            val before = uadOnly.get(id, 34) ?: continue
+            val after = merged.get(id, 34)!!
+            assertTrue("$id ${before.level} -> ${after.level}", after.level.ordinal >= before.level.ordinal)
+        }
     }
 }

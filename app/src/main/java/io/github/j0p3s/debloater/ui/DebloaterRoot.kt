@@ -41,6 +41,7 @@ fun DebloaterRoot(vm: MainViewModel) {
         Screen.OPERATION -> OperationScreen(vm)
         Screen.BACKUPS -> BackupsScreen(vm)
         Screen.SETTINGS -> SettingsScreen(vm)
+        Screen.ADL_CHECK -> io.github.j0p3s.debloater.ui.screens.AdlCheckScreen(vm)
     }
 
     pending?.let { p ->

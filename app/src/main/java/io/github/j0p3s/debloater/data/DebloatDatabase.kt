@@ -28,17 +28,32 @@ class DebloatDatabase private constructor(private val entries: Map<String, Deblo
         const val SOURCE_OWN = "Debloater"
         const val SOURCE_UAD = "UAD-NG"
         const val SOURCE_SAR = "System App Remover"
+        const val SOURCE_ADL = "Android Debloat List"
+
+        /** ADL list files in assets/adl. */
+        val ADL_FILES = listOf("aosp", "carrier", "google", "misc", "oem")
 
         @Volatile private var instance: DebloatDatabase? = null
 
         fun get(context: Context): DebloatDatabase = instance ?: synchronized(this) {
             instance ?: run {
                 fun asset(name: String) = runCatching { context.assets.open(name).bufferedReader().use { it.readText() } }.getOrNull()
-                load(asset("debloat_list.json")!!, asset("uad_lists.json"), asset("uad_overrides.json"))
+                val adl = ADL_FILES.mapNotNull { asset("adl/$it.json") }
+                val suggestions = runCatching { context.assets.list("adl/suggestions") }.getOrNull().orEmpty()
+                    .filter { it.endsWith(".json") }
+                    .mapNotNull { f -> asset("adl/suggestions/$f")?.let { f.removeSuffix(".json") to it } }
+                    .toMap()
+                load(asset("debloat_list.json")!!, asset("uad_lists.json"), asset("uad_overrides.json"), adl, suggestions)
             }.also { instance = it }
         }
 
-        fun load(ownJson: String, uadJson: String? = null, overridesJson: String? = null): DebloatDatabase {
+        fun load(
+            ownJson: String,
+            uadJson: String? = null,
+            overridesJson: String? = null,
+            adlJsons: List<String> = emptyList(),
+            adlSuggestions: Map<String, String> = emptyMap(),
+        ): DebloatDatabase {
             val map = LinkedHashMap<String, DebloatEntry>()
 
             // 1. Our own list.
@@ -84,7 +99,64 @@ class DebloatDatabase private constructor(private val entries: Map<String, Deblo
                 }
             }
 
-            // 3. Overrides: "Unsafe", "Advanced" or "CantUninstall". Keys ending in "_" are prefixes.
+            // 3. Android Debloat List (AGPL-3.0): [{id, label, description, removal, warning, web, suggestions, …}]
+            val alternatives = adlSuggestions.mapValues { (_, json) -> parseAlternatives(json) }
+            for (json in adlJsons) {
+                val list = JSONArray(json)
+                for (i in 0 until list.length()) {
+                    val o = list.optJSONObject(i) ?: continue
+                    val pkg = o.optString("id")
+                    if (!PackageRepository.isValidPackageName(pkg)) continue
+                    val removal = o.optString("removal")
+                    val level = adlLevel(removal) ?: continue
+                    val label = o.optString("label").trim().ifBlank { null }
+                    val warning = o.optString("warning").trim().ifBlank { null }
+                    val desc = o.optString("description").trim().ifBlank { null }
+                    val web = o.optJSONArray("web").strings()
+                    val alts = o.optString("suggestions").ifBlank { null }?.let { alternatives[it] }.orEmpty()
+                    val existing = map[pkg]
+                    map[pkg] = if (existing == null) {
+                        DebloatEntry(
+                            packageName = pkg,
+                            name = label ?: nameFrom(desc, pkg),
+                            vendor = vendorFor(pkg, ""),
+                            level = level,
+                            description = summaryFrom(desc),
+                            warning = warning ?: adlWarning(level),
+                            details = desc,
+                            neededBy = o.optJSONArray("required_by").strings(),
+                            dependencies = o.optJSONArray("dependencies").strings(),
+                            sources = listOf(SOURCE_ADL),
+                            adlRemoval = removal,
+                            webLinks = web,
+                            alternatives = alts,
+                        )
+                    } else {
+                        val merged = SafetyLevel.stricter(existing.level, level)
+                        existing.copy(
+                            // ADL labels are real app names; UAD-only entries only had a guess.
+                            name = if (SOURCE_OWN in existing.sources || label == null) existing.name else label,
+                            level = merged,
+                            // Keep our hand-written warnings; otherwise the warning must match the final rating.
+                            warning = when {
+                                SOURCE_OWN in existing.sources && existing.warning != null -> existing.warning
+                                merged != existing.level -> warning ?: adlWarning(merged) ?: existing.warning
+                                else -> existing.warning ?: warning ?: adlWarning(merged)
+                            },
+                            details = existing.details ?: desc,
+                            description = existing.description.ifBlank { summaryFrom(desc) },
+                            neededBy = (existing.neededBy + o.optJSONArray("required_by").strings()).distinct(),
+                            dependencies = (existing.dependencies + o.optJSONArray("dependencies").strings()).distinct(),
+                            sources = existing.sources + SOURCE_ADL,
+                            adlRemoval = removal,
+                            webLinks = web,
+                            alternatives = alts,
+                        )
+                    }
+                }
+            }
+
+            // 4. Overrides: "Unsafe", "Advanced" or "CantUninstall". Keys ending in "_" are prefixes.
             if (overridesJson != null) {
                 val ov = JSONObject(overridesJson).optJSONObject("overrides") ?: JSONObject()
                 val keys = ov.keys()
@@ -147,6 +219,35 @@ class DebloatDatabase private constructor(private val entries: Map<String, Deblo
             "Unsafe" -> SafetyLevel.UNSAFE
             else -> null
         }
+
+        /** Android Debloat List removal values mapped onto ours. */
+        fun adlLevel(removal: String): SafetyLevel? = when (removal) {
+            "delete" -> SafetyLevel.RECOMMENDED
+            "replace" -> SafetyLevel.SAFE
+            "caution" -> SafetyLevel.EXTREME
+            "unsafe" -> SafetyLevel.UNSAFE
+            else -> null
+        }
+
+        private fun adlWarning(level: SafetyLevel): String? = when (level) {
+            SafetyLevel.EXTREME -> "Marked Caution by the Android Debloat List: it might not be safe to remove."
+            SafetyLevel.UNSAFE -> "Marked Unsafe by the Android Debloat List."
+            else -> null
+        }
+
+        private fun parseAlternatives(json: String): List<Alternative> = runCatching {
+            val a = JSONArray(json)
+            List(a.length()) { i ->
+                val o = a.getJSONObject(i)
+                Alternative(
+                    packageName = o.optString("id"),
+                    label = o.optString("label"),
+                    source = o.optString("source"),
+                    repo = o.optString("repo").ifBlank { null },
+                    reason = o.optString("reason").ifBlank { null },
+                )
+            }
+        }.getOrDefault(emptyList())
 
         private fun uadWarning(level: SafetyLevel): String? = when (level) {
             SafetyLevel.EXTREME -> "Rated Advanced by UAD-NG: removing it can break related features. Read the details first."

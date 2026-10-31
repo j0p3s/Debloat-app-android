@@ -1,0 +1,15 @@
+[
+    {
+        "id": "com.foobnix.pro.pdf.reader",
+        "label": "Librera",
+        "source": "fg",
+        "repo": "https://github.com/foobnix/LibreraReader"
+    },
+    {
+        "id": "org.koreader.launcher.fdroid",
+        "label": "KOReader",
+        "source": "f",
+        "repo": "https://github.com/koreader/koreader",
+        "reason": "Optimized for e-ink displays"
+    }
+]

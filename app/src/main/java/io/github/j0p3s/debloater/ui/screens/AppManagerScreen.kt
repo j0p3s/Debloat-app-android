@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -202,7 +203,34 @@ fun AppDetailsDialog(app: AppInfo, canModify: Boolean, vm: MainViewModel, onDism
                         Text("Details", style = MaterialTheme.typography.labelLarge)
                         Text(d, style = MaterialTheme.typography.bodySmall)
                     }
-                    Text("Rated by: ${e.sources.joinToString()}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.outline)
+                    if (e.alternatives.isNotEmpty()) {
+                        Text("Open-source alternatives (Android Debloat List)", style = MaterialTheme.typography.labelLarge)
+                        e.alternatives.forEach { alt ->
+                            val url = alt.repo ?: "https://f-droid.org/packages/${alt.packageName}/"
+                            Text(
+                                "• ${alt.label}" + (if (alt.sources.isNotEmpty()) " (${alt.sources})" else "") +
+                                    (alt.reason?.let { " – $it" } ?: ""),
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.clickable { openUrl(ctx, url) },
+                            )
+                        }
+                    }
+                    if (e.webLinks.isNotEmpty()) {
+                        Text("Links", style = MaterialTheme.typography.labelLarge)
+                        e.webLinks.take(6).forEach { url ->
+                            Text(url, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary,
+                                maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+                                modifier = Modifier.clickable { openUrl(ctx, url) })
+                        }
+                    }
+                    Text(
+                        "Rated by: ${e.sources.joinToString()}" + (e.adlRemoval?.let { " · ADL: $it" } ?: ""),
+                        style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.outline,
+                    )
+                    if (e.inAdl) {
+                        TextButton(onClick = { openUrl(ctx, e.adlUrl) }) { Text("Open on adl.muntashir.dev") }
+                    }
                 }
                 app.protectedReason?.let { Text("Protected: $it", color = MaterialTheme.colorScheme.error, fontWeight = FontWeight.SemiBold) }
                 if (!canModify && !app.isProtected) {
@@ -265,4 +293,8 @@ private fun SizeTable(app: AppInfo) {
             }
         }
     }
+}
+
+private fun openUrl(ctx: android.content.Context, url: String) {
+    runCatching { ctx.startActivity(Intent(Intent.ACTION_VIEW, url.toUri()).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) }
 }

@@ -68,6 +68,7 @@ fun SettingsScreen(vm: MainViewModel) {
                         "Debloat list: ${vm.database.size} packages " +
                             "(${vm.database.countFrom(DebloatDatabase.SOURCE_OWN)} rated by Debloater, " +
                             "${vm.database.countFrom(DebloatDatabase.SOURCE_UAD)} by UAD-NG, " +
+                            "${vm.database.countFrom(DebloatDatabase.SOURCE_ADL)} by the Android Debloat List, " +
                             "${vm.database.countFrom(DebloatDatabase.SOURCE_SAR)} corrected by System App Remover). " +
                             "When lists disagree, the most cautious rating is used.",
                         style = MaterialTheme.typography.bodySmall,
@@ -75,7 +76,8 @@ fun SettingsScreen(vm: MainViewModel) {
                     Text(
                         "License: GPL-3.0. Includes the Universal Android Debloater Next Generation list (GPL-3.0, " +
                             "github.com/Universal-Debloater-Alliance) and overrides from System App Remover by " +
-                            "santhosh-D-subramani (GPL-3.0). See NOTICE.md in the source code.",
+                            "santhosh-D-subramani (GPL-3.0), and the Android Debloat List by Muntashir Al-Islam " +
+                            "(AGPL-3.0, adl.muntashir.dev). See NOTICE.md in the source code.",
                         style = MaterialTheme.typography.bodySmall,
                     )
                     Text("Supports Android 11 to 17 through Shizuku (ADB or root). Commands used: pm disable-user, pm enable, pm uninstall -k --user, cmd package install-existing, pm install-create/write/commit.", style = MaterialTheme.typography.bodySmall)

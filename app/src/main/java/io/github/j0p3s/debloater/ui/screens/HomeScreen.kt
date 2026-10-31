@@ -22,6 +22,7 @@ import androidx.compose.material.icons.filled.Backup
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.CleaningServices
 import androidx.compose.material.icons.filled.Error
+import androidx.compose.material.icons.filled.FactCheck
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
@@ -201,6 +202,7 @@ fun HomeScreen(vm: MainViewModel) {
             }
 
             NavTile(Icons.Default.CleaningServices, "Debloat", "Recommended, safe and extreme debloat lists with test runs") { vm.navigate(Screen.DEBLOAT) }
+            NavTile(Icons.Default.FactCheck, "Android Debloat List check", "See which apps from adl.muntashir.dev are installed on this phone") { vm.navigate(Screen.ADL_CHECK) }
             NavTile(Icons.Default.Apps, "App manager", "Disable, remove or restore any user or system app") { vm.navigate(Screen.APP_MANAGER) }
             NavTile(Icons.Default.Backup, "Backups & restore", "${sessions.size} backup(s). Restore points and APK copies are made before every change") { vm.navigate(Screen.BACKUPS) }
         }

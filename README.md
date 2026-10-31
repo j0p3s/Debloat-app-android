@@ -11,7 +11,10 @@ An Android app that debloats **any Android version from Android 11 to Android 17
   - the [Universal Android Debloater Next Generation](https://github.com/Universal-Debloater-Alliance/universal-android-debloater-next-generation)
     list (5,382 packages, detailed descriptions and dependencies; over 100 for Nubia/RedMagic and ZTE),
   - corrections from [System App Remover](https://github.com/santhosh-D-subramani/Debloater) (packages that are
-    unsafe or usually cannot be uninstalled on their ROM).
+    unsafe or usually cannot be uninstalled on their ROM),
+  - the [Android Debloat List](https://github.com/MuntashirAkon/android-debloat-list) behind
+    [adl.muntashir.dev](https://adl.muntashir.dev/) (4,801 packages with app names, warnings, links and
+    open-source replacement suggestions).
 
   Tiers:
   - **Recommended**: ads, telemetry, sponsored installers and duplicates. Safe for almost everyone.
@@ -30,6 +33,10 @@ An Android app that debloats **any Android version from Android 11 to Android 17
   Recommended + Safe, or everything including Extreme. Packages that are not in the list are still grouped
   by vendor from their package name (for example `com.zte.*`, `cn.nubia.*`, `com.lge.*`), so in expert mode
   the Unlisted tab and the app manager can filter and remove any vendor's apps too.
+- **Android Debloat List check**: scans the phone against [adl.muntashir.dev](https://adl.muntashir.dev/) and shows
+  which listed apps are installed, grouped by ADL's rating (Delete, Replace, Caution, Unsafe), with a link to
+  each app's page on the site and its suggested open-source replacements. You can select and test/disable/remove
+  them from there.
 - **Test run**: simulates the whole process step by step without changing anything. It checks Shizuku access,
   that the shell can see each package, that every APK can be read and backed up, and that there is enough free
   space. It shows every command that *would* run and reports whether any errors would happen. After a passed
@@ -96,8 +103,9 @@ GitHub Actions builds both APKs on every push (see the `debloater-apks` artifact
 
 ## License
 
-GPL-3.0, see `LICENSE`. The app bundles GPL-3.0 data from UAD-NG and System App Remover; see `NOTICE.md`.
-Update the UAD-NG list with `tools/update_uad_list.sh`.
+GPL-3.0, see `LICENSE`. The app bundles GPL-3.0 data from UAD-NG and System App Remover and AGPL-3.0 data
+from the Android Debloat List; see `NOTICE.md`. Update the lists with `tools/update_uad_list.sh` and
+`tools/update_adl_list.sh`.
 
 ## Project layout
 
@@ -112,3 +120,4 @@ Update the UAD-NG list with `tools/update_uad_list.sh`.
 | `assets/debloat_list.json` | Debloater's own list |
 | `assets/uad_lists.json` | UAD-NG list (unmodified, GPL-3.0) |
 | `assets/uad_overrides.json` | Overrides from System App Remover (GPL-3.0) |
+| `assets/adl/` | Android Debloat List (unmodified, AGPL-3.0) |
