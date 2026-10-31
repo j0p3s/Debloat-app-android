@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -167,22 +169,40 @@ fun AppManagerScreen(vm: MainViewModel) {
 }
 
 @Composable
-private fun AppDetailsDialog(app: AppInfo, canModify: Boolean, vm: MainViewModel, onDismiss: () -> Unit) {
+fun AppDetailsDialog(app: AppInfo, canModify: Boolean, vm: MainViewModel, onDismiss: () -> Unit) {
+    val installed = vm.apps.collectAsStateWithLifecycle().value.associateBy { it.packageName }
     val ctx = LocalContext.current
     AlertDialog(
         onDismissRequest = onDismiss,
         icon = { AppIcon(app.applicationInfo, Modifier.size(48.dp)) },
         title = { Text(app.label) },
         text = {
-            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            Column(
+                Modifier.heightIn(max = 560.dp).verticalScroll(rememberScrollState()),
+                verticalArrangement = Arrangement.spacedBy(6.dp),
+            ) {
                 Text("${app.packageName} · ${app.vendor}", style = MaterialTheme.typography.bodySmall)
                 Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) { LevelPill(app.level); StatePill(app.state) }
                 Text("Version ${app.versionName} (${app.versionCode})", style = MaterialTheme.typography.bodySmall)
                 Text("${if (app.isSystem) "System" else "User"} app · ${app.apkPaths.size} APK file(s)", style = MaterialTheme.typography.bodySmall)
                 SizeTable(app)
-                app.entry?.let {
-                    Text("${it.vendor}: ${it.description}", style = MaterialTheme.typography.bodySmall)
-                    it.warning?.let { w -> WarningText(w) }
+                app.entry?.let { e ->
+                    if (e.description.isNotBlank()) Text(e.description, style = MaterialTheme.typography.bodySmall)
+                    e.warning?.let { w -> WarningText(w) }
+                    if (e.oftenCantUninstall) {
+                        WarningText("Often cannot be uninstalled on this ROM. Use Disable if Remove fails.")
+                    }
+                    if (e.neededBy.isNotEmpty()) {
+                        WarningText("Needed by: " + e.neededBy.joinToString { p -> installed[p]?.let { "${it.label} (installed)" } ?: p })
+                    }
+                    if (e.dependencies.isNotEmpty()) {
+                        Text("Depends on: " + e.dependencies.joinToString { p -> installed[p]?.label ?: p }, style = MaterialTheme.typography.bodySmall)
+                    }
+                    e.details?.takeIf { it != e.description }?.let { d ->
+                        Text("Details", style = MaterialTheme.typography.labelLarge)
+                        Text(d, style = MaterialTheme.typography.bodySmall)
+                    }
+                    Text("Rated by: ${e.sources.joinToString()}", style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.outline)
                 }
                 app.protectedReason?.let { Text("Protected: $it", color = MaterialTheme.colorScheme.error, fontWeight = FontWeight.SemiBold) }
                 if (!canModify && !app.isProtected) {

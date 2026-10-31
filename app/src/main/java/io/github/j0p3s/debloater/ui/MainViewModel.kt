@@ -206,6 +206,18 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
 
     fun cancelOperation() = engine.cancel()
 
+    /** Removal failed for some packages (often: not uninstallable on this ROM). Offer to disable them instead. */
+    fun retryFailedWithDisable() {
+        val failed = engine.state.value?.failedPackages.orEmpty().toSet()
+        val apps = _apps.value.filter { it.packageName in failed && it.state == io.github.j0p3s.debloater.data.AppState.ENABLED }
+        if (apps.isEmpty()) {
+            _message.value = "Nothing left to disable"
+            return
+        }
+        back()
+        _pending.value = PendingOperation(apps, Action.DISABLE, dryRun = false)
+    }
+
     fun restoreSession(session: BackupSession, entries: List<BackupEntry>, dryRun: Boolean) {
         val restorable = entries.filter { it.status == EntryStatus.DONE || it.status == EntryStatus.RESTORE_FAILED || it.status == EntryStatus.RESTORED }
         if (restorable.isEmpty()) {

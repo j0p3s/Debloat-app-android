@@ -1,0 +1,30 @@
+{
+ "source": "System App Remover by santhosh-D-subramani (GPL-3.0), uad_overrides.json at commit e6e97dfd, duplicates removed",
+ "overrides": {
+  "com.transsion.phonemaster": "Unsafe",
+  "com.transsion.phonemanager": "Unsafe",
+  "com.transsion.batterylab": "Unsafe",
+  "com.transsion.microintelligence": "Advanced",
+  "com.transsion.tranengine": "Advanced",
+  "com.transsion.smartpanel": "Advanced",
+  "android.auto_generated_rro__": "Unsafe",
+  "android.auto_generated_vendor_": "Unsafe",
+  "com.vivo.appstore": "CantUninstall",
+  "com.vivo.globalsearch": "CantUninstall",
+  "com.bbk.cloud": "CantUninstall",
+  "com.vivo.floatingball": "CantUninstall",
+  "com.vivo.magazine": "CantUninstall",
+  "com.samsung.android.fmm": "CantUninstall",
+  "com.sec.enterprise.knox.cloudmdm.smdms": "CantUninstall",
+  "com.samsung.android.spayfw": "CantUninstall",
+  "com.knox.vpn.proxyhandler": "CantUninstall",
+  "com.coloros.bootreg": "CantUninstall",
+  "com.nearme.gamecenter": "CantUninstall",
+  "com.oplus.olc": "CantUninstall",
+  "com.oplus.gesture": "CantUninstall",
+  "com.heytap.market": "CantUninstall",
+  "com.transsion.fmradio": "CantUninstall",
+  "tech.palm.id": "CantUninstall",
+  "com.transsion.aivoiceassistant": "CantUninstall"
+ }
+}

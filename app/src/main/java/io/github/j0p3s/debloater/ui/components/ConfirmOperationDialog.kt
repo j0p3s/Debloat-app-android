@@ -43,13 +43,15 @@ fun ConfirmOperationDialog(
     pending: PendingOperation,
     keepDataDefault: Boolean,
     storage: StorageInfo?,
+    /** All installed apps, to warn when a selected package is needed by one that stays. */
+    allApps: List<io.github.j0p3s.debloater.data.AppInfo> = emptyList(),
     onDismiss: () -> Unit,
     onConfirm: (keepData: Boolean, dryRun: Boolean, action: Action) -> Unit,
 ) {
     val apps = pending.apps
     val canChoose = pending.action == Action.DISABLE || pending.action == Action.REMOVE
     var action by remember { mutableStateOf(pending.action) }
-    val risky = apps.filter { it.level == SafetyLevel.EXTREME || it.level == SafetyLevel.UNSAFE || it.level == SafetyLevel.UNKNOWN }
+    val risky = apps.filter { it.level.isRisky }
     val destructive = action == Action.DISABLE || action == Action.REMOVE
     val needsAck = destructive && !pending.dryRun && risky.isNotEmpty()
     val userApps = apps.count { !it.isSystem }
@@ -142,12 +144,33 @@ fun ConfirmOperationDialog(
                     risky.take(40).forEach { a ->
                         val w = a.entry?.warning ?: when (a.level) {
                             SafetyLevel.UNSAFE -> "Critical package. Removing it can break the device."
+                            SafetyLevel.EXPERT -> "Can break important features. Prefer Disable."
                             SafetyLevel.UNKNOWN -> "Not in the debloat list. Its effect is unknown."
                             else -> "May break features."
                         }
                         WarningText("${a.label} [${a.level.title}]: $w")
                     }
                     if (risky.size > 40) Text("…and ${risky.size - 40} more", style = MaterialTheme.typography.bodySmall)
+                }
+                if (destructive) {
+                    val selected = apps.map { it.packageName }.toSet()
+                    val byPkg = allApps.associateBy { it.packageName }
+                    val broken = apps.mapNotNull { a ->
+                        val users = a.entry?.neededBy.orEmpty().mapNotNull { byPkg[it] }
+                            .filter { it.state == AppState.ENABLED && it.packageName !in selected }
+                        if (users.isEmpty()) null else "${a.label} is needed by ${users.joinToString { it.label }}"
+                    }
+                    if (broken.isNotEmpty()) {
+                        Text("Dependencies", fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.error)
+                        broken.take(20).forEach { WarningText(it) }
+                    }
+                    val stubborn = apps.filter { it.entry?.oftenCantUninstall == true }
+                    if (action == Action.REMOVE && stubborn.isNotEmpty()) {
+                        Text(
+                            "${stubborn.size} package(s) often cannot be uninstalled on their ROM (${stubborn.take(5).joinToString { it.label }}). If removal fails, use \"Retry failed with Disable\" afterwards.",
+                            style = MaterialTheme.typography.bodySmall,
+                        )
+                    }
                 }
                 if (needsAck) {
                     Row(verticalAlignment = Alignment.CenterVertically) {

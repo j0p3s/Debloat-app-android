@@ -50,6 +50,7 @@ fun DebloaterRoot(vm: MainViewModel) {
             pending = p,
             keepDataDefault = keepDefault,
             storage = storage,
+            allApps = vm.apps.collectAsStateWithLifecycle().value,
             onDismiss = vm::dismissPending,
             onConfirm = { keepData, dryRun, action -> vm.confirmPending(keepData, dryRun, action) },
         )

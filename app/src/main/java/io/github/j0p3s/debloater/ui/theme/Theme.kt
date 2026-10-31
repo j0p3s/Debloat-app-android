@@ -32,6 +32,7 @@ fun levelColor(level: SafetyLevel, dark: Boolean): Color = when (level) {
     SafetyLevel.RECOMMENDED -> if (dark) Color(0xFF7FD69A) else Color(0xFF1B7F3B)
     SafetyLevel.SAFE -> if (dark) Color(0xFF8CC8FF) else Color(0xFF1565C0)
     SafetyLevel.EXTREME -> if (dark) Color(0xFFFFB74D) else Color(0xFFB45F06)
+    SafetyLevel.EXPERT -> if (dark) Color(0xFFFF8A65) else Color(0xFFD84315)
     SafetyLevel.UNSAFE -> if (dark) Color(0xFFFF8A80) else Color(0xFFC62828)
     SafetyLevel.UNKNOWN -> if (dark) Color(0xFFBDBDBD) else Color(0xFF616161)
 }

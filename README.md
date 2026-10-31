@@ -5,14 +5,25 @@ An Android app that debloats **any Android version from Android 11 to Android 17
 
 ## Features
 
-- **Debloat lists** (473 curated packages for Google/AOSP, Samsung, Xiaomi/Redmi/POCO, Nubia/RedMagic, ZTE, LG,
-  Sony, OnePlus/OPPO/Realme, vivo/iQOO, Motorola, Huawei/Honor, ASUS, Nokia/HMD, TECNO/Infinix/itel, Lenovo,
-  Facebook, Microsoft, Amazon, carriers and preinstalled partner apps):
+- **Debloat lists** with about 5,400 packages, merged from three sources (the most cautious rating wins when
+  they disagree):
+  - Debloater's own list (473 packages with short descriptions, warnings and per-Android-version rules),
+  - the [Universal Android Debloater Next Generation](https://github.com/Universal-Debloater-Alliance/universal-android-debloater-next-generation)
+    list (5,382 packages, detailed descriptions and dependencies; over 100 for Nubia/RedMagic and ZTE),
+  - corrections from [System App Remover](https://github.com/santhosh-D-subramani/Debloater) (packages that are
+    unsafe or usually cannot be uninstalled on their ROM).
+
+  Tiers:
   - **Recommended**: ads, telemetry, sponsored installers and duplicates. Safe for almost everyone.
   - **Safe**: no effect on the system, but apps you might still use (YouTube, Maps, Gmail…).
   - **Extreme**: aggressive debloat. Every entry has a **warning** that says what breaks, and you must
     confirm that you read the warnings.
-  - **Unsafe / Unlisted** (expert mode only): critical packages and system apps not in the list.
+  - **Expert / Unsafe / Unlisted** (expert mode only): packages that can break important features, critical
+    packages, and system apps not in any list.
+  - Details for every package: full description, which installed apps need it ("needed by") and what it depends
+    on. The confirm dialog warns when you remove something another installed app still needs.
+  - If removal fails because a package cannot be uninstalled on your ROM, one tap retries the failed apps with
+    Disable.
   - Some entries change level per Android version (for example Health Connect became a system module in Android 14).
 - **Debloat by vendor**: the phone's brand is detected automatically (Redmi and POCO map to Xiaomi, RedMagic
   to Nubia, and so on). Filter the lists by vendor and select one vendor's apps in one tap: Recommended only,
@@ -83,6 +94,11 @@ Prefer **Disable** for Extreme packages: it is the easiest change to undo.
 
 GitHub Actions builds both APKs on every push (see the `debloater-apks` artifact).
 
+## License
+
+GPL-3.0, see `LICENSE`. The app bundles GPL-3.0 data from UAD-NG and System App Remover; see `NOTICE.md`.
+Update the UAD-NG list with `tools/update_uad_list.sh`.
+
 ## Project layout
 
 | Path | What it does |
@@ -93,4 +109,6 @@ GitHub Actions builds both APKs on every push (see the `debloater-apks` artifact
 | `backup/` | Restore points, APK backups, export/import |
 | `ops/OperationEngine.kt` | Test runs, disable/remove/restore with verification and logging |
 | `ui/` | Jetpack Compose screens |
-| `assets/debloat_list.json` | Curated debloat list |
+| `assets/debloat_list.json` | Debloater's own list |
+| `assets/uad_lists.json` | UAD-NG list (unmodified, GPL-3.0) |
+| `assets/uad_overrides.json` | Overrides from System App Remover (GPL-3.0) |

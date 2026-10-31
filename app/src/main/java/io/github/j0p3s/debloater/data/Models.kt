@@ -3,20 +3,37 @@ package io.github.j0p3s.debloater.data
 import android.content.pm.ApplicationInfo
 
 /**
- * How safe it is to remove a package.
+ * How safe it is to remove a package (ordered from least to most risky).
  *
- * - [RECOMMENDED]: bloat, ads, telemetry or duplicates. Recommended for almost everyone.
+ * - [RECOMMENDED]: bloat, ads, telemetry, or apps you can reinstall from a store. Recommended for almost everyone.
  * - [SAFE]: removing it has no effect on the system, but you might still use the app.
- * - [EXTREME]: aggressive debloat. Can break features; every entry has a warning.
+ * - [EXTREME]: aggressive debloat ("Advanced" in UAD-NG). Can break features; every entry has a warning.
+ * - [EXPERT]: can break important features ("Expert" in UAD-NG). Locked unless expert mode is on.
  * - [UNSAFE]: critical. Removing it can break the phone or cause a boot loop. Locked unless expert mode is on.
- * - [UNKNOWN]: not in the debloat list.
+ * - [UNKNOWN]: not in any debloat list.
  */
 enum class SafetyLevel(val title: String) {
     RECOMMENDED("Recommended"),
     SAFE("Safe"),
     EXTREME("Extreme"),
+    EXPERT("Expert"),
     UNSAFE("Unsafe"),
-    UNKNOWN("Unlisted"),
+    UNKNOWN("Unlisted");
+
+    /** Needs expert mode to be selected (for UNKNOWN only when it is a system app). */
+    val needsExpertMode: Boolean get() = this == EXPERT || this == UNSAFE || this == UNKNOWN
+
+    /** Shown with warnings and needs explicit acknowledgement before a real run. */
+    val isRisky: Boolean get() = this == EXTREME || this == EXPERT || this == UNSAFE || this == UNKNOWN
+
+    companion object {
+        /** The more cautious of two levels. UNKNOWN never wins over a real rating. */
+        fun stricter(a: SafetyLevel, b: SafetyLevel): SafetyLevel = when {
+            a == UNKNOWN -> b
+            b == UNKNOWN -> a
+            else -> if (a.ordinal >= b.ordinal) a else b
+        }
+    }
 }
 
 data class SdkOverride(val fromSdk: Int, val toSdk: Int?, val level: SafetyLevel, val warning: String?)
@@ -29,11 +46,22 @@ data class DebloatEntry(
     val description: String,
     val warning: String?,
     val overrides: List<SdkOverride> = emptyList(),
+    /** Longer explanation, usually from UAD-NG. */
+    val details: String? = null,
+    /** Packages that need this one (removing it can break them). */
+    val neededBy: List<String> = emptyList(),
+    /** Packages this one needs. */
+    val dependencies: List<String> = emptyList(),
+    /** Lists that rate this package, e.g. "Debloater", "UAD-NG", "System App Remover". */
+    val sources: List<String> = emptyList(),
+    /** Known to fail with pm uninstall on some ROMs; disabling usually works. */
+    val oftenCantUninstall: Boolean = false,
 ) {
     /** Applies Android-version-specific overrides (e.g. a package that became a system module). */
     fun forSdk(sdk: Int): DebloatEntry {
         val o = overrides.firstOrNull { sdk >= it.fromSdk && (it.toSdk == null || sdk <= it.toSdk) } ?: return this
-        return copy(level = o.level, warning = o.warning ?: warning)
+        // A version rule can only make the rating stricter than what other lists say.
+        return copy(level = SafetyLevel.stricter(level, o.level), warning = o.warning ?: warning)
     }
 }
 

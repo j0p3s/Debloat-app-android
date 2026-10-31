@@ -24,6 +24,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.j0p3s.debloater.BuildConfig
+import io.github.j0p3s.debloater.data.DebloatDatabase
 import io.github.j0p3s.debloater.ui.MainViewModel
 import io.github.j0p3s.debloater.ui.components.BackTopBar
 import io.github.j0p3s.debloater.ui.theme.ErrorColor
@@ -63,7 +64,20 @@ fun SettingsScreen(vm: MainViewModel) {
                 Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     Text("About", style = MaterialTheme.typography.titleMedium)
                     Text("Debloater ${BuildConfig.VERSION_NAME}", style = MaterialTheme.typography.bodySmall)
-                    Text("Debloat list: ${vm.database.size} packages", style = MaterialTheme.typography.bodySmall)
+                    Text(
+                        "Debloat list: ${vm.database.size} packages " +
+                            "(${vm.database.countFrom(DebloatDatabase.SOURCE_OWN)} rated by Debloater, " +
+                            "${vm.database.countFrom(DebloatDatabase.SOURCE_UAD)} by UAD-NG, " +
+                            "${vm.database.countFrom(DebloatDatabase.SOURCE_SAR)} corrected by System App Remover). " +
+                            "When lists disagree, the most cautious rating is used.",
+                        style = MaterialTheme.typography.bodySmall,
+                    )
+                    Text(
+                        "License: GPL-3.0. Includes the Universal Android Debloater Next Generation list (GPL-3.0, " +
+                            "github.com/Universal-Debloater-Alliance) and overrides from System App Remover by " +
+                            "santhosh-D-subramani (GPL-3.0). See NOTICE.md in the source code.",
+                        style = MaterialTheme.typography.bodySmall,
+                    )
                     Text("Supports Android 11 to 17 through Shizuku (ADB or root). Commands used: pm disable-user, pm enable, pm uninstall -k --user, cmd package install-existing, pm install-create/write/commit.", style = MaterialTheme.typography.bodySmall)
                 }
             }

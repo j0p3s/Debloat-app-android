@@ -43,6 +43,11 @@ object VendorCatalog {
         ),
         Vendor("Lenovo", listOf("lenovo"), listOf("com.lenovo.")),
         Vendor("Nothing", listOf("nothing"), listOf("com.nothing.")),
+        Vendor(
+            "Qualcomm / MediaTek",
+            prefixes = listOf("com.qualcomm.", "com.qti.", "vendor.qti.", "org.codeaurora.", "com.quicinc.", "com.mediatek.", "com.mtk."),
+            universal = true,
+        ),
         Vendor("Google", listOf("google"), listOf("com.google."), universal = true),
         Vendor("AOSP", prefixes = listOf("com.android."), universal = true),
         Vendor("Facebook", prefixes = listOf("com.facebook.", "com.instagram."), universal = true),

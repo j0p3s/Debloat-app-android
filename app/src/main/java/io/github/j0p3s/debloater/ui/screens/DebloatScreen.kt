@@ -52,16 +52,17 @@ import io.github.j0p3s.debloater.ui.components.VendorChips
 import io.github.j0p3s.debloater.ui.theme.levelColor
 
 private fun levelInfo(level: SafetyLevel) = when (level) {
-    SafetyLevel.RECOMMENDED -> "Bloatware, ads, telemetry and duplicate apps. Recommended for almost everyone. The system keeps working normally."
+    SafetyLevel.RECOMMENDED -> "Bloatware, ads, telemetry, duplicates and apps you can get back from a store. Recommended for almost everyone; check you have another app for anything you use (browser, gallery…)."
     SafetyLevel.SAFE -> "Safe to remove: the system is not affected, but these are apps you might still use (for example YouTube, Maps or Gmail)."
     SafetyLevel.EXTREME -> "Extreme debloat. These can break features such as notifications, payments, updates, the camera or calls. Read every warning, and run a test first."
+    SafetyLevel.EXPERT -> "Expert mode: packages that can break important features (rated Expert by UAD-NG). Prefer Disable, and test first."
     SafetyLevel.UNSAFE -> "Expert mode: critical packages. Removing them can cause boot loops or a non-working phone. Disable rather than remove, and test first."
     SafetyLevel.UNKNOWN -> "Expert mode: system apps that are not in the debloat list. Their effect is unknown."
 }
 
 /** Whether the user may select this app for disable/remove. */
 fun isSelectable(app: AppInfo, expert: Boolean) =
-    !app.isProtected && (app.level != SafetyLevel.UNSAFE || expert) && (app.level != SafetyLevel.UNKNOWN || expert || !app.isSystem)
+    !app.isProtected && (expert || !app.level.needsExpertMode || (app.level == SafetyLevel.UNKNOWN && !app.isSystem))
 
 @Composable
 fun DebloatScreen(vm: MainViewModel) {
@@ -73,7 +74,7 @@ fun DebloatScreen(vm: MainViewModel) {
     val tabs = remember(expert) {
         buildList {
             add(SafetyLevel.RECOMMENDED); add(SafetyLevel.SAFE); add(SafetyLevel.EXTREME)
-            if (expert) { add(SafetyLevel.UNSAFE); add(SafetyLevel.UNKNOWN) }
+            if (expert) { add(SafetyLevel.EXPERT); add(SafetyLevel.UNSAFE); add(SafetyLevel.UNKNOWN) }
         }
     }
     var tab by rememberSaveable { mutableIntStateOf(0) }
@@ -82,6 +83,7 @@ fun DebloatScreen(vm: MainViewModel) {
     var query by rememberSaveable { mutableStateOf("") }
     var showChanged by rememberSaveable { mutableStateOf(false) }
     var vendor by rememberSaveable { mutableStateOf<String?>(null) }
+    var details by remember { mutableStateOf<AppInfo?>(null) }
     val deviceVendor = vm.repo.deviceVendor?.name
 
     // Apps that can appear in any of the visible tabs, used for vendor counts and quick selection.
@@ -197,12 +199,13 @@ fun DebloatScreen(vm: MainViewModel) {
                     val toggle = {
                         if (selectable) vm.setDebloatSelection(if (app.packageName in selection) selection - app.packageName else selection + app.packageName)
                     }
-                    AppRow(app, app.packageName in selection, selectable, onToggle = toggle, onClick = toggle)
+                    AppRow(app, app.packageName in selection, selectable, onToggle = toggle, onClick = toggle, onInfo = { details = app })
                     HorizontalDivider()
                 }
             }
         }
     }
+    details?.let { app -> AppDetailsDialog(app, isSelectable(app, expert), vm) { details = null } }
 }
 
 /**
@@ -246,9 +249,9 @@ private fun VendorQuickSelect(
                 }
                 TextButton(onClick = { onSelect(selection - vendorPkgs) }, enabled = selectedHere > 0) { Text("Clear") }
             }
-            if (apps.any { it.level == SafetyLevel.EXTREME || it.level == SafetyLevel.UNSAFE || it.level == SafetyLevel.UNKNOWN }) {
+            if (apps.any { it.level.isRisky }) {
                 Text(
-                    "\"Everything\" includes Extreme packages${if (apps.any { it.level == SafetyLevel.UNKNOWN }) " and unlisted ones" else ""}: read the warnings and run a test first.",
+                    "\"Everything\" includes ${apps.filter { it.level.isRisky }.map { it.level.title }.distinct().joinToString("/")} packages: read the warnings and run a test first.",
                     style = MaterialTheme.typography.bodySmall,
                     color = levelColor(SafetyLevel.EXTREME, dark),
                 )

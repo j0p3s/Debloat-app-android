@@ -152,6 +152,11 @@ fun OperationScreen(vm: MainViewModel) {
                         (s.storageAfter ?: s.storageBefore)?.let { StorageBar(it, Modifier.padding(top = 6.dp)) }
                     }
                 }
+                if (!s.dryRun && s.action == Action.REMOVE && s.failedPackages.isNotEmpty()) {
+                    OutlinedButton(onClick = vm::retryFailedWithDisable, modifier = Modifier.fillMaxWidth()) {
+                        Text("Retry ${s.failedPackages.size} failed app(s) with Disable")
+                    }
+                }
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
                     OutlinedButton(onClick = { vm.back() }, modifier = Modifier.weight(1f)) { Text("Close") }
                     if (s.dryRun && s.ok > 0) {

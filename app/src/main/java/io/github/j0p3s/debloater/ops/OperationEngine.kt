@@ -55,6 +55,8 @@ data class OperationState(
     val freedBytes: Long = 0,
     /** Space used by the APK backups of this run. */
     val backupBytes: Long = 0,
+    /** Packages whose command ran but did not take effect (e.g. cannot be uninstalled on this ROM). */
+    val failedPackages: List<String> = emptyList(),
 ) {
     val hasErrors get() = failed > 0
 }
@@ -169,8 +171,8 @@ class OperationEngine(
         if (!PackageRepository.isValidPackageName(app.packageName)) return true to "Invalid package name, refusing to continue"
         if (action == Action.DISABLE || action == Action.REMOVE) {
             app.protectedReason?.let { return true to "Protected package ($it). It is never modified." }
-            if (app.level == SafetyLevel.UNSAFE && !allowUnsafe) {
-                return true to "Marked UNSAFE. Turn on expert mode in Settings to unlock it."
+            if ((app.level == SafetyLevel.UNSAFE || app.level == SafetyLevel.EXPERT) && !allowUnsafe) {
+                return true to "Rated ${app.level.title}. Turn on expert mode in Settings to unlock it."
             }
         }
         val current = repo.stateOf(app.packageName) ?: return true to "Package not found on device"
@@ -281,9 +283,16 @@ class OperationEngine(
             }
             _state.update { it?.copy(current = app.label, processed = index) }
             log(LineKind.STEP, "[${index + 1}/${apps.size}] ${app.label} (${app.packageName})", app.packageName)
-            if (app.level == SafetyLevel.EXTREME) {
-                log(LineKind.WARN, "Extreme: ${app.entry?.warning ?: "may break features"}", app.packageName)
+            if (app.level == SafetyLevel.EXTREME || app.level == SafetyLevel.EXPERT || app.level == SafetyLevel.UNSAFE) {
+                log(LineKind.WARN, "${app.level.title}: ${app.entry?.warning ?: "may break features"}", app.packageName)
                 bump(warnings = 1)
+            }
+            app.entry?.neededBy?.takeIf { it.isNotEmpty() }?.let {
+                log(LineKind.WARN, "Needed by: ${it.joinToString()}", app.packageName)
+                bump(warnings = 1)
+            }
+            if (action == Action.REMOVE && app.entry?.oftenCantUninstall == true) {
+                log(LineKind.INFO, "This package often cannot be uninstalled on its ROM. If removal fails, use Disable.", app.packageName)
             }
             precheck(app, action, allowUnsafe)?.let { (isError, msg) ->
                 log(if (isError) LineKind.ERROR else LineKind.INFO, msg, app.packageName)
@@ -413,6 +422,7 @@ class OperationEngine(
             log(LineKind.ERROR, msg, app.packageName)
             update(entry.copy(status = EntryStatus.FAILED, message = msg))
             bump(failed = 1)
+            _state.update { it?.copy(failedPackages = it.failedPackages + app.packageName) }
         }
     }
 

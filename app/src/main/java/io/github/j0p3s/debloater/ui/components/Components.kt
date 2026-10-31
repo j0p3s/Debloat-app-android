@@ -20,6 +20,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Warning
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -107,6 +108,7 @@ fun AppRow(
     onToggle: () -> Unit,
     onClick: () -> Unit,
     showDescription: Boolean = true,
+    onInfo: (() -> Unit)? = null,
 ) {
     Row(
         Modifier
@@ -144,10 +146,14 @@ fun AppRow(
             if (showDescription) {
                 val desc = app.protectedReason?.let { "Protected: $it" } ?: app.entry?.description
                 if (!desc.isNullOrBlank()) {
-                    Text(desc, style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(top = 4.dp))
+                    Text(desc, style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(top = 4.dp), maxLines = 3, overflow = TextOverflow.Ellipsis)
                 }
                 app.entry?.warning?.let { WarningText(it) }
+                if (!app.entry?.neededBy.isNullOrEmpty()) WarningText("Needed by ${app.entry!!.neededBy.size} other package(s), see details")
             }
+        }
+        if (onInfo != null) {
+            IconButton(onClick = onInfo) { Icon(Icons.Outlined.Info, contentDescription = "Details") }
         }
     }
 }
