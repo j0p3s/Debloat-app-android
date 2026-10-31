@@ -1,0 +1,2888 @@
+{
+ "version": 1,
+ "description": "Curated debloat list. Levels: RECOMMENDED, SAFE, EXTREME (always has a warning), UNSAFE (locked unless expert mode).",
+ "packages": [
+  {
+   "id": "com.google.android.feedback",
+   "name": "Market Feedback Agent",
+   "vendor": "Google",
+   "level": "RECOMMENDED",
+   "desc": "Sends feedback and crash reports for Play Store apps."
+  },
+  {
+   "id": "com.google.android.partnersetup",
+   "name": "Google Partner Setup",
+   "vendor": "Google",
+   "level": "RECOMMENDED",
+   "desc": "Lets Google apps share data with carrier/OEM partner apps."
+  },
+  {
+   "id": "com.google.android.printservice.recommendation",
+   "name": "Print Service Recommendation",
+   "vendor": "Google",
+   "level": "RECOMMENDED",
+   "desc": "Suggests print plugins to install."
+  },
+  {
+   "id": "com.google.android.onetimeinitializer",
+   "name": "One Time Init",
+   "vendor": "Google",
+   "level": "RECOMMENDED",
+   "desc": "Runs once after first setup. Not needed afterwards."
+  },
+  {
+   "id": "com.google.android.apps.tips",
+   "name": "Pixel Tips",
+   "vendor": "Google",
+   "level": "RECOMMENDED",
+   "desc": "Tips and tricks notifications."
+  },
+  {
+   "id": "com.google.android.apps.setupwizard.searchselector",
+   "name": "Search engine choice",
+   "vendor": "Google",
+   "level": "RECOMMENDED",
+   "desc": "Shows the search engine choice screen at setup."
+  },
+  {
+   "id": "com.google.android.apps.restore",
+   "name": "Data Restore Tool",
+   "vendor": "Google",
+   "level": "SAFE",
+   "desc": "Restores data from an old phone at setup. Not needed afterwards."
+  },
+  {
+   "id": "com.google.android.apps.pixelmigrate",
+   "name": "Data transfer tool",
+   "vendor": "Google",
+   "level": "SAFE",
+   "desc": "Copies data from an old phone at setup."
+  },
+  {
+   "id": "com.google.android.apps.tachyon",
+   "name": "Google Meet (Duo)",
+   "vendor": "Google",
+   "level": "SAFE",
+   "desc": "Video calling app."
+  },
+  {
+   "id": "com.google.android.videos",
+   "name": "Google TV / Play Movies",
+   "vendor": "Google",
+   "level": "SAFE",
+   "desc": "Movies and TV store."
+  },
+  {
+   "id": "com.google.android.music",
+   "name": "Google Play Music",
+   "vendor": "Google",
+   "level": "SAFE",
+   "desc": "Discontinued music app."
+  },
+  {
+   "id": "com.google.android.apps.youtube.music",
+   "name": "YouTube Music",
+   "vendor": "Google",
+   "level": "SAFE",
+   "desc": "Music streaming app."
+  },
+  {
+   "id": "com.google.android.youtube",
+   "name": "YouTube",
+   "vendor": "Google",
+   "level": "SAFE",
+   "desc": "YouTube app. Videos still open in the browser."
+  },
+  {
+   "id": "com.google.android.apps.youtube.kids",
+   "name": "YouTube Kids",
+   "vendor": "Google",
+   "level": "SAFE",
+   "desc": "YouTube for children."
+  },
+  {
+   "id": "com.google.android.apps.books",
+   "name": "Google Play Books",
+   "vendor": "Google",
+   "level": "SAFE",
+   "desc": "E-book store and reader."
+  },
+  {
+   "id": "com.google.android.apps.magazines",
+   "name": "Google News",
+   "vendor": "Google",
+   "level": "SAFE",
+   "desc": "News reader."
+  },
+  {
+   "id": "com.google.android.apps.podcasts",
+   "name": "Google Podcasts",
+   "vendor": "Google",
+   "level": "SAFE",
+   "desc": "Podcast player."
+  },
+  {
+   "id": "com.google.android.apps.subscriptions.red",
+   "name": "Google One",
+   "vendor": "Google",
+   "level": "SAFE",
+   "desc": "Google storage subscription app."
+  },
+  {
+   "id": "com.google.android.apps.docs",
+   "name": "Google Drive",
+   "vendor": "Google",
+   "level": "SAFE",
+   "desc": "Cloud storage app."
+  },
+  {
+   "id": "com.google.android.apps.docs.editors.docs",
+   "name": "Google Docs",
+   "vendor": "Google",
+   "level": "SAFE",
+   "desc": "Document editor."
+  },
+  {
+   "id": "com.google.android.apps.docs.editors.sheets",
+   "name": "Google Sheets",
+   "vendor": "Google",
+   "level": "SAFE",
+   "desc": "Spreadsheet editor."
+  },
+  {
+   "id": "com.google.android.apps.docs.editors.slides",
+   "name": "Google Slides",
+   "vendor": "Google",
+   "level": "SAFE",
+   "desc": "Presentation editor."
+  },
+  {
+   "id": "com.google.android.keep",
+   "name": "Google Keep",
+   "vendor": "Google",
+   "level": "SAFE",
+   "desc": "Notes app."
+  },
+  {
+   "id": "com.google.android.apps.fitness",
+   "name": "Google Fit",
+   "vendor": "Google",
+   "level": "SAFE",
+   "desc": "Fitness tracking."
+  },
+  {
+   "id": "com.google.android.play.games",
+   "name": "Google Play Games",
+   "vendor": "Google",
+   "level": "SAFE",
+   "desc": "Game hub. Some games use it for cloud saves.",
+   "warn": "Some games need Play Games to sign in or load cloud saves."
+  },
+  {
+   "id": "com.google.android.apps.photos",
+   "name": "Google Photos",
+   "vendor": "Google",
+   "level": "SAFE",
+   "desc": "Photo gallery and cloud backup. Your photos stay in your Google account.",
+   "warn": "Photo backup stops. Install another gallery app first."
+  },
+  {
+   "id": "com.google.android.gm",
+   "name": "Gmail",
+   "vendor": "Google",
+   "level": "SAFE",
+   "desc": "Email app."
+  },
+  {
+   "id": "com.google.android.apps.maps",
+   "name": "Google Maps",
+   "vendor": "Google",
+   "level": "SAFE",
+   "desc": "Maps and navigation.",
+   "warn": "Apps that open locations will ask for another maps app."
+  },
+  {
+   "id": "com.google.android.calendar",
+   "name": "Google Calendar",
+   "vendor": "Google",
+   "level": "SAFE",
+   "desc": "Calendar app. Your events stay in your account."
+  },
+  {
+   "id": "com.google.android.apps.nbu.files",
+   "name": "Files by Google",
+   "vendor": "Google",
+   "level": "SAFE",
+   "desc": "File manager and cleaner."
+  },
+  {
+   "id": "com.google.android.apps.googleassistant",
+   "name": "Google Assistant",
+   "vendor": "Google",
+   "level": "SAFE",
+   "desc": "Assistant shortcut app."
+  },
+  {
+   "id": "com.google.android.apps.bard",
+   "name": "Gemini",
+   "vendor": "Google",
+   "level": "SAFE",
+   "desc": "Google AI assistant app."
+  },
+  {
+   "id": "com.google.android.apps.chromecast.app",
+   "name": "Google Home",
+   "vendor": "Google",
+   "level": "SAFE",
+   "desc": "Controls Chromecast and smart home devices."
+  },
+  {
+   "id": "com.google.ar.core",
+   "name": "Google Play Services for AR",
+   "vendor": "Google",
+   "level": "SAFE",
+   "desc": "Augmented reality support for apps."
+  },
+  {
+   "id": "com.google.ar.lens",
+   "name": "Google Lens",
+   "vendor": "Google",
+   "level": "SAFE",
+   "desc": "Visual search."
+  },
+  {
+   "id": "com.google.android.apps.recorder",
+   "name": "Recorder",
+   "vendor": "Google",
+   "level": "SAFE",
+   "desc": "Pixel voice recorder."
+  },
+  {
+   "id": "com.google.android.apps.adm",
+   "name": "Find My Device",
+   "vendor": "Google",
+   "level": "SAFE",
+   "desc": "Locate, lock or wipe a lost phone.",
+   "warn": "You will not be able to use the Find My Device app (the website may still work)."
+  },
+  {
+   "id": "com.google.android.apps.accessibility.voiceaccess",
+   "name": "Voice Access",
+   "vendor": "Google",
+   "level": "SAFE",
+   "desc": "Control the phone by voice (accessibility)."
+  },
+  {
+   "id": "com.google.android.accessibility.soundamplifier",
+   "name": "Sound Amplifier",
+   "vendor": "Google",
+   "level": "SAFE",
+   "desc": "Accessibility sound booster."
+  },
+  {
+   "id": "com.google.audio.hearing.visualization.accessibility.scribe",
+   "name": "Live Transcribe",
+   "vendor": "Google",
+   "level": "SAFE",
+   "desc": "Live speech-to-text."
+  },
+  {
+   "id": "com.google.android.marvin.talkback",
+   "name": "Android Accessibility Suite",
+   "vendor": "Google",
+   "level": "SAFE",
+   "desc": "TalkBack screen reader and accessibility menu.",
+   "warn": "Do not remove it if you use TalkBack, Select to Speak or the accessibility menu."
+  },
+  {
+   "id": "com.google.android.tts",
+   "name": "Speech Services by Google",
+   "vendor": "Google",
+   "level": "SAFE",
+   "desc": "Text-to-speech engine.",
+   "warn": "Navigation voice prompts and screen readers lose their voice unless another TTS engine is installed."
+  },
+  {
+   "id": "com.google.android.apps.wellbeing",
+   "name": "Digital Wellbeing",
+   "vendor": "Google",
+   "level": "SAFE",
+   "desc": "Screen time stats, Bedtime mode and Focus mode.",
+   "warn": "Bedtime and Focus modes stop working."
+  },
+  {
+   "id": "com.google.android.apps.walletnfcrel",
+   "name": "Google Wallet",
+   "vendor": "Google",
+   "level": "SAFE",
+   "desc": "Contactless payments and passes.",
+   "warn": "Tap-to-pay with Google Wallet stops working."
+  },
+  {
+   "id": "com.google.android.apps.safetyhub",
+   "name": "Personal Safety",
+   "vendor": "Google",
+   "level": "SAFE",
+   "desc": "Car crash detection and emergency sharing.",
+   "warn": "Car crash detection and safety check stop working."
+  },
+  {
+   "id": "com.google.android.projection.gearhead",
+   "name": "Android Auto",
+   "vendor": "Google",
+   "level": "SAFE",
+   "desc": "Phone projection in cars.",
+   "warn": "Android Auto in your car stops working."
+  },
+  {
+   "id": "com.google.android.apps.photosgo",
+   "name": "Gallery Go",
+   "vendor": "Google",
+   "level": "SAFE",
+   "desc": "Lightweight gallery.",
+   "warn": "Install another gallery first if this is your only one."
+  },
+  {
+   "id": "com.google.android.apps.searchlite",
+   "name": "Google Go",
+   "vendor": "Google",
+   "level": "SAFE",
+   "desc": "Lightweight Google search."
+  },
+  {
+   "id": "com.google.android.apps.youtube.mango",
+   "name": "YouTube Go",
+   "vendor": "Google",
+   "level": "SAFE",
+   "desc": "Lightweight YouTube."
+  },
+  {
+   "id": "com.google.android.apps.navlite",
+   "name": "Maps Go",
+   "vendor": "Google",
+   "level": "SAFE",
+   "desc": "Lightweight Maps."
+  },
+  {
+   "id": "com.google.android.apps.assistant",
+   "name": "Assistant Go",
+   "vendor": "Google",
+   "level": "SAFE",
+   "desc": "Lightweight Assistant."
+  },
+  {
+   "id": "com.google.android.apps.kids.home",
+   "name": "Kids Space",
+   "vendor": "Google",
+   "level": "SAFE",
+   "desc": "Kids mode for tablets."
+  },
+  {
+   "id": "com.google.android.apps.healthdata",
+   "name": "Health Connect (app)",
+   "vendor": "Google",
+   "level": "SAFE",
+   "desc": "Health data sharing hub.",
+   "sdk": [
+    {
+     "from": 34,
+     "level": "EXTREME",
+     "warn": "On Android 14+ Health Connect is part of the system. Fitness apps lose access to health data."
+    }
+   ]
+  },
+  {
+   "id": "com.google.android.healthconnect.controller",
+   "name": "Health Connect",
+   "vendor": "Google",
+   "level": "SAFE",
+   "desc": "Health data sharing hub.",
+   "sdk": [
+    {
+     "from": 34,
+     "level": "EXTREME",
+     "warn": "On Android 14+ Health Connect is part of the system. Fitness apps lose access to health data."
+    }
+   ]
+  },
+  {
+   "id": "com.android.chrome",
+   "name": "Google Chrome",
+   "vendor": "Google",
+   "level": "SAFE",
+   "desc": "Web browser.",
+   "warn": "Install another browser first, or links will have nothing to open them."
+  },
+  {
+   "id": "com.google.android.googlequicksearchbox",
+   "name": "Google app",
+   "vendor": "Google",
+   "level": "EXTREME",
+   "desc": "Google Search, Discover feed and Assistant.",
+   "warn": "Pixel Launcher's search bar and feed, 'Hey Google' and some widgets break."
+  },
+  {
+   "id": "com.google.android.dialer",
+   "name": "Phone by Google",
+   "vendor": "Google",
+   "level": "EXTREME",
+   "desc": "Phone app (dialer).",
+   "warn": "You cannot make or receive calls normally until another dialer is installed and set as default."
+  },
+  {
+   "id": "com.google.android.apps.messaging",
+   "name": "Google Messages",
+   "vendor": "Google",
+   "level": "EXTREME",
+   "desc": "SMS/RCS messaging app.",
+   "warn": "No SMS/MMS until another messaging app is set as default."
+  },
+  {
+   "id": "com.google.android.contacts",
+   "name": "Contacts by Google",
+   "vendor": "Google",
+   "level": "EXTREME",
+   "desc": "Contacts app.",
+   "warn": "The dialer may lose contact editing. Install another contacts app first."
+  },
+  {
+   "id": "com.google.android.deskclock",
+   "name": "Clock by Google",
+   "vendor": "Google",
+   "level": "EXTREME",
+   "desc": "Clock, alarms and timers.",
+   "warn": "Your alarms will not ring. Install another clock app first."
+  },
+  {
+   "id": "com.google.android.calculator",
+   "name": "Calculator by Google",
+   "vendor": "Google",
+   "level": "SAFE",
+   "desc": "Calculator app."
+  },
+  {
+   "id": "com.google.android.GoogleCamera",
+   "name": "Pixel Camera",
+   "vendor": "Google",
+   "level": "EXTREME",
+   "desc": "Camera app.",
+   "warn": "Apps that ask the system camera to take a photo will fail without another camera app."
+  },
+  {
+   "id": "com.google.android.apps.nexuslauncher",
+   "name": "Pixel Launcher",
+   "vendor": "Google",
+   "level": "EXTREME",
+   "desc": "Home screen on Pixel phones.",
+   "warn": "Install and select another launcher first, or you may have no home screen."
+  },
+  {
+   "id": "com.google.android.inputmethod.latin",
+   "name": "Gboard",
+   "vendor": "Google",
+   "level": "EXTREME",
+   "desc": "Keyboard.",
+   "warn": "Install and select another keyboard first, or you may not be able to type, even your PIN."
+  },
+  {
+   "id": "com.google.android.apps.wallpaper",
+   "name": "Wallpaper & style",
+   "vendor": "Google",
+   "level": "EXTREME",
+   "desc": "Wallpaper, theme and colour picker.",
+   "warn": "You cannot change wallpaper or themes from Settings."
+  },
+  {
+   "id": "com.google.android.setupwizard",
+   "name": "Android Setup",
+   "vendor": "Google",
+   "level": "EXTREME",
+   "desc": "First-boot setup wizard.",
+   "warn": "On some devices Home or navigation buttons stop working. Needed after a factory reset."
+  },
+  {
+   "id": "com.google.android.apps.turbo",
+   "name": "Device Health Services",
+   "vendor": "Google",
+   "level": "EXTREME",
+   "desc": "Adaptive Battery and battery time estimates.",
+   "warn": "Adaptive Battery and remaining time estimates stop working."
+  },
+  {
+   "id": "com.google.android.as",
+   "name": "Android System Intelligence",
+   "vendor": "Google",
+   "level": "EXTREME",
+   "desc": "Live Caption, Smart Reply, Now Playing, smart text selection.",
+   "warn": "Live Caption, Smart Reply, Now Playing and app suggestions stop working."
+  },
+  {
+   "id": "com.google.android.as.oss",
+   "name": "Private Compute Services",
+   "vendor": "Google",
+   "level": "EXTREME",
+   "desc": "Privacy layer for Android System Intelligence features.",
+   "warn": "On-device AI features like Live Caption and Now Playing can stop working."
+  },
+  {
+   "id": "com.google.android.syncadapters.calendar",
+   "name": "Google Calendar Sync",
+   "vendor": "Google",
+   "level": "EXTREME",
+   "desc": "Syncs calendar events with your Google account.",
+   "warn": "Calendar events will no longer sync with your Google account."
+  },
+  {
+   "id": "com.google.android.syncadapters.contacts",
+   "name": "Google Contacts Sync",
+   "vendor": "Google",
+   "level": "EXTREME",
+   "desc": "Syncs contacts with your Google account.",
+   "warn": "Contacts will no longer sync with your Google account."
+  },
+  {
+   "id": "com.google.android.backuptransport",
+   "name": "Google Backup Transport",
+   "vendor": "Google",
+   "level": "EXTREME",
+   "desc": "Backs up app data and settings to Google Drive.",
+   "warn": "Automatic backup to your Google account stops."
+  },
+  {
+   "id": "com.google.android.configupdater",
+   "name": "ConfigUpdater",
+   "vendor": "Google",
+   "level": "EXTREME",
+   "desc": "Updates security configuration (certificate pinning, etc.).",
+   "warn": "Security configuration updates stop arriving."
+  },
+  {
+   "id": "com.android.vending",
+   "name": "Google Play Store",
+   "vendor": "Google",
+   "level": "EXTREME",
+   "desc": "App store and updates for Play services.",
+   "warn": "No app updates. Apps that check for Play licensing may stop working."
+  },
+  {
+   "id": "com.google.android.adservices.api",
+   "name": "Android AdServices (Privacy Sandbox)",
+   "vendor": "Google",
+   "level": "EXTREME",
+   "desc": "Privacy Sandbox ad APIs.",
+   "warn": "Part of a system module. Some apps that use the ad APIs may log errors."
+  },
+  {
+   "id": "com.google.android.apps.carrier.carrierwifi",
+   "name": "Carrier Wi-Fi",
+   "vendor": "Google",
+   "level": "EXTREME",
+   "desc": "Carrier Wi-Fi auto-connect on Pixel.",
+   "warn": "Automatic connection to carrier Wi-Fi hotspots stops."
+  },
+  {
+   "id": "com.google.android.gms",
+   "name": "Google Play Services",
+   "vendor": "Google",
+   "level": "UNSAFE",
+   "desc": "Core Google services: accounts, notifications (FCM), location, Play Store.",
+   "warn": "Almost every app stops receiving notifications. Google sign-in, maps and many apps break."
+  },
+  {
+   "id": "com.google.android.gsf",
+   "name": "Google Services Framework",
+   "vendor": "Google",
+   "level": "UNSAFE",
+   "desc": "Core Google account and messaging framework.",
+   "warn": "Google accounts, Play Store and push notifications break."
+  },
+  {
+   "id": "com.google.android.trichromelibrary",
+   "name": "Trichrome Library",
+   "vendor": "Google",
+   "level": "UNSAFE",
+   "desc": "Shared library used by Chrome and WebView.",
+   "warn": "WebView and Chrome stop working, so many apps crash."
+  },
+  {
+   "id": "com.google.android.ext.shared",
+   "name": "Android Shared Library",
+   "vendor": "Google",
+   "level": "UNSAFE",
+   "desc": "Shared framework library.",
+   "warn": "Apps that depend on it can crash."
+  },
+  {
+   "id": "com.google.android.cellbroadcastreceiver",
+   "name": "Wireless emergency alerts",
+   "vendor": "Google",
+   "level": "UNSAFE",
+   "desc": "Government emergency alerts.",
+   "warn": "You will not receive emergency alerts."
+  },
+  {
+   "id": "com.google.android.cellbroadcastservice",
+   "name": "Cell broadcast service",
+   "vendor": "Google",
+   "level": "UNSAFE",
+   "desc": "Delivers emergency alerts.",
+   "warn": "You will not receive emergency alerts."
+  },
+  {
+   "id": "com.google.android.gms.location.history",
+   "name": "Google Location History",
+   "vendor": "Google",
+   "level": "RECOMMENDED",
+   "desc": "Old location history stub."
+  },
+  {
+   "id": "com.android.egg",
+   "name": "Android Easter Egg",
+   "vendor": "AOSP",
+   "level": "RECOMMENDED",
+   "desc": "Hidden game in About phone."
+  },
+  {
+   "id": "com.android.printservice.recommendation",
+   "name": "Print Service Recommendation",
+   "vendor": "AOSP",
+   "level": "RECOMMENDED",
+   "desc": "Suggests print plugins."
+  },
+  {
+   "id": "com.android.bips",
+   "name": "Default Print Service",
+   "vendor": "AOSP",
+   "level": "SAFE",
+   "desc": "Built-in printing to Wi-Fi printers.",
+   "warn": "Printing to network printers without a plugin stops working."
+  },
+  {
+   "id": "com.android.bookmarkprovider",
+   "name": "Bookmark Provider",
+   "vendor": "AOSP",
+   "level": "SAFE",
+   "desc": "Old browser bookmarks storage."
+  },
+  {
+   "id": "com.android.providers.partnerbookmarks",
+   "name": "Partner Bookmarks",
+   "vendor": "AOSP",
+   "level": "SAFE",
+   "desc": "Carrier/OEM preset bookmarks."
+  },
+  {
+   "id": "com.android.calllogbackup",
+   "name": "Call Log Backup",
+   "vendor": "AOSP",
+   "level": "SAFE",
+   "desc": "Includes the call log in backups.",
+   "warn": "Your call log is no longer included in backups."
+  },
+  {
+   "id": "com.android.dreams.basic",
+   "name": "Basic Daydreams",
+   "vendor": "AOSP",
+   "level": "SAFE",
+   "desc": "Colour screensaver."
+  },
+  {
+   "id": "com.android.dreams.phototable",
+   "name": "Photo Screensavers",
+   "vendor": "AOSP",
+   "level": "SAFE",
+   "desc": "Photo screensaver."
+  },
+  {
+   "id": "com.android.hotwordenrollment.okgoogle",
+   "name": "OK Google enrollment",
+   "vendor": "AOSP",
+   "level": "SAFE",
+   "desc": "Voice training for 'OK Google'."
+  },
+  {
+   "id": "com.android.hotwordenrollment.xgoogle",
+   "name": "OK Google enrollment",
+   "vendor": "AOSP",
+   "level": "SAFE",
+   "desc": "Voice training for 'OK Google'."
+  },
+  {
+   "id": "com.android.wallpaper.livepicker",
+   "name": "Live Wallpaper Picker",
+   "vendor": "AOSP",
+   "level": "SAFE",
+   "desc": "Picker for live wallpapers."
+  },
+  {
+   "id": "com.android.wallpaperbackup",
+   "name": "Wallpaper Backup",
+   "vendor": "AOSP",
+   "level": "SAFE",
+   "desc": "Backs up your wallpaper.",
+   "warn": "Your wallpaper is no longer backed up."
+  },
+  {
+   "id": "com.android.htmlviewer",
+   "name": "HTML Viewer",
+   "vendor": "AOSP",
+   "level": "SAFE",
+   "desc": "Shows legal notices."
+  },
+  {
+   "id": "com.android.sharedstoragebackup",
+   "name": "Shared Storage Backup",
+   "vendor": "AOSP",
+   "level": "SAFE",
+   "desc": "Backs up shared storage with adb backup."
+  },
+  {
+   "id": "com.android.traceur",
+   "name": "System Tracing",
+   "vendor": "AOSP",
+   "level": "SAFE",
+   "desc": "Developer tracing tool."
+  },
+  {
+   "id": "com.android.dynsystem",
+   "name": "Dynamic System Updates",
+   "vendor": "AOSP",
+   "level": "SAFE",
+   "desc": "Boots GSI images for testing."
+  },
+  {
+   "id": "com.android.simappdialog",
+   "name": "SIM app dialog",
+   "vendor": "AOSP",
+   "level": "SAFE",
+   "desc": "Prompts to install a carrier app when a SIM is inserted."
+  },
+  {
+   "id": "com.android.apps.tag",
+   "name": "Tags (NFC)",
+   "vendor": "AOSP",
+   "level": "SAFE",
+   "desc": "Reads NFC tags.",
+   "warn": "NFC tags with web links will not open automatically."
+  },
+  {
+   "id": "com.android.bluetoothmidiservice",
+   "name": "Bluetooth MIDI",
+   "vendor": "AOSP",
+   "level": "SAFE",
+   "desc": "Bluetooth MIDI instruments."
+  },
+  {
+   "id": "com.android.storagemanager",
+   "name": "Storage Manager",
+   "vendor": "AOSP",
+   "level": "SAFE",
+   "desc": "Smart storage cleanup."
+  },
+  {
+   "id": "com.android.calendar",
+   "name": "Calendar (AOSP)",
+   "vendor": "AOSP",
+   "level": "SAFE",
+   "desc": "Calendar app."
+  },
+  {
+   "id": "com.android.email",
+   "name": "Email (AOSP)",
+   "vendor": "AOSP",
+   "level": "SAFE",
+   "desc": "Email app."
+  },
+  {
+   "id": "com.android.gallery3d",
+   "name": "Gallery (AOSP)",
+   "vendor": "AOSP",
+   "level": "SAFE",
+   "desc": "Gallery app.",
+   "warn": "Install another gallery first if this is your only one."
+  },
+  {
+   "id": "com.android.soundrecorder",
+   "name": "Sound Recorder",
+   "vendor": "AOSP",
+   "level": "SAFE",
+   "desc": "Voice recorder."
+  },
+  {
+   "id": "com.android.fmradio",
+   "name": "FM Radio",
+   "vendor": "AOSP",
+   "level": "SAFE",
+   "desc": "FM radio."
+  },
+  {
+   "id": "com.android.browser",
+   "name": "Browser",
+   "vendor": "AOSP",
+   "level": "SAFE",
+   "desc": "Stock browser (on some devices Mi Browser).",
+   "warn": "Install another browser first."
+  },
+  {
+   "id": "com.android.music",
+   "name": "Music (AOSP)",
+   "vendor": "AOSP",
+   "level": "SAFE",
+   "desc": "Music player."
+  },
+  {
+   "id": "com.android.quicksearchbox",
+   "name": "Search",
+   "vendor": "AOSP",
+   "level": "SAFE",
+   "desc": "Old search widget."
+  },
+  {
+   "id": "com.android.printspooler",
+   "name": "Print Spooler",
+   "vendor": "AOSP",
+   "level": "EXTREME",
+   "desc": "System printing service.",
+   "warn": "Printing stops working completely."
+  },
+  {
+   "id": "com.android.stk",
+   "name": "SIM Toolkit",
+   "vendor": "AOSP",
+   "level": "EXTREME",
+   "desc": "Carrier SIM menu.",
+   "warn": "Some carriers use the SIM menu for services or balance checks."
+  },
+  {
+   "id": "com.android.managedprovisioning",
+   "name": "Work Setup",
+   "vendor": "AOSP",
+   "level": "EXTREME",
+   "desc": "Sets up work profiles.",
+   "warn": "You cannot create a work profile. Some setup flows can fail."
+  },
+  {
+   "id": "com.android.emergency",
+   "name": "Emergency information",
+   "vendor": "AOSP",
+   "level": "EXTREME",
+   "desc": "Emergency info on the lock screen.",
+   "warn": "Emergency medical info is no longer shown."
+  },
+  {
+   "id": "com.android.musicfx",
+   "name": "MusicFX",
+   "vendor": "AOSP",
+   "level": "EXTREME",
+   "desc": "Audio equalizer/effects.",
+   "warn": "Equalizer settings in music apps can stop working."
+  },
+  {
+   "id": "com.android.dialer",
+   "name": "Phone (AOSP)",
+   "vendor": "AOSP",
+   "level": "EXTREME",
+   "desc": "Dialer.",
+   "warn": "You cannot make calls normally until another dialer is set as default."
+  },
+  {
+   "id": "com.android.mms",
+   "name": "Messaging (AOSP)",
+   "vendor": "AOSP",
+   "level": "EXTREME",
+   "desc": "SMS app.",
+   "warn": "No SMS/MMS until another messaging app is set as default."
+  },
+  {
+   "id": "com.android.messaging",
+   "name": "Messaging (AOSP)",
+   "vendor": "AOSP",
+   "level": "EXTREME",
+   "desc": "SMS app.",
+   "warn": "No SMS/MMS until another messaging app is set as default."
+  },
+  {
+   "id": "com.android.contacts",
+   "name": "Contacts (AOSP)",
+   "vendor": "AOSP",
+   "level": "EXTREME",
+   "desc": "Contacts app.",
+   "warn": "The dialer may lose contact editing."
+  },
+  {
+   "id": "com.android.camera2",
+   "name": "Camera (AOSP)",
+   "vendor": "AOSP",
+   "level": "EXTREME",
+   "desc": "Camera app.",
+   "warn": "Apps that ask the system camera to take a photo will fail."
+  },
+  {
+   "id": "com.android.deskclock",
+   "name": "Clock (AOSP)",
+   "vendor": "AOSP",
+   "level": "EXTREME",
+   "desc": "Clock and alarms.",
+   "warn": "Your alarms will not ring. Install another clock first."
+  },
+  {
+   "id": "com.android.providers.calendar",
+   "name": "Calendar Storage",
+   "vendor": "AOSP",
+   "level": "EXTREME",
+   "desc": "Stores calendar events.",
+   "warn": "All calendar apps stop working."
+  },
+  {
+   "id": "com.android.captiveportallogin",
+   "name": "Captive Portal Login",
+   "vendor": "AOSP",
+   "level": "EXTREME",
+   "desc": "Login page for hotel/airport Wi-Fi.",
+   "warn": "You cannot sign in to Wi-Fi networks that need a login page."
+  },
+  {
+   "id": "com.android.wallpaper",
+   "name": "Wallpaper & style (AOSP)",
+   "vendor": "AOSP",
+   "level": "EXTREME",
+   "desc": "Wallpaper and theme picker.",
+   "warn": "You cannot change wallpaper from Settings."
+  },
+  {
+   "id": "com.android.wallpapercropper",
+   "name": "Wallpaper cropper",
+   "vendor": "AOSP",
+   "level": "EXTREME",
+   "desc": "Crops images when setting a wallpaper.",
+   "warn": "Setting images as wallpaper may fail."
+  },
+  {
+   "id": "com.android.smspush",
+   "name": "WAP Push",
+   "vendor": "AOSP",
+   "level": "EXTREME",
+   "desc": "Handles WAP push messages (MMS settings).",
+   "warn": "MMS configuration messages from carriers may stop working."
+  },
+  {
+   "id": "com.android.ons",
+   "name": "Opportunistic Network Service",
+   "vendor": "AOSP",
+   "level": "EXTREME",
+   "desc": "Switches between carrier networks.",
+   "warn": "Dual-SIM or network switching features may stop working."
+  },
+  {
+   "id": "com.android.backupconfirm",
+   "name": "Backup confirmation",
+   "vendor": "AOSP",
+   "level": "EXTREME",
+   "desc": "Confirms adb backup/restore.",
+   "warn": "adb backup/restore stops working."
+  },
+  {
+   "id": "com.android.statementservice",
+   "name": "Intent Filter Verification",
+   "vendor": "AOSP",
+   "level": "EXTREME",
+   "desc": "Verifies app links.",
+   "warn": "Links may open in the browser instead of the matching app."
+  },
+  {
+   "id": "com.android.companiondevicemanager",
+   "name": "Companion Device Manager",
+   "vendor": "AOSP",
+   "level": "EXTREME",
+   "desc": "Pairs watches and other companion devices.",
+   "warn": "Smartwatch and companion app pairing can fail."
+  },
+  {
+   "id": "com.android.certinstaller",
+   "name": "Certificate Installer",
+   "vendor": "AOSP",
+   "level": "EXTREME",
+   "desc": "Installs CA/VPN/Wi-Fi certificates.",
+   "warn": "You cannot install certificates (enterprise Wi-Fi, VPN)."
+  },
+  {
+   "id": "com.android.localtransport",
+   "name": "Local backup transport",
+   "vendor": "AOSP",
+   "level": "EXTREME",
+   "desc": "Local backup transport.",
+   "warn": "Local/adb backups may fail."
+  },
+  {
+   "id": "com.android.nfc",
+   "name": "NFC Service",
+   "vendor": "AOSP",
+   "level": "EXTREME",
+   "desc": "NFC stack.",
+   "warn": "NFC and contactless payments stop working."
+  },
+  {
+   "id": "com.android.wallpaperpicker",
+   "name": "Wallpaper picker",
+   "vendor": "AOSP",
+   "level": "EXTREME",
+   "desc": "Wallpaper picker.",
+   "warn": "You cannot change wallpaper."
+  },
+  {
+   "id": "com.android.cellbroadcastreceiver",
+   "name": "Emergency alerts",
+   "vendor": "AOSP",
+   "level": "UNSAFE",
+   "desc": "Government emergency alerts.",
+   "warn": "You will not receive emergency alerts."
+  },
+  {
+   "id": "com.android.cellbroadcastreceiver.module",
+   "name": "Emergency alerts (module)",
+   "vendor": "AOSP",
+   "level": "UNSAFE",
+   "desc": "Government emergency alerts.",
+   "warn": "You will not receive emergency alerts."
+  },
+  {
+   "id": "com.android.carrierconfig",
+   "name": "Carrier Config",
+   "vendor": "AOSP",
+   "level": "UNSAFE",
+   "desc": "Carrier network settings.",
+   "warn": "Calls, mobile data, VoLTE or Wi-Fi calling can break."
+  },
+  {
+   "id": "com.android.ondevicepersonalization.services",
+   "name": "On-device personalization",
+   "vendor": "AOSP",
+   "level": "EXTREME",
+   "desc": "Privacy Sandbox service module.",
+   "warn": "Part of a system module. Apps that use it may log errors."
+  },
+  {
+   "id": "com.facebook.appmanager",
+   "name": "Facebook App Manager",
+   "vendor": "Facebook",
+   "level": "RECOMMENDED",
+   "desc": "Background updater for preinstalled Facebook apps."
+  },
+  {
+   "id": "com.facebook.services",
+   "name": "Facebook Services",
+   "vendor": "Facebook",
+   "level": "RECOMMENDED",
+   "desc": "Background Facebook service, telemetry."
+  },
+  {
+   "id": "com.facebook.system",
+   "name": "Facebook App Installer",
+   "vendor": "Facebook",
+   "level": "RECOMMENDED",
+   "desc": "Silently installs Facebook apps."
+  },
+  {
+   "id": "com.facebook.katana",
+   "name": "Facebook",
+   "vendor": "Facebook",
+   "level": "SAFE",
+   "desc": "Facebook app."
+  },
+  {
+   "id": "com.facebook.orca",
+   "name": "Messenger",
+   "vendor": "Facebook",
+   "level": "SAFE",
+   "desc": "Facebook Messenger."
+  },
+  {
+   "id": "com.facebook.lite",
+   "name": "Facebook Lite",
+   "vendor": "Facebook",
+   "level": "SAFE",
+   "desc": "Lightweight Facebook."
+  },
+  {
+   "id": "com.instagram.android",
+   "name": "Instagram",
+   "vendor": "Facebook",
+   "level": "SAFE",
+   "desc": "Instagram app."
+  },
+  {
+   "id": "com.microsoft.skydrive",
+   "name": "OneDrive",
+   "vendor": "Microsoft",
+   "level": "SAFE",
+   "desc": "Cloud storage."
+  },
+  {
+   "id": "com.microsoft.office.officehubrow",
+   "name": "Microsoft 365 (Office)",
+   "vendor": "Microsoft",
+   "level": "SAFE",
+   "desc": "Office apps hub."
+  },
+  {
+   "id": "com.microsoft.office.outlook",
+   "name": "Outlook",
+   "vendor": "Microsoft",
+   "level": "SAFE",
+   "desc": "Email app."
+  },
+  {
+   "id": "com.microsoft.office.excel",
+   "name": "Excel",
+   "vendor": "Microsoft",
+   "level": "SAFE",
+   "desc": "Spreadsheets."
+  },
+  {
+   "id": "com.microsoft.office.word",
+   "name": "Word",
+   "vendor": "Microsoft",
+   "level": "SAFE",
+   "desc": "Documents."
+  },
+  {
+   "id": "com.microsoft.office.powerpoint",
+   "name": "PowerPoint",
+   "vendor": "Microsoft",
+   "level": "SAFE",
+   "desc": "Presentations."
+  },
+  {
+   "id": "com.microsoft.teams",
+   "name": "Teams",
+   "vendor": "Microsoft",
+   "level": "SAFE",
+   "desc": "Chat and meetings."
+  },
+  {
+   "id": "com.skype.raider",
+   "name": "Skype",
+   "vendor": "Microsoft",
+   "level": "SAFE",
+   "desc": "Calls and messaging."
+  },
+  {
+   "id": "com.linkedin.android",
+   "name": "LinkedIn",
+   "vendor": "Microsoft",
+   "level": "SAFE",
+   "desc": "Social network."
+  },
+  {
+   "id": "com.microsoft.appmanager",
+   "name": "Link to Windows",
+   "vendor": "Microsoft",
+   "level": "SAFE",
+   "desc": "Connects the phone to a Windows PC.",
+   "warn": "Phone Link with your PC stops working."
+  },
+  {
+   "id": "com.microsoft.bing",
+   "name": "Microsoft Bing",
+   "vendor": "Microsoft",
+   "level": "SAFE",
+   "desc": "Search app."
+  },
+  {
+   "id": "com.microsoft.emmx",
+   "name": "Microsoft Edge",
+   "vendor": "Microsoft",
+   "level": "SAFE",
+   "desc": "Browser.",
+   "warn": "Install another browser first."
+  },
+  {
+   "id": "com.amazon.appmanager",
+   "name": "Amazon App Manager",
+   "vendor": "Amazon",
+   "level": "RECOMMENDED",
+   "desc": "Background installer for Amazon apps."
+  },
+  {
+   "id": "com.amazon.mShop.android.shopping",
+   "name": "Amazon Shopping",
+   "vendor": "Amazon",
+   "level": "SAFE",
+   "desc": "Shopping app."
+  },
+  {
+   "id": "com.amazon.mp3",
+   "name": "Amazon Music",
+   "vendor": "Amazon",
+   "level": "SAFE",
+   "desc": "Music streaming."
+  },
+  {
+   "id": "com.amazon.kindle",
+   "name": "Kindle",
+   "vendor": "Amazon",
+   "level": "SAFE",
+   "desc": "E-books."
+  },
+  {
+   "id": "com.amazon.avod.thirdpartyclient",
+   "name": "Prime Video",
+   "vendor": "Amazon",
+   "level": "SAFE",
+   "desc": "Video streaming."
+  },
+  {
+   "id": "com.amazon.dee.app",
+   "name": "Amazon Alexa",
+   "vendor": "Amazon",
+   "level": "SAFE",
+   "desc": "Voice assistant."
+  },
+  {
+   "id": "in.amazon.mShop.android.shopping",
+   "name": "Amazon India",
+   "vendor": "Amazon",
+   "level": "SAFE",
+   "desc": "Shopping app."
+  },
+  {
+   "id": "com.netflix.mediaclient",
+   "name": "Netflix",
+   "vendor": "Preinstalled",
+   "level": "SAFE",
+   "desc": "Video streaming."
+  },
+  {
+   "id": "com.netflix.partner.activation",
+   "name": "Netflix Partner Activation",
+   "vendor": "Preinstalled",
+   "level": "RECOMMENDED",
+   "desc": "Ties preinstalled Netflix to the device. Telemetry."
+  },
+  {
+   "id": "com.spotify.music",
+   "name": "Spotify",
+   "vendor": "Preinstalled",
+   "level": "SAFE",
+   "desc": "Music streaming."
+  },
+  {
+   "id": "com.booking",
+   "name": "Booking.com",
+   "vendor": "Preinstalled",
+   "level": "SAFE",
+   "desc": "Travel booking."
+  },
+  {
+   "id": "com.ebay.mobile",
+   "name": "eBay",
+   "vendor": "Preinstalled",
+   "level": "SAFE",
+   "desc": "Shopping."
+  },
+  {
+   "id": "com.ebay.carrier",
+   "name": "eBay carrier stub",
+   "vendor": "Preinstalled",
+   "level": "RECOMMENDED",
+   "desc": "Preinstalled eBay installer."
+  },
+  {
+   "id": "com.tripadvisor.tripadvisor",
+   "name": "Tripadvisor",
+   "vendor": "Preinstalled",
+   "level": "SAFE",
+   "desc": "Travel."
+  },
+  {
+   "id": "com.king.candycrushsaga",
+   "name": "Candy Crush Saga",
+   "vendor": "Preinstalled",
+   "level": "SAFE",
+   "desc": "Game."
+  },
+  {
+   "id": "com.king.candycrushsodasaga",
+   "name": "Candy Crush Soda Saga",
+   "vendor": "Preinstalled",
+   "level": "SAFE",
+   "desc": "Game."
+  },
+  {
+   "id": "com.king.farmheroessaga",
+   "name": "Farm Heroes Saga",
+   "vendor": "Preinstalled",
+   "level": "SAFE",
+   "desc": "Game."
+  },
+  {
+   "id": "com.gameloft.android.ANMP.GloftA9HM",
+   "name": "Asphalt 9",
+   "vendor": "Preinstalled",
+   "level": "SAFE",
+   "desc": "Game."
+  },
+  {
+   "id": "com.aura.oobe.samsung",
+   "name": "AppCloud (Aura)",
+   "vendor": "Preinstalled",
+   "level": "RECOMMENDED",
+   "desc": "Installs sponsored apps during setup."
+  },
+  {
+   "id": "com.aura.oobe.samsung.gl",
+   "name": "AppCloud (Aura)",
+   "vendor": "Preinstalled",
+   "level": "RECOMMENDED",
+   "desc": "Installs sponsored apps during setup."
+  },
+  {
+   "id": "com.ironsource.appcloud.oobe",
+   "name": "AppCloud (ironSource)",
+   "vendor": "Preinstalled",
+   "level": "RECOMMENDED",
+   "desc": "Installs sponsored apps."
+  },
+  {
+   "id": "com.ironsource.appcloud.oobe.hutchison",
+   "name": "AppCloud (ironSource)",
+   "vendor": "Preinstalled",
+   "level": "RECOMMENDED",
+   "desc": "Installs sponsored apps."
+  },
+  {
+   "id": "com.dti.folderlauncher",
+   "name": "Digital Turbine folder",
+   "vendor": "Preinstalled",
+   "level": "RECOMMENDED",
+   "desc": "Sponsored app folder."
+  },
+  {
+   "id": "com.dti.att",
+   "name": "Digital Turbine (AT&T)",
+   "vendor": "Preinstalled",
+   "level": "RECOMMENDED",
+   "desc": "Sponsored app installer."
+  },
+  {
+   "id": "com.dti.tracfone",
+   "name": "Digital Turbine (Tracfone)",
+   "vendor": "Preinstalled",
+   "level": "RECOMMENDED",
+   "desc": "Sponsored app installer."
+  },
+  {
+   "id": "com.LogiaGroup.LogiaDeck",
+   "name": "Logia Deck",
+   "vendor": "Preinstalled",
+   "level": "RECOMMENDED",
+   "desc": "Sponsored app installer."
+  },
+  {
+   "id": "com.digitalturbine.ignite",
+   "name": "Digital Turbine Ignite",
+   "vendor": "Preinstalled",
+   "level": "RECOMMENDED",
+   "desc": "Sponsored app installer."
+  },
+  {
+   "id": "com.tiktok.android",
+   "name": "TikTok",
+   "vendor": "Preinstalled",
+   "level": "SAFE",
+   "desc": "Social video app."
+  },
+  {
+   "id": "com.zhiliaoapp.musically",
+   "name": "TikTok",
+   "vendor": "Preinstalled",
+   "level": "SAFE",
+   "desc": "Social video app."
+  },
+  {
+   "id": "com.opera.browser",
+   "name": "Opera",
+   "vendor": "Preinstalled",
+   "level": "SAFE",
+   "desc": "Browser."
+  },
+  {
+   "id": "com.opera.preinstall",
+   "name": "Opera preinstall",
+   "vendor": "Preinstalled",
+   "level": "RECOMMENDED",
+   "desc": "Preinstall helper for Opera."
+  },
+  {
+   "id": "com.opera.app.news",
+   "name": "Opera News",
+   "vendor": "Preinstalled",
+   "level": "SAFE",
+   "desc": "News."
+  },
+  {
+   "id": "com.touchtype.swiftkey",
+   "name": "SwiftKey",
+   "vendor": "Preinstalled",
+   "level": "SAFE",
+   "desc": "Keyboard.",
+   "warn": "Make sure another keyboard is selected first."
+  },
+  {
+   "id": "com.ss.android.ugc.trill",
+   "name": "TikTok",
+   "vendor": "Preinstalled",
+   "level": "SAFE",
+   "desc": "Social video app."
+  },
+  {
+   "id": "com.hulu.plus",
+   "name": "Hulu",
+   "vendor": "Preinstalled",
+   "level": "SAFE",
+   "desc": "Video streaming."
+  },
+  {
+   "id": "com.disney.disneyplus",
+   "name": "Disney+",
+   "vendor": "Preinstalled",
+   "level": "SAFE",
+   "desc": "Video streaming."
+  },
+  {
+   "id": "com.einnovation.temu",
+   "name": "Temu",
+   "vendor": "Preinstalled",
+   "level": "SAFE",
+   "desc": "Shopping app."
+  },
+  {
+   "id": "com.alibaba.aliexpresshd",
+   "name": "AliExpress",
+   "vendor": "Preinstalled",
+   "level": "SAFE",
+   "desc": "Shopping app."
+  },
+  {
+   "id": "com.samsung.android.bixby.agent",
+   "name": "Bixby Voice",
+   "vendor": "Samsung",
+   "level": "RECOMMENDED",
+   "desc": "Bixby voice assistant."
+  },
+  {
+   "id": "com.samsung.android.bixby.wakeup",
+   "name": "Bixby wake-up",
+   "vendor": "Samsung",
+   "level": "RECOMMENDED",
+   "desc": "'Hi Bixby' detection."
+  },
+  {
+   "id": "com.samsung.android.bixby.service",
+   "name": "Bixby Service",
+   "vendor": "Samsung",
+   "level": "RECOMMENDED",
+   "desc": "Bixby background service."
+  },
+  {
+   "id": "com.samsung.android.app.settings.bixby",
+   "name": "Bixby settings",
+   "vendor": "Samsung",
+   "level": "RECOMMENDED",
+   "desc": "Bixby settings."
+  },
+  {
+   "id": "com.samsung.android.app.spage",
+   "name": "Samsung Free / Bixby Home",
+   "vendor": "Samsung",
+   "level": "RECOMMENDED",
+   "desc": "Swipe-left content feed."
+  },
+  {
+   "id": "com.samsung.android.visionintelligence",
+   "name": "Bixby Vision",
+   "vendor": "Samsung",
+   "level": "RECOMMENDED",
+   "desc": "Visual search in camera."
+  },
+  {
+   "id": "com.samsung.android.app.tips",
+   "name": "Samsung Tips",
+   "vendor": "Samsung",
+   "level": "RECOMMENDED",
+   "desc": "Tips notifications."
+  },
+  {
+   "id": "com.samsung.android.voc",
+   "name": "Samsung Members",
+   "vendor": "Samsung",
+   "level": "RECOMMENDED",
+   "desc": "Community, diagnostics, promotions."
+  },
+  {
+   "id": "com.samsung.android.mateagent",
+   "name": "Galaxy Friends",
+   "vendor": "Samsung",
+   "level": "RECOMMENDED",
+   "desc": "Accessory promotions."
+  },
+  {
+   "id": "com.samsung.android.ipsgeofence",
+   "name": "Samsung Visit In",
+   "vendor": "Samsung",
+   "level": "RECOMMENDED",
+   "desc": "Location-based promotions."
+  },
+  {
+   "id": "com.samsung.android.rubin.app",
+   "name": "Customization Service",
+   "vendor": "Samsung",
+   "level": "RECOMMENDED",
+   "desc": "Profiles you for personalised content."
+  },
+  {
+   "id": "com.samsung.android.dqagent",
+   "name": "Device Quality Agent",
+   "vendor": "Samsung",
+   "level": "RECOMMENDED",
+   "desc": "Telemetry."
+  },
+  {
+   "id": "com.sec.android.diagmonagent",
+   "name": "Diagnostic Monitor Agent",
+   "vendor": "Samsung",
+   "level": "RECOMMENDED",
+   "desc": "Telemetry and diagnostics."
+  },
+  {
+   "id": "com.samsung.android.knox.analytics.uploader",
+   "name": "Knox Analytics Uploader",
+   "vendor": "Samsung",
+   "level": "RECOMMENDED",
+   "desc": "Uploads Knox analytics."
+  },
+  {
+   "id": "com.samsung.android.kidsinstaller",
+   "name": "Kids installer",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "Installs Samsung Kids."
+  },
+  {
+   "id": "com.sec.android.app.kidshome",
+   "name": "Samsung Kids",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "Kids mode."
+  },
+  {
+   "id": "com.samsung.android.game.gamehome",
+   "name": "Game Launcher",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "Game hub."
+  },
+  {
+   "id": "com.samsung.android.game.gametools",
+   "name": "Game Booster",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "In-game tools overlay."
+  },
+  {
+   "id": "com.samsung.android.game.gos",
+   "name": "Game Optimizing Service",
+   "vendor": "Samsung",
+   "level": "EXTREME",
+   "desc": "Game performance and thermal tuning.",
+   "warn": "Games may heat up more or lose performance tuning."
+  },
+  {
+   "id": "com.samsung.android.ardrawing",
+   "name": "AR Doodle",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "AR drawing in camera."
+  },
+  {
+   "id": "com.samsung.android.aremoji",
+   "name": "AR Emoji",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "AR emoji."
+  },
+  {
+   "id": "com.samsung.android.aremojieditor",
+   "name": "AR Emoji Editor",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "AR emoji editor."
+  },
+  {
+   "id": "com.samsung.android.arzone",
+   "name": "AR Zone",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "AR features hub."
+  },
+  {
+   "id": "com.samsung.android.app.camera.sticker.facearavatar.preload",
+   "name": "AR Emoji stickers",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "Camera stickers."
+  },
+  {
+   "id": "com.samsung.android.app.watchmanagerstub",
+   "name": "Galaxy Wearable stub",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "Installer for Galaxy Wearable."
+  },
+  {
+   "id": "com.samsung.android.app.watchmanager",
+   "name": "Galaxy Wearable",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "Pairs Galaxy watches and buds.",
+   "warn": "Galaxy Watch/Buds setup and settings stop working."
+  },
+  {
+   "id": "com.samsung.android.samsungpass",
+   "name": "Samsung Pass",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "Password manager."
+  },
+  {
+   "id": "com.samsung.android.samsungpassautofill",
+   "name": "Samsung Pass Autofill",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "Autofill for Samsung Pass."
+  },
+  {
+   "id": "com.samsung.android.spay",
+   "name": "Samsung Wallet/Pay",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "Payments and passes.",
+   "warn": "Samsung Pay/Wallet payments stop working."
+  },
+  {
+   "id": "com.samsung.android.spayfw",
+   "name": "Samsung Pay Framework",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "Payments framework.",
+   "warn": "Samsung Pay/Wallet payments stop working."
+  },
+  {
+   "id": "com.samsung.android.forest",
+   "name": "Digital Wellbeing (Samsung)",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "Screen time and focus modes.",
+   "warn": "Wind Down and Focus modes stop working."
+  },
+  {
+   "id": "com.samsung.android.app.routines",
+   "name": "Modes and Routines",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "Automation routines.",
+   "warn": "Your routines and modes stop working."
+  },
+  {
+   "id": "com.samsung.android.app.sharelive",
+   "name": "Quick Share",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "Share files to nearby devices.",
+   "warn": "Quick Share stops working."
+  },
+  {
+   "id": "com.samsung.android.mdx",
+   "name": "Link to Windows Service",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "Phone Link service."
+  },
+  {
+   "id": "com.samsung.android.smartswitchassistant",
+   "name": "Smart Switch Agent",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "Smart Switch helper."
+  },
+  {
+   "id": "com.sec.android.easyMover",
+   "name": "Smart Switch",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "Transfers data from an old phone."
+  },
+  {
+   "id": "com.sec.android.easyMover.Agent",
+   "name": "Smart Switch Agent",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "Transfers data from an old phone."
+  },
+  {
+   "id": "com.samsung.android.svoiceime",
+   "name": "Samsung voice input",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "Voice typing."
+  },
+  {
+   "id": "com.samsung.android.app.reminder",
+   "name": "Reminder",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "Reminders app."
+  },
+  {
+   "id": "com.samsung.android.calendar",
+   "name": "Samsung Calendar",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "Calendar app."
+  },
+  {
+   "id": "com.samsung.android.app.notes",
+   "name": "Samsung Notes",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "Notes app.",
+   "warn": "Your notes are kept only if synced or backed up."
+  },
+  {
+   "id": "com.sec.android.app.sbrowser",
+   "name": "Samsung Internet",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "Browser.",
+   "warn": "Install another browser first."
+  },
+  {
+   "id": "com.samsung.android.email.provider",
+   "name": "Samsung Email",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "Email app."
+  },
+  {
+   "id": "com.samsung.android.oneconnect",
+   "name": "SmartThings",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "Smart home control."
+  },
+  {
+   "id": "com.samsung.android.tvplus",
+   "name": "Samsung TV Plus",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "Free TV streaming."
+  },
+  {
+   "id": "com.samsung.android.stickercenter",
+   "name": "Sticker Center",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "Stickers."
+  },
+  {
+   "id": "com.samsung.android.livestickers",
+   "name": "Live Stickers",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "Animated stickers."
+  },
+  {
+   "id": "com.samsung.android.service.peoplestripe",
+   "name": "People edge",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "Edge panel contacts."
+  },
+  {
+   "id": "com.samsung.android.app.appsedge",
+   "name": "Apps edge",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "Edge panel apps."
+  },
+  {
+   "id": "com.samsung.android.app.taskedge",
+   "name": "Tasks edge",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "Edge panel tasks."
+  },
+  {
+   "id": "com.samsung.android.app.clipboardedge",
+   "name": "Clipboard edge",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "Edge panel clipboard."
+  },
+  {
+   "id": "com.samsung.android.sm.devicesecurity",
+   "name": "Device security (McAfee)",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "Anti-malware scanner in Device care."
+  },
+  {
+   "id": "com.samsung.android.app.galaxyfinder",
+   "name": "Finder",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "Search in the app drawer.",
+   "warn": "Search from the app drawer stops working."
+  },
+  {
+   "id": "com.samsung.android.fmm",
+   "name": "Find My Mobile",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "Locate a lost phone.",
+   "warn": "You cannot locate the phone with SmartThings Find."
+  },
+  {
+   "id": "com.sec.android.app.shealth",
+   "name": "Samsung Health",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "Health and fitness."
+  },
+  {
+   "id": "com.samsung.android.smartmirroring",
+   "name": "Smart View",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "Screen mirroring.",
+   "warn": "Casting the screen to TVs stops working."
+  },
+  {
+   "id": "com.samsung.android.allshare.service.mediashare",
+   "name": "Media sharing",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "DLNA media sharing."
+  },
+  {
+   "id": "com.samsung.android.video",
+   "name": "Samsung Video Player",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "Video player."
+  },
+  {
+   "id": "com.sec.android.app.voicenote",
+   "name": "Voice Recorder",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "Voice recorder."
+  },
+  {
+   "id": "com.sec.android.app.popupcalculator",
+   "name": "Calculator",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "Calculator."
+  },
+  {
+   "id": "com.samsung.android.coldwalletservice",
+   "name": "Blockchain Keystore",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "Crypto wallet keystore."
+  },
+  {
+   "id": "com.samsung.android.app.simplesharing",
+   "name": "Link Sharing",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "Share large files by link."
+  },
+  {
+   "id": "com.samsung.android.app.storyalbumwidget",
+   "name": "Story album widget",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "Gallery stories widget."
+  },
+  {
+   "id": "com.sec.android.daemonapp",
+   "name": "Weather",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "Weather widget and app."
+  },
+  {
+   "id": "com.samsung.android.beaconmanager",
+   "name": "Beacon Manager",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "Bluetooth beacons."
+  },
+  {
+   "id": "com.samsung.android.privateshare",
+   "name": "Private Share",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "Sharing with expiry."
+  },
+  {
+   "id": "com.sec.spp.push",
+   "name": "Samsung Push Service",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "Push notifications for Samsung apps.",
+   "warn": "Samsung apps may stop receiving notifications."
+  },
+  {
+   "id": "com.sec.android.app.samsungapps",
+   "name": "Galaxy Store",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "Samsung app store.",
+   "warn": "Samsung apps will not get updates."
+  },
+  {
+   "id": "com.samsung.android.scloud",
+   "name": "Samsung Cloud",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "Samsung backup and sync.",
+   "warn": "Samsung Cloud sync and backup stop."
+  },
+  {
+   "id": "com.sec.android.app.myfiles",
+   "name": "My Files",
+   "vendor": "Samsung",
+   "level": "SAFE",
+   "desc": "File manager.",
+   "warn": "Install another file manager first."
+  },
+  {
+   "id": "com.samsung.android.bixbyvision.framework",
+   "name": "Bixby Vision Framework",
+   "vendor": "Samsung",
+   "level": "EXTREME",
+   "desc": "Used by camera scene optimiser and QR scanning.",
+   "warn": "QR scanning and scene optimiser in the camera can stop working."
+  },
+  {
+   "id": "com.samsung.android.themestore",
+   "name": "Galaxy Themes",
+   "vendor": "Samsung",
+   "level": "EXTREME",
+   "desc": "Themes, icons and fonts.",
+   "warn": "Applied themes or fonts may reset to default."
+  },
+  {
+   "id": "com.samsung.android.app.dressroom",
+   "name": "Wallpapers",
+   "vendor": "Samsung",
+   "level": "EXTREME",
+   "desc": "Wallpaper picker.",
+   "warn": "You may not be able to change wallpapers."
+  },
+  {
+   "id": "com.samsung.android.app.cocktailbarservice",
+   "name": "Edge panels",
+   "vendor": "Samsung",
+   "level": "EXTREME",
+   "desc": "Edge panel service.",
+   "warn": "Edge panels stop working."
+  },
+  {
+   "id": "com.samsung.android.app.aodservice",
+   "name": "Always On Display",
+   "vendor": "Samsung",
+   "level": "EXTREME",
+   "desc": "Always On Display.",
+   "warn": "Always On Display stops working."
+  },
+  {
+   "id": "com.samsung.android.service.aircommand",
+   "name": "Air command",
+   "vendor": "Samsung",
+   "level": "EXTREME",
+   "desc": "S Pen menu.",
+   "warn": "The S Pen menu stops working."
+  },
+  {
+   "id": "com.samsung.android.authfw",
+   "name": "Authentication Framework",
+   "vendor": "Samsung",
+   "level": "EXTREME",
+   "desc": "Biometric auth for Samsung Pass and Pay.",
+   "warn": "Samsung Pass and biometric sign-in can break."
+  },
+  {
+   "id": "com.samsung.android.lool",
+   "name": "Device care",
+   "vendor": "Samsung",
+   "level": "EXTREME",
+   "desc": "Battery and storage care.",
+   "warn": "Battery settings pages may crash."
+  },
+  {
+   "id": "com.samsung.android.mobileservice",
+   "name": "Samsung Experience Service",
+   "vendor": "Samsung",
+   "level": "EXTREME",
+   "desc": "Samsung account services.",
+   "warn": "Samsung account features and sharing can break."
+  },
+  {
+   "id": "com.osp.app.signin",
+   "name": "Samsung account",
+   "vendor": "Samsung",
+   "level": "EXTREME",
+   "desc": "Samsung account.",
+   "warn": "All Samsung services that need an account stop working."
+  },
+  {
+   "id": "com.sec.android.soagent",
+   "name": "Software update agent",
+   "vendor": "Samsung",
+   "level": "EXTREME",
+   "desc": "OTA updates.",
+   "warn": "You will not get system updates."
+  },
+  {
+   "id": "com.wssyncmldm",
+   "name": "Software update",
+   "vendor": "Samsung",
+   "level": "EXTREME",
+   "desc": "OTA updates.",
+   "warn": "You will not get system updates."
+  },
+  {
+   "id": "com.samsung.klmsagent",
+   "name": "Knox license agent",
+   "vendor": "Samsung",
+   "level": "EXTREME",
+   "desc": "Knox licensing.",
+   "warn": "Work profiles and Secure Folder can break."
+  },
+  {
+   "id": "com.samsung.knox.securefolder",
+   "name": "Secure Folder",
+   "vendor": "Samsung",
+   "level": "EXTREME",
+   "desc": "Encrypted private space.",
+   "warn": "Apps and files inside Secure Folder become unreachable."
+  },
+  {
+   "id": "com.samsung.android.messaging",
+   "name": "Samsung Messages",
+   "vendor": "Samsung",
+   "level": "EXTREME",
+   "desc": "SMS app.",
+   "warn": "No SMS until another messaging app is set as default."
+  },
+  {
+   "id": "com.samsung.android.dialer",
+   "name": "Samsung Phone",
+   "vendor": "Samsung",
+   "level": "EXTREME",
+   "desc": "Dialer.",
+   "warn": "You cannot make calls normally until another dialer is set as default."
+  },
+  {
+   "id": "com.samsung.android.app.contacts",
+   "name": "Samsung Contacts",
+   "vendor": "Samsung",
+   "level": "EXTREME",
+   "desc": "Contacts.",
+   "warn": "The dialer may lose contacts."
+  },
+  {
+   "id": "com.sec.android.app.launcher",
+   "name": "One UI Home",
+   "vendor": "Samsung",
+   "level": "EXTREME",
+   "desc": "Samsung launcher.",
+   "warn": "Install and select another launcher first. Recents and gestures may break."
+  },
+  {
+   "id": "com.sec.android.app.camera",
+   "name": "Samsung Camera",
+   "vendor": "Samsung",
+   "level": "EXTREME",
+   "desc": "Camera.",
+   "warn": "No camera app. Other apps cannot take photos."
+  },
+  {
+   "id": "com.sec.android.gallery3d",
+   "name": "Samsung Gallery",
+   "vendor": "Samsung",
+   "level": "EXTREME",
+   "desc": "Gallery and screenshot editor.",
+   "warn": "Screenshot editing and photo viewing break."
+  },
+  {
+   "id": "com.samsung.android.honeyboard",
+   "name": "Samsung Keyboard",
+   "vendor": "Samsung",
+   "level": "EXTREME",
+   "desc": "Keyboard.",
+   "warn": "Install and select another keyboard first."
+  },
+  {
+   "id": "com.sec.android.app.clockpackage",
+   "name": "Samsung Clock",
+   "vendor": "Samsung",
+   "level": "EXTREME",
+   "desc": "Clock and alarms.",
+   "warn": "Your alarms will not ring."
+  },
+  {
+   "id": "com.miui.analytics",
+   "name": "MIUI Analytics",
+   "vendor": "Xiaomi",
+   "level": "RECOMMENDED",
+   "desc": "Telemetry."
+  },
+  {
+   "id": "com.miui.msa.global",
+   "name": "MIUI System Ads",
+   "vendor": "Xiaomi",
+   "level": "RECOMMENDED",
+   "desc": "System-wide ads."
+  },
+  {
+   "id": "com.miui.systemAdSolution",
+   "name": "MIUI Ad Solution",
+   "vendor": "Xiaomi",
+   "level": "RECOMMENDED",
+   "desc": "System-wide ads."
+  },
+  {
+   "id": "com.miui.daemon",
+   "name": "MIUI Daemon",
+   "vendor": "Xiaomi",
+   "level": "RECOMMENDED",
+   "desc": "Collects usage statistics."
+  },
+  {
+   "id": "com.miui.bugreport",
+   "name": "Bug Report",
+   "vendor": "Xiaomi",
+   "level": "RECOMMENDED",
+   "desc": "Feedback tool."
+  },
+  {
+   "id": "com.miui.hybrid",
+   "name": "Quick Apps",
+   "vendor": "Xiaomi",
+   "level": "RECOMMENDED",
+   "desc": "Instant mini-apps."
+  },
+  {
+   "id": "com.miui.hybrid.accessory",
+   "name": "Quick Apps accessory",
+   "vendor": "Xiaomi",
+   "level": "RECOMMENDED",
+   "desc": "Instant mini-apps."
+  },
+  {
+   "id": "com.miui.yellowpage",
+   "name": "Yellow Pages",
+   "vendor": "Xiaomi",
+   "level": "RECOMMENDED",
+   "desc": "Caller ID directory."
+  },
+  {
+   "id": "com.xiaomi.mipicks",
+   "name": "GetApps",
+   "vendor": "Xiaomi",
+   "level": "RECOMMENDED",
+   "desc": "Xiaomi app store with ads."
+  },
+  {
+   "id": "com.xiaomi.discover",
+   "name": "System apps updater",
+   "vendor": "Xiaomi",
+   "level": "RECOMMENDED",
+   "desc": "Updates Xiaomi apps."
+  },
+  {
+   "id": "com.miui.miservice",
+   "name": "Services & feedback",
+   "vendor": "Xiaomi",
+   "level": "RECOMMENDED",
+   "desc": "Support app."
+  },
+  {
+   "id": "com.xiaomi.glgm",
+   "name": "Games",
+   "vendor": "Xiaomi",
+   "level": "RECOMMENDED",
+   "desc": "Games hub."
+  },
+  {
+   "id": "com.miui.android.fashiongallery",
+   "name": "Wallpaper carousel",
+   "vendor": "Xiaomi",
+   "level": "RECOMMENDED",
+   "desc": "Lock screen wallpaper ads."
+  },
+  {
+   "id": "com.xiaomi.mirecycle",
+   "name": "Mi Recycle",
+   "vendor": "Xiaomi",
+   "level": "RECOMMENDED",
+   "desc": "Recycling info."
+  },
+  {
+   "id": "com.mi.globalbrowser",
+   "name": "Mi Browser",
+   "vendor": "Xiaomi",
+   "level": "SAFE",
+   "desc": "Browser.",
+   "warn": "Install another browser first."
+  },
+  {
+   "id": "com.miui.player",
+   "name": "Mi Music",
+   "vendor": "Xiaomi",
+   "level": "SAFE",
+   "desc": "Music player."
+  },
+  {
+   "id": "com.miui.videoplayer",
+   "name": "Mi Video",
+   "vendor": "Xiaomi",
+   "level": "SAFE",
+   "desc": "Video player."
+  },
+  {
+   "id": "com.miui.notes",
+   "name": "Notes",
+   "vendor": "Xiaomi",
+   "level": "SAFE",
+   "desc": "Notes app."
+  },
+  {
+   "id": "com.miui.compass",
+   "name": "Compass",
+   "vendor": "Xiaomi",
+   "level": "SAFE",
+   "desc": "Compass."
+  },
+  {
+   "id": "com.miui.weather2",
+   "name": "Weather",
+   "vendor": "Xiaomi",
+   "level": "SAFE",
+   "desc": "Weather."
+  },
+  {
+   "id": "com.miui.fm",
+   "name": "FM Radio",
+   "vendor": "Xiaomi",
+   "level": "SAFE",
+   "desc": "Radio."
+  },
+  {
+   "id": "com.mi.android.globalFileexplorer",
+   "name": "File Manager",
+   "vendor": "Xiaomi",
+   "level": "SAFE",
+   "desc": "File manager.",
+   "warn": "Install another file manager first."
+  },
+  {
+   "id": "com.miui.cloudservice",
+   "name": "Xiaomi Cloud",
+   "vendor": "Xiaomi",
+   "level": "SAFE",
+   "desc": "Xiaomi cloud sync."
+  },
+  {
+   "id": "com.miui.cloudbackup",
+   "name": "Cloud Backup",
+   "vendor": "Xiaomi",
+   "level": "SAFE",
+   "desc": "Xiaomi cloud backup."
+  },
+  {
+   "id": "com.miui.micloudsync",
+   "name": "Cloud Sync",
+   "vendor": "Xiaomi",
+   "level": "SAFE",
+   "desc": "Xiaomi cloud sync."
+  },
+  {
+   "id": "com.miui.cleanmaster",
+   "name": "Cleaner",
+   "vendor": "Xiaomi",
+   "level": "SAFE",
+   "desc": "Cleaner."
+  },
+  {
+   "id": "com.xiaomi.midrop",
+   "name": "ShareMe",
+   "vendor": "Xiaomi",
+   "level": "SAFE",
+   "desc": "File sharing."
+  },
+  {
+   "id": "com.mi.health",
+   "name": "Mi Health",
+   "vendor": "Xiaomi",
+   "level": "SAFE",
+   "desc": "Health app."
+  },
+  {
+   "id": "com.miui.calculator",
+   "name": "Calculator",
+   "vendor": "Xiaomi",
+   "level": "SAFE",
+   "desc": "Calculator."
+  },
+  {
+   "id": "com.xiaomi.scanner",
+   "name": "Scanner",
+   "vendor": "Xiaomi",
+   "level": "SAFE",
+   "desc": "QR/document scanner."
+  },
+  {
+   "id": "com.miui.screenrecorder",
+   "name": "Screen Recorder",
+   "vendor": "Xiaomi",
+   "level": "SAFE",
+   "desc": "Screen recorder."
+  },
+  {
+   "id": "com.duokan.phone.remotecontroller",
+   "name": "Mi Remote",
+   "vendor": "Xiaomi",
+   "level": "SAFE",
+   "desc": "IR remote."
+  },
+  {
+   "id": "com.mipay.wallet",
+   "name": "Mi Pay",
+   "vendor": "Xiaomi",
+   "level": "SAFE",
+   "desc": "Payments."
+  },
+  {
+   "id": "com.xiaomi.payment",
+   "name": "Mi Credit",
+   "vendor": "Xiaomi",
+   "level": "SAFE",
+   "desc": "Payments."
+  },
+  {
+   "id": "com.miui.huanji",
+   "name": "Mi Mover",
+   "vendor": "Xiaomi",
+   "level": "SAFE",
+   "desc": "Data transfer."
+  },
+  {
+   "id": "com.miui.touchassistant",
+   "name": "Quick Ball",
+   "vendor": "Xiaomi",
+   "level": "SAFE",
+   "desc": "Floating shortcut ball."
+  },
+  {
+   "id": "com.miui.virtualsim",
+   "name": "Mi Roaming",
+   "vendor": "Xiaomi",
+   "level": "SAFE",
+   "desc": "Virtual SIM roaming."
+  },
+  {
+   "id": "com.miui.newmidrive",
+   "name": "Mi Drive",
+   "vendor": "Xiaomi",
+   "level": "SAFE",
+   "desc": "Cloud drive."
+  },
+  {
+   "id": "com.miui.personalassistant",
+   "name": "App Vault",
+   "vendor": "Xiaomi",
+   "level": "SAFE",
+   "desc": "Swipe-left widgets page."
+  },
+  {
+   "id": "com.facemoji.lite.xiaomi",
+   "name": "Facemoji Keyboard",
+   "vendor": "Xiaomi",
+   "level": "SAFE",
+   "desc": "Keyboard.",
+   "warn": "Make sure another keyboard is selected first."
+  },
+  {
+   "id": "com.xiaomi.joyose",
+   "name": "Joyose",
+   "vendor": "Xiaomi",
+   "level": "EXTREME",
+   "desc": "Thermal and game performance control.",
+   "warn": "Some devices throttle more or lose performance profiles."
+  },
+  {
+   "id": "com.miui.gallery",
+   "name": "Gallery",
+   "vendor": "Xiaomi",
+   "level": "EXTREME",
+   "desc": "Gallery and screenshot editor.",
+   "warn": "Screenshot editing and photo viewing break."
+  },
+  {
+   "id": "com.miui.home",
+   "name": "System launcher",
+   "vendor": "Xiaomi",
+   "level": "EXTREME",
+   "desc": "MIUI launcher.",
+   "warn": "Install and select another launcher first. Recents may break."
+  },
+  {
+   "id": "com.miui.securityadd",
+   "name": "Security add-on",
+   "vendor": "Xiaomi",
+   "level": "EXTREME",
+   "desc": "Security center helper.",
+   "warn": "Security center features can fail."
+  },
+  {
+   "id": "com.miui.backup",
+   "name": "Backup",
+   "vendor": "Xiaomi",
+   "level": "EXTREME",
+   "desc": "Local backup.",
+   "warn": "Local backups stop working."
+  },
+  {
+   "id": "com.xiaomi.account",
+   "name": "Xiaomi account",
+   "vendor": "Xiaomi",
+   "level": "EXTREME",
+   "desc": "Xiaomi account.",
+   "warn": "Find Device and cloud features stop."
+  },
+  {
+   "id": "com.miui.powerkeeper",
+   "name": "Battery and performance",
+   "vendor": "Xiaomi",
+   "level": "EXTREME",
+   "desc": "Battery management.",
+   "warn": "Battery saver and app background limits break."
+  },
+  {
+   "id": "com.miui.guardprovider",
+   "name": "Security guard",
+   "vendor": "Xiaomi",
+   "level": "EXTREME",
+   "desc": "Malware scanning.",
+   "warn": "App installation scans may fail."
+  },
+  {
+   "id": "com.xiaomi.xmsf",
+   "name": "Xiaomi Service Framework",
+   "vendor": "Xiaomi",
+   "level": "EXTREME",
+   "desc": "Xiaomi push and services.",
+   "warn": "Xiaomi apps stop receiving notifications."
+  },
+  {
+   "id": "com.oplus.statistics.rom",
+   "name": "OPLUS statistics",
+   "vendor": "OnePlus / OPPO / Realme",
+   "level": "RECOMMENDED",
+   "desc": "Telemetry."
+  },
+  {
+   "id": "com.nearme.statistics.rom",
+   "name": "Usage statistics",
+   "vendor": "OnePlus / OPPO / Realme",
+   "level": "RECOMMENDED",
+   "desc": "Telemetry."
+  },
+  {
+   "id": "net.oneplus.odm",
+   "name": "OnePlus ODM",
+   "vendor": "OnePlus / OPPO / Realme",
+   "level": "RECOMMENDED",
+   "desc": "Telemetry."
+  },
+  {
+   "id": "com.oneplus.opbugreportlite",
+   "name": "Bug report",
+   "vendor": "OnePlus / OPPO / Realme",
+   "level": "RECOMMENDED",
+   "desc": "Feedback tool."
+  },
+  {
+   "id": "com.oplus.logkit",
+   "name": "Log kit",
+   "vendor": "OnePlus / OPPO / Realme",
+   "level": "RECOMMENDED",
+   "desc": "Diagnostic logs."
+  },
+  {
+   "id": "com.heytap.market",
+   "name": "App Market",
+   "vendor": "OnePlus / OPPO / Realme",
+   "level": "RECOMMENDED",
+   "desc": "OPPO app store with ads."
+  },
+  {
+   "id": "com.heytap.pictorial",
+   "name": "Lock screen magazine",
+   "vendor": "OnePlus / OPPO / Realme",
+   "level": "RECOMMENDED",
+   "desc": "Lock screen wallpaper ads."
+  },
+  {
+   "id": "com.heytap.browser",
+   "name": "Browser",
+   "vendor": "OnePlus / OPPO / Realme",
+   "level": "SAFE",
+   "desc": "Browser.",
+   "warn": "Install another browser first."
+  },
+  {
+   "id": "com.heytap.cloud",
+   "name": "HeyTap Cloud",
+   "vendor": "OnePlus / OPPO / Realme",
+   "level": "SAFE",
+   "desc": "Cloud backup."
+  },
+  {
+   "id": "com.oppo.music",
+   "name": "Music",
+   "vendor": "OnePlus / OPPO / Realme",
+   "level": "SAFE",
+   "desc": "Music player."
+  },
+  {
+   "id": "com.coloros.weather2",
+   "name": "Weather",
+   "vendor": "OnePlus / OPPO / Realme",
+   "level": "SAFE",
+   "desc": "Weather."
+  },
+  {
+   "id": "com.coloros.compass2",
+   "name": "Compass",
+   "vendor": "OnePlus / OPPO / Realme",
+   "level": "SAFE",
+   "desc": "Compass."
+  },
+  {
+   "id": "com.coloros.soundrecorder",
+   "name": "Recorder",
+   "vendor": "OnePlus / OPPO / Realme",
+   "level": "SAFE",
+   "desc": "Voice recorder."
+  },
+  {
+   "id": "com.coloros.filemanager",
+   "name": "File Manager",
+   "vendor": "OnePlus / OPPO / Realme",
+   "level": "SAFE",
+   "desc": "File manager.",
+   "warn": "Install another file manager first."
+  },
+  {
+   "id": "com.oplus.games",
+   "name": "Games",
+   "vendor": "OnePlus / OPPO / Realme",
+   "level": "SAFE",
+   "desc": "Game space."
+  },
+  {
+   "id": "com.coloros.gamespaceui",
+   "name": "Game Space",
+   "vendor": "OnePlus / OPPO / Realme",
+   "level": "SAFE",
+   "desc": "Game tools."
+  },
+  {
+   "id": "com.oneplus.gamespace",
+   "name": "Game Space",
+   "vendor": "OnePlus / OPPO / Realme",
+   "level": "SAFE",
+   "desc": "Game tools."
+  },
+  {
+   "id": "com.coloros.childrenspace",
+   "name": "Kid Space",
+   "vendor": "OnePlus / OPPO / Realme",
+   "level": "SAFE",
+   "desc": "Kids mode."
+  },
+  {
+   "id": "com.coloros.healthcheck",
+   "name": "Phone check",
+   "vendor": "OnePlus / OPPO / Realme",
+   "level": "SAFE",
+   "desc": "Diagnostics."
+  },
+  {
+   "id": "com.oneplus.brickmode",
+   "name": "Zen Mode",
+   "vendor": "OnePlus / OPPO / Realme",
+   "level": "SAFE",
+   "desc": "Focus timer."
+  },
+  {
+   "id": "com.oneplus.store",
+   "name": "OnePlus Store",
+   "vendor": "OnePlus / OPPO / Realme",
+   "level": "SAFE",
+   "desc": "Shop."
+  },
+  {
+   "id": "com.coloros.gallery3d",
+   "name": "Photos",
+   "vendor": "OnePlus / OPPO / Realme",
+   "level": "EXTREME",
+   "desc": "Gallery.",
+   "warn": "Screenshot editing and photo viewing break."
+  },
+  {
+   "id": "com.heytap.themestore",
+   "name": "Theme Store",
+   "vendor": "OnePlus / OPPO / Realme",
+   "level": "EXTREME",
+   "desc": "Themes.",
+   "warn": "Applied themes may reset."
+  },
+  {
+   "id": "com.coloros.phonemanager",
+   "name": "Phone Manager",
+   "vendor": "OnePlus / OPPO / Realme",
+   "level": "EXTREME",
+   "desc": "Cleaner and security.",
+   "warn": "Battery and security pages may crash."
+  },
+  {
+   "id": "com.heytap.usercenter",
+   "name": "HeyTap account",
+   "vendor": "OnePlus / OPPO / Realme",
+   "level": "EXTREME",
+   "desc": "Account.",
+   "warn": "Cloud and account features stop."
+  },
+  {
+   "id": "com.motorola.demo",
+   "name": "Demo mode",
+   "vendor": "Motorola",
+   "level": "RECOMMENDED",
+   "desc": "Store demo."
+  },
+  {
+   "id": "com.motorola.ccc.notification",
+   "name": "Moto notifications",
+   "vendor": "Motorola",
+   "level": "RECOMMENDED",
+   "desc": "Promotional notifications."
+  },
+  {
+   "id": "com.motorola.bug2go",
+   "name": "Bug2Go",
+   "vendor": "Motorola",
+   "level": "RECOMMENDED",
+   "desc": "Bug reporting."
+  },
+  {
+   "id": "com.motorola.help",
+   "name": "Help",
+   "vendor": "Motorola",
+   "level": "SAFE",
+   "desc": "Help app."
+  },
+  {
+   "id": "com.motorola.genie",
+   "name": "Device Help",
+   "vendor": "Motorola",
+   "level": "SAFE",
+   "desc": "Support app."
+  },
+  {
+   "id": "com.motorola.gamemode",
+   "name": "Gametime",
+   "vendor": "Motorola",
+   "level": "SAFE",
+   "desc": "Game mode."
+  },
+  {
+   "id": "com.motorola.fmplayer",
+   "name": "FM Radio",
+   "vendor": "Motorola",
+   "level": "SAFE",
+   "desc": "Radio."
+  },
+  {
+   "id": "com.motorola.timeweatherwidget",
+   "name": "Time & weather widget",
+   "vendor": "Motorola",
+   "level": "SAFE",
+   "desc": "Widget."
+  },
+  {
+   "id": "com.motorola.moto",
+   "name": "Moto",
+   "vendor": "Motorola",
+   "level": "EXTREME",
+   "desc": "Moto gestures and display features.",
+   "warn": "Moto Actions, Peek Display and gestures stop working."
+  },
+  {
+   "id": "com.motorola.motodisplay",
+   "name": "Moto Display",
+   "vendor": "Motorola",
+   "level": "EXTREME",
+   "desc": "Ambient display.",
+   "warn": "Peek/ambient display stops working."
+  },
+  {
+   "id": "com.motorola.ccc.ota",
+   "name": "Motorola Update Services",
+   "vendor": "Motorola",
+   "level": "EXTREME",
+   "desc": "System updates.",
+   "warn": "You will not get system updates."
+  },
+  {
+   "id": "com.huawei.tips",
+   "name": "Tips",
+   "vendor": "Huawei / Honor",
+   "level": "RECOMMENDED",
+   "desc": "Tips notifications."
+  },
+  {
+   "id": "com.huawei.android.tips",
+   "name": "Tips",
+   "vendor": "Huawei / Honor",
+   "level": "RECOMMENDED",
+   "desc": "Tips notifications."
+  },
+  {
+   "id": "com.huawei.phoneservice",
+   "name": "Support",
+   "vendor": "Huawei / Honor",
+   "level": "RECOMMENDED",
+   "desc": "Support and promotions."
+  },
+  {
+   "id": "com.huawei.browser",
+   "name": "Huawei Browser",
+   "vendor": "Huawei / Honor",
+   "level": "SAFE",
+   "desc": "Browser.",
+   "warn": "Install another browser first."
+  },
+  {
+   "id": "com.huawei.himovie.overseas",
+   "name": "Huawei Video",
+   "vendor": "Huawei / Honor",
+   "level": "SAFE",
+   "desc": "Video."
+  },
+  {
+   "id": "com.huawei.music",
+   "name": "Huawei Music",
+   "vendor": "Huawei / Honor",
+   "level": "SAFE",
+   "desc": "Music."
+  },
+  {
+   "id": "com.huawei.gameassistant",
+   "name": "Game Center",
+   "vendor": "Huawei / Honor",
+   "level": "SAFE",
+   "desc": "Game hub."
+  },
+  {
+   "id": "com.huawei.appmarket",
+   "name": "AppGallery",
+   "vendor": "Huawei / Honor",
+   "level": "EXTREME",
+   "desc": "App store that updates HMS.",
+   "warn": "HMS Core and Huawei apps will not update."
+  },
+  {
+   "id": "com.huawei.hwid",
+   "name": "HMS Core",
+   "vendor": "Huawei / Honor",
+   "level": "EXTREME",
+   "desc": "Huawei Mobile Services.",
+   "warn": "Apps that use Huawei services (push, accounts, maps) break."
+  },
+  {
+   "id": "com.att.dh",
+   "name": "AT&T Device Help",
+   "vendor": "Carrier",
+   "level": "RECOMMENDED",
+   "desc": "Carrier support app."
+  },
+  {
+   "id": "com.att.myWireless",
+   "name": "myAT&T",
+   "vendor": "Carrier",
+   "level": "SAFE",
+   "desc": "Carrier account app."
+  },
+  {
+   "id": "com.vzw.hss.myverizon",
+   "name": "My Verizon",
+   "vendor": "Carrier",
+   "level": "SAFE",
+   "desc": "Carrier account app."
+  },
+  {
+   "id": "com.verizon.messaging.vzmsgs",
+   "name": "Verizon Messages",
+   "vendor": "Carrier",
+   "level": "SAFE",
+   "desc": "Messaging app.",
+   "warn": "Make sure another SMS app is default."
+  },
+  {
+   "id": "com.tmobile.pr.mytmobile",
+   "name": "T-Mobile",
+   "vendor": "Carrier",
+   "level": "SAFE",
+   "desc": "Carrier account app."
+  },
+  {
+   "id": "com.tmobile.pr.adapt",
+   "name": "T-Mobile Device Analytics",
+   "vendor": "Carrier",
+   "level": "RECOMMENDED",
+   "desc": "Telemetry."
+  },
+  {
+   "id": "com.vodafone.vodafone",
+   "name": "My Vodafone",
+   "vendor": "Carrier",
+   "level": "SAFE",
+   "desc": "Carrier account app."
+  },
+  {
+   "id": "com.orange.mysosh",
+   "name": "Orange account",
+   "vendor": "Carrier",
+   "level": "SAFE",
+   "desc": "Carrier account app."
+  }
+ ]
+}

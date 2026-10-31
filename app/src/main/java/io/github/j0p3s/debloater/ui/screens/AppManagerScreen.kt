@@ -1,0 +1,203 @@
+package io.github.j0p3s.debloater.ui.screens
+
+import android.content.Intent
+import androidx.core.net.toUri
+import android.provider.Settings
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.BottomAppBar
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.FilterChip
+import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import io.github.j0p3s.debloater.data.Action
+import io.github.j0p3s.debloater.data.AppInfo
+import io.github.j0p3s.debloater.data.AppState
+import io.github.j0p3s.debloater.ops.OperationEngine
+import io.github.j0p3s.debloater.ui.MainViewModel
+import io.github.j0p3s.debloater.ui.components.AppIcon
+import io.github.j0p3s.debloater.ui.components.AppRow
+import io.github.j0p3s.debloater.ui.components.BackTopBar
+import io.github.j0p3s.debloater.ui.components.LevelPill
+import io.github.j0p3s.debloater.ui.components.StatePill
+import io.github.j0p3s.debloater.ui.components.WarningText
+
+private enum class TypeFilter(val title: String) { USER("User apps"), SYSTEM("System apps"), ALL("All") }
+private enum class StateFilter(val title: String) { ANY("Any state"), ENABLED("Enabled"), DISABLED("Disabled"), REMOVED("Removed") }
+private enum class Sort(val title: String) { NAME("Name"), SIZE("Size") }
+
+@Composable
+fun AppManagerScreen(vm: MainViewModel) {
+    val apps by vm.apps.collectAsStateWithLifecycle()
+    val loading by vm.loading.collectAsStateWithLifecycle()
+    val expert by vm.prefs.expertMode.collectAsStateWithLifecycle()
+    val selection by vm.managerSelection.collectAsStateWithLifecycle()
+
+    var type by rememberSaveable { mutableStateOf(TypeFilter.USER) }
+    var stateFilter by rememberSaveable { mutableStateOf(StateFilter.ANY) }
+    var sort by rememberSaveable { mutableStateOf(Sort.NAME) }
+    var query by rememberSaveable { mutableStateOf("") }
+    var details by remember { mutableStateOf<AppInfo?>(null) }
+
+    val visible = remember(apps, type, stateFilter, sort, query) {
+        apps.filter { a ->
+            when (type) { TypeFilter.USER -> !a.isSystem; TypeFilter.SYSTEM -> a.isSystem; TypeFilter.ALL -> true } &&
+                when (stateFilter) {
+                    StateFilter.ANY -> true
+                    StateFilter.ENABLED -> a.state == AppState.ENABLED
+                    StateFilter.DISABLED -> a.state == AppState.DISABLED
+                    StateFilter.REMOVED -> a.state == AppState.UNINSTALLED
+                } &&
+                (query.isBlank() || a.label.contains(query, true) || a.packageName.contains(query, true))
+        }.let { list -> if (sort == Sort.SIZE) list.sortedByDescending { it.apkSize } else list }
+    }
+    val selectedApps = apps.filter { it.packageName in selection }
+
+    Scaffold(
+        topBar = { BackTopBar("App manager", onBack = { vm.back() }) },
+        bottomBar = {
+            if (selection.isNotEmpty()) {
+                BottomAppBar {
+                    Text("${selection.size}", Modifier.padding(start = 12.dp).weight(1f))
+                    OutlinedButton(onClick = { vm.request(selectedApps, Action.REMOVE, dryRun = true) }) { Text("Test") }
+                    if (selectedApps.any { it.state != AppState.ENABLED }) {
+                        TextButton(onClick = { vm.request(selectedApps.filter { it.state != AppState.ENABLED }, Action.RESTORE, dryRun = false) }) { Text("Restore") }
+                    }
+                    TextButton(onClick = { vm.request(selectedApps, Action.DISABLE, dryRun = false) }) { Text("Disable") }
+                    Button(
+                        onClick = { vm.request(selectedApps, Action.REMOVE, dryRun = false) },
+                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
+                        modifier = Modifier.padding(end = 8.dp),
+                    ) { Text("Remove") }
+                }
+            }
+        },
+    ) { pad ->
+        LazyColumn(Modifier.padding(pad).fillMaxSize()) {
+            item {
+                Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    OutlinedTextField(
+                        value = query, onValueChange = { query = it },
+                        leadingIcon = { Icon(Icons.Default.Search, null) },
+                        placeholder = { Text("Search apps") }, singleLine = true, modifier = Modifier.fillMaxWidth(),
+                    )
+                    Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                        TypeFilter.entries.forEach { FilterChip(type == it, { type = it }, label = { Text(it.title) }) }
+                    }
+                    Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+                        StateFilter.entries.forEach { FilterChip(stateFilter == it, { stateFilter = it }, label = { Text(it.title) }) }
+                        Sort.entries.forEach { FilterChip(sort == it, { sort = it }, label = { Text("Sort: ${it.title}") }) }
+                    }
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text("${visible.size} apps", style = MaterialTheme.typography.labelMedium, modifier = Modifier.weight(1f))
+                        TextButton(onClick = { vm.setManagerSelection(selection + visible.filter { isSelectable(it, expert) }.map { it.packageName }) }) { Text("Select all") }
+                        TextButton(onClick = { vm.setManagerSelection(emptySet()) }) { Text("Clear") }
+                    }
+                }
+            }
+            if (loading && apps.isEmpty()) {
+                item { Box(Modifier.fillMaxWidth().padding(32.dp), contentAlignment = Alignment.Center) { CircularProgressIndicator() } }
+            }
+            items(visible, key = { it.packageName }) { app ->
+                val selectable = isSelectable(app, expert)
+                AppRow(
+                    app, app.packageName in selection, selectable,
+                    onToggle = { vm.setManagerSelection(if (app.packageName in selection) selection - app.packageName else selection + app.packageName) },
+                    onClick = { details = app },
+                    showDescription = false,
+                )
+                HorizontalDivider()
+            }
+        }
+    }
+
+    details?.let { app -> AppDetailsDialog(app, isSelectable(app, expert), vm) { details = null } }
+}
+
+@Composable
+private fun AppDetailsDialog(app: AppInfo, canModify: Boolean, vm: MainViewModel, onDismiss: () -> Unit) {
+    val ctx = LocalContext.current
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        icon = { AppIcon(app.applicationInfo, Modifier.size(48.dp)) },
+        title = { Text(app.label) },
+        text = {
+            Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                Text(app.packageName, style = MaterialTheme.typography.bodySmall)
+                Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) { LevelPill(app.level); StatePill(app.state) }
+                Text("Version ${app.versionName} (${app.versionCode})", style = MaterialTheme.typography.bodySmall)
+                Text("${if (app.isSystem) "System" else "User"} app · APK ${OperationEngine.fmtSize(app.apkSize)} · ${app.apkPaths.size} file(s)", style = MaterialTheme.typography.bodySmall)
+                app.entry?.let {
+                    Text("${it.vendor}: ${it.description}", style = MaterialTheme.typography.bodySmall)
+                    it.warning?.let { w -> WarningText(w) }
+                }
+                app.protectedReason?.let { Text("Protected: $it", color = MaterialTheme.colorScheme.error, fontWeight = FontWeight.SemiBold) }
+                if (!canModify && !app.isProtected) {
+                    Text("Locked. Turn on expert mode in Settings to modify this package.", color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
+                }
+                Spacer(Modifier.width(4.dp))
+                Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.horizontalScroll(rememberScrollState())) {
+                    if (canModify && app.state == AppState.ENABLED) {
+                        OutlinedButton(onClick = { onDismiss(); vm.request(listOf(app), Action.REMOVE, true) }) { Text("Test") }
+                        OutlinedButton(onClick = { onDismiss(); vm.request(listOf(app), Action.DISABLE, false) }) { Text("Disable") }
+                        Button(
+                            onClick = { onDismiss(); vm.request(listOf(app), Action.REMOVE, false) },
+                            colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
+                        ) { Text(if (app.isSystem) "Remove" else "Uninstall") }
+                    }
+                    if (app.state == AppState.DISABLED && canModify) {
+                        OutlinedButton(onClick = { onDismiss(); vm.request(listOf(app), Action.REMOVE, false) }) { Text("Remove") }
+                    }
+                    if (app.state != AppState.ENABLED) {
+                        Button(onClick = { onDismiss(); vm.request(listOf(app), Action.RESTORE, false) }) {
+                            Text(if (app.state == AppState.DISABLED) "Enable" else "Restore")
+                        }
+                    }
+                }
+            }
+        },
+        confirmButton = { TextButton(onClick = onDismiss) { Text("Close") } },
+        dismissButton = {
+            TextButton(onClick = {
+                runCatching {
+                    ctx.startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, "package:${app.packageName}".toUri()))
+                }
+            }) { Text("System app info") }
+        },
+    )
+}
