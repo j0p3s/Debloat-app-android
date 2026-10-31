@@ -48,7 +48,9 @@ import io.github.j0p3s.debloater.ops.OperationEngine
 import io.github.j0p3s.debloater.ui.MainViewModel
 import io.github.j0p3s.debloater.ui.components.AppRow
 import io.github.j0p3s.debloater.ui.components.BackTopBar
+import io.github.j0p3s.debloater.ui.components.SortMenu
 import io.github.j0p3s.debloater.ui.components.VendorChips
+import io.github.j0p3s.debloater.data.sortedBy
 import io.github.j0p3s.debloater.ui.theme.levelColor
 
 private fun levelInfo(level: SafetyLevel) = when (level) {
@@ -84,6 +86,7 @@ fun DebloatScreen(vm: MainViewModel) {
     var showChanged by rememberSaveable { mutableStateOf(false) }
     var vendor by rememberSaveable { mutableStateOf<String?>(null) }
     var details by remember { mutableStateOf<AppInfo?>(null) }
+    val sort by vm.prefs.sort.collectAsStateWithLifecycle()
     val deviceVendor = vm.repo.deviceVendor?.name
 
     // Apps that can appear in any of the visible tabs, used for vendor counts and quick selection.
@@ -94,7 +97,7 @@ fun DebloatScreen(vm: MainViewModel) {
         inTabs.filter { showChanged || it.state == AppState.ENABLED }.groupingBy { it.vendor }.eachCount()
     }
 
-    val visible = remember(apps, level, query, showChanged, vendor) {
+    val visible = remember(apps, level, query, showChanged, vendor, sort) {
         apps.filter { a ->
             a.level == level &&
                 (vendor == null || a.vendor == vendor) &&
@@ -102,7 +105,7 @@ fun DebloatScreen(vm: MainViewModel) {
                 (showChanged || a.state == AppState.ENABLED) &&
                 (query.isBlank() || a.label.contains(query, true) || a.packageName.contains(query, true) ||
                     a.entry?.vendor?.contains(query, true) == true)
-        }
+        }.sortedBy(sort)
     }
     val selectedApps = apps.filter { it.packageName in selection }
     val dark = isSystemInDarkTheme()
@@ -177,6 +180,10 @@ fun DebloatScreen(vm: MainViewModel) {
                         )
                         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                             FilterChip(showChanged, { showChanged = !showChanged }, label = { Text("Show disabled/removed") })
+                            SortMenu(sort, vm.prefs::setSort)
+                        }
+                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Text("${visible.size} apps · ${OperationEngine.fmtSize(visible.sumOf { it.totalBytes })}", style = MaterialTheme.typography.labelMedium, modifier = Modifier.weight(1f))
                             TextButton(onClick = {
                                 vm.setDebloatSelection(selection + visible.filter { isSelectable(it, expert) && it.state == AppState.ENABLED }.map { it.packageName })
                             }) { Text("Select all") }

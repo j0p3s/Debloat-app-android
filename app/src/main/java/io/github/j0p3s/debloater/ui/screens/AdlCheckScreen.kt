@@ -43,6 +43,8 @@ import io.github.j0p3s.debloater.ops.OperationEngine
 import io.github.j0p3s.debloater.ui.MainViewModel
 import io.github.j0p3s.debloater.ui.components.AppRow
 import io.github.j0p3s.debloater.ui.components.BackTopBar
+import io.github.j0p3s.debloater.ui.components.SortMenu
+import io.github.j0p3s.debloater.data.sortedBy
 import io.github.j0p3s.debloater.ui.theme.ErrorColor
 import io.github.j0p3s.debloater.ui.theme.OkColor
 import io.github.j0p3s.debloater.ui.theme.WarnColor
@@ -70,14 +72,15 @@ fun AdlCheckScreen(vm: MainViewModel) {
     var category by rememberSaveable { mutableStateOf<AdlCategory?>(null) }
     var showChanged by rememberSaveable { mutableStateOf(false) }
     var details by remember { mutableStateOf<AppInfo?>(null) }
+    val sort by vm.prefs.sort.collectAsStateWithLifecycle()
 
     val listed = remember(apps) { apps.filter { it.entry?.inAdl == true } }
     val active = listed.filter { it.state == AppState.ENABLED }
     val systemApps = apps.count { it.isSystem }
-    val visible = remember(listed, category, showChanged) {
+    val visible = remember(listed, category, showChanged, sort) {
         listed.filter { a ->
             (category == null || a.entry?.adlRemoval == category!!.key) && (showChanged || a.state == AppState.ENABLED)
-        }
+        }.sortedBy(sort)
     }
     val selectedApps = apps.filter { it.packageName in selection }
 
@@ -153,6 +156,10 @@ fun AdlCheckScreen(vm: MainViewModel) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         FilterChip(showChanged, { showChanged = !showChanged }, label = { Text("Show disabled/removed") })
                         Box(Modifier.weight(1f))
+                        SortMenu(sort, vm.prefs::setSort)
+                    }
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text("${visible.size} apps · ${OperationEngine.fmtSize(visible.sumOf { it.totalBytes })}", style = MaterialTheme.typography.labelMedium, modifier = Modifier.weight(1f))
                         TextButton(onClick = {
                             vm.setDebloatSelection(selection + visible.filter { isSelectable(it, expert) && it.state == AppState.ENABLED }.map { it.packageName })
                         }) { Text("Select all") }

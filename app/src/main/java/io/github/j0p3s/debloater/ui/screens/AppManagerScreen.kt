@@ -57,14 +57,15 @@ import io.github.j0p3s.debloater.ui.MainViewModel
 import io.github.j0p3s.debloater.ui.components.AppIcon
 import io.github.j0p3s.debloater.ui.components.AppRow
 import io.github.j0p3s.debloater.ui.components.BackTopBar
+import io.github.j0p3s.debloater.ui.components.SortMenu
 import io.github.j0p3s.debloater.ui.components.VendorChips
+import io.github.j0p3s.debloater.data.sortedBy
 import io.github.j0p3s.debloater.ui.components.LevelPill
 import io.github.j0p3s.debloater.ui.components.StatePill
 import io.github.j0p3s.debloater.ui.components.WarningText
 
 private enum class TypeFilter(val title: String) { USER("User apps"), SYSTEM("System apps"), ALL("All") }
 private enum class StateFilter(val title: String) { ANY("Any state"), ENABLED("Enabled"), DISABLED("Disabled"), REMOVED("Removed") }
-private enum class Sort(val title: String) { NAME("Name"), SIZE("Size"), DATA("Data size") }
 
 @Composable
 fun AppManagerScreen(vm: MainViewModel) {
@@ -75,7 +76,7 @@ fun AppManagerScreen(vm: MainViewModel) {
 
     var type by rememberSaveable { mutableStateOf(TypeFilter.USER) }
     var stateFilter by rememberSaveable { mutableStateOf(StateFilter.ANY) }
-    var sort by rememberSaveable { mutableStateOf(Sort.NAME) }
+    val sort by vm.prefs.sort.collectAsStateWithLifecycle()
     var query by rememberSaveable { mutableStateOf("") }
     var details by remember { mutableStateOf<AppInfo?>(null) }
 
@@ -94,13 +95,7 @@ fun AppManagerScreen(vm: MainViewModel) {
                     StateFilter.REMOVED -> a.state == AppState.UNINSTALLED
                 } &&
                 (query.isBlank() || a.label.contains(query, true) || a.packageName.contains(query, true))
-        }.let { list ->
-            when (sort) {
-                Sort.NAME -> list
-                Sort.SIZE -> list.sortedByDescending { it.totalBytes }
-                Sort.DATA -> list.sortedByDescending { it.dataBytes }
-            }
-        }
+        }.sortedBy(sort)
     }
     val selectedApps = apps.filter { it.packageName in selection }
 
@@ -140,11 +135,11 @@ fun AppManagerScreen(vm: MainViewModel) {
                     }
                     Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
                         StateFilter.entries.forEach { FilterChip(stateFilter == it, { stateFilter = it }, label = { Text(it.title) }) }
-                        Sort.entries.forEach { FilterChip(sort == it, { sort = it }, label = { Text("Sort: ${it.title}") }) }
                     }
                     VendorChips(vendorCounts, vendor, vm.repo.deviceVendor?.name) { vendor = it }
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text("${visible.size} apps · ${OperationEngine.fmtSize(visible.sumOf { it.totalBytes })}", style = MaterialTheme.typography.labelMedium, modifier = Modifier.weight(1f))
+                        SortMenu(sort, vm.prefs::setSort)
                         TextButton(onClick = { vm.setManagerSelection(selection + visible.filter { isSelectable(it, expert) }.map { it.packageName }) }) { Text("Select all") }
                         TextButton(onClick = { vm.setManagerSelection(emptySet()) }) { Text("Clear") }
                     }

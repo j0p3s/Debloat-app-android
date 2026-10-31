@@ -18,6 +18,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.Sort
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material.icons.outlined.Info
@@ -30,6 +32,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
 import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -44,6 +47,7 @@ import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import io.github.j0p3s.debloater.data.AppInfo
 import io.github.j0p3s.debloater.data.AppState
+import io.github.j0p3s.debloater.data.displayName
 import io.github.j0p3s.debloater.data.SafetyLevel
 import io.github.j0p3s.debloater.data.StorageInfo
 import androidx.compose.material3.LinearProgressIndicator
@@ -127,7 +131,7 @@ fun AppRow(
         AppIcon(app.applicationInfo, Modifier.padding(top = 4.dp).size(40.dp))
         Spacer(Modifier.width(12.dp))
         Column(Modifier.weight(1f)) {
-            Text(app.entry?.name?.takeIf { app.label == app.packageName } ?: app.label,
+            Text(app.displayName,
                 style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold,
                 maxLines = 1, overflow = TextOverflow.Ellipsis)
             Text(app.packageName, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant,
@@ -235,6 +239,28 @@ fun VendorChips(
                 onClick = { onSelect(if (selected == name) null else name) },
                 label = { Text(if (name == deviceVendor) "📱 $name ($n)" else "$name ($n)") },
             )
+        }
+    }
+}
+
+/** "Sort" button with a menu of [io.github.j0p3s.debloater.data.AppSort] options. */
+@Composable
+fun SortMenu(sort: io.github.j0p3s.debloater.data.AppSort, onSort: (io.github.j0p3s.debloater.data.AppSort) -> Unit) {
+    var open by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
+    Box {
+        androidx.compose.material3.TextButton(onClick = { open = true }) {
+            Icon(Icons.AutoMirrored.Filled.Sort, contentDescription = null, modifier = Modifier.size(18.dp))
+            Spacer(Modifier.width(4.dp))
+            Text(sort.title)
+        }
+        androidx.compose.material3.DropdownMenu(expanded = open, onDismissRequest = { open = false }) {
+            io.github.j0p3s.debloater.data.AppSort.entries.forEach { option ->
+                androidx.compose.material3.DropdownMenuItem(
+                    text = { Text(option.title, fontWeight = if (option == sort) FontWeight.Bold else FontWeight.Normal) },
+                    onClick = { onSort(option); open = false },
+                    leadingIcon = if (option == sort) ({ Icon(Icons.Default.Check, null) }) else null,
+                )
+            }
         }
     }
 }

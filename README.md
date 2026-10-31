@@ -47,7 +47,9 @@ An Android app that debloats **any Android version from Android 11 to Android 17
   restored with `install-existing`. Deleted user apps are reinstalled from their APK backup.
 - **Remove all**: select everything in a tab (or across tabs) and remove it in one run.
 - **App manager**: every user and system app, with search, filters (user/system, enabled/disabled/removed),
-  sort by total size or data size, and per-app disable/remove/restore. Multi-select works too.
+  and per-app disable/remove/restore. Multi-select works too.
+- **Sorting** on every list (Debloat, App manager, ADL check): name A→Z or Z→A (in the phone's language order),
+  largest or smallest first, most or least data first. The choice is remembered.
 - **Sizes and storage**:
   - every app shows its size (app + data + cache). Exact sizes need Usage access, which the app grants
     itself through Shizuku (`appops set … GET_USAGE_STATS allow`); otherwise only APK sizes are shown,

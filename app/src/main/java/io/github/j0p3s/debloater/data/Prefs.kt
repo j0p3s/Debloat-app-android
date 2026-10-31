@@ -17,6 +17,14 @@ class Prefs(context: Context) {
     /** Default for "keep app data" when removing user apps (system apps always keep data). */
     val keepData: StateFlow<Boolean> = _keepData.asStateFlow()
 
+    private val _sort = MutableStateFlow(AppSort.fromName(sp.getString(KEY_SORT, null)))
+    /** Sort order of the app lists, shared by all screens and remembered between launches. */
+    val sort: StateFlow<AppSort> = _sort.asStateFlow()
+
+    fun setSort(v: AppSort) {
+        sp.edit { putString(KEY_SORT, v.name) }; _sort.value = v
+    }
+
     fun setExpertMode(v: Boolean) {
         sp.edit { putBoolean(KEY_EXPERT, v) }; _expertMode.value = v
     }
@@ -28,5 +36,6 @@ class Prefs(context: Context) {
     private companion object {
         const val KEY_EXPERT = "expert_mode"
         const val KEY_KEEP_DATA = "keep_data"
+        const val KEY_SORT = "sort"
     }
 }
