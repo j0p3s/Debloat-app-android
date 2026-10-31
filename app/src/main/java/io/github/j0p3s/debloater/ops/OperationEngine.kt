@@ -223,8 +223,8 @@ class OperationEngine(
         log(LineKind.INFO, "Storage: ${fmtSize(storageBefore.freeBytes)} free of ${fmtSize(storageBefore.totalBytes)} (${fmtSize(storageBefore.usedBytes)} used)")
         when {
             action == Action.DISABLE -> log(LineKind.INFO, "Disabling does not free storage: apps and their data stay on the phone")
-            action == Action.REMOVE && keepData -> log(LineKind.INFO, "Removing with \"keep data\" frees almost no storage (data and APKs are kept for instant restore)")
-            action == Action.REMOVE -> log(LineKind.INFO, "Estimated space freed: ${fmtSize(estimate)}${if (apps.any { !it.sizeExact }) " (some app sizes unknown, grant Usage access for exact values)" else ""}")
+            action == Action.REMOVE && keepData -> log(LineKind.INFO, "Keeping app data: almost no storage is freed (data and APKs stay for restoring with data)")
+            action == Action.REMOVE -> log(LineKind.WARN, "App data will be DELETED. Estimated space freed: ${fmtSize(estimate)}${if (apps.any { !it.sizeExact }) " (some app sizes unknown, grant Usage access for exact values)" else ""}")
             else -> {}
         }
         log(LineKind.INFO, "Device: ${android.os.Build.MANUFACTURER} ${android.os.Build.MODEL}, Android ${android.os.Build.VERSION.RELEASE} (API ${android.os.Build.VERSION.SDK_INT}), user ${repo.userId}")

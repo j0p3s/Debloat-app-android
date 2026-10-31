@@ -12,6 +12,10 @@ import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Checkbox
+import androidx.compose.material3.RadioButton
+import androidx.compose.foundation.selection.selectable
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.semantics.Role
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SegmentedButton
 import androidx.compose.material3.SegmentedButtonDefaults
@@ -102,14 +106,21 @@ fun ConfirmOperationDialog(
                 )
 
                 if (action == Action.REMOVE) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Checkbox(keepData, { keepData = it })
-                        Text(
-                            "Keep app data. Apps come back instantly with their data, but almost no space is freed. " +
-                                "Turn this off to free space: app data is deleted (it cannot be backed up without root), APKs are still backed up.",
-                            style = MaterialTheme.typography.bodySmall,
-                        )
-                    }
+                    Text("App data", style = MaterialTheme.typography.labelLarge)
+                    DataChoice(
+                        selected = keepData,
+                        title = "Keep app data",
+                        subtitle = "Restore later with all data and settings. Frees almost no space.",
+                        onClick = { keepData = true },
+                    )
+                    DataChoice(
+                        selected = !keepData,
+                        title = "Delete app data",
+                        subtitle = "Frees about ${OperationEngine.fmtSize(SpaceEstimator.estimate(apps, Action.REMOVE, keepData = false))}. " +
+                            "Data is gone for good (it can't be backed up without root); restored apps start fresh. APKs are still backed up.",
+                        danger = true,
+                        onClick = { keepData = false },
+                    )
                 }
 
                 // ---- storage impact
@@ -128,7 +139,7 @@ fun ConfirmOperationDialog(
                             )
                             when {
                                 action == Action.DISABLE -> Text("Disabling does not free space; the apps and their data stay on the phone.", style = MaterialTheme.typography.bodySmall)
-                                keepData -> Text("With \"keep data\" the data (and user-app APKs) stay on the phone.", style = MaterialTheme.typography.bodySmall)
+                                keepData -> Text("App data (and user-app APKs) stay on the phone, so almost no space is freed.", style = MaterialTheme.typography.bodySmall)
                                 else -> {}
                             }
                             Text("APK backups need about ${OperationEngine.fmtSize(backupNeed)}.", style = MaterialTheme.typography.bodySmall)
@@ -186,7 +197,15 @@ fun ConfirmOperationDialog(
                 enabled = !needsAck || ack,
                 colors = if (!pending.dryRun && action == Action.REMOVE) ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error)
                 else ButtonDefaults.buttonColors(),
-            ) { Text(if (pending.dryRun) "Start test" else action.verb) }
+            ) {
+                Text(
+                    when {
+                        pending.dryRun -> "Start test"
+                        action == Action.REMOVE && !keepData -> "Remove & delete data"
+                        else -> action.verb
+                    },
+                )
+            }
         },
         dismissButton = {
             Row {
@@ -195,4 +214,28 @@ fun ConfirmOperationDialog(
             }
         },
     )
+}
+
+/** One option of the keep/delete app data choice. */
+@Composable
+private fun DataChoice(selected: Boolean, title: String, subtitle: String, onClick: () -> Unit, danger: Boolean = false) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .clip(androidx.compose.foundation.shape.RoundedCornerShape(8.dp))
+            .selectable(selected = selected, onClick = onClick, role = Role.RadioButton)
+            .padding(vertical = 4.dp),
+        verticalAlignment = Alignment.Top,
+    ) {
+        RadioButton(selected = selected, onClick = null, modifier = Modifier.padding(top = 2.dp, end = 8.dp))
+        Column {
+            Text(
+                title,
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.SemiBold,
+                color = if (danger && selected) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface,
+            )
+            Text(subtitle, style = MaterialTheme.typography.bodySmall)
+        }
+    }
 }

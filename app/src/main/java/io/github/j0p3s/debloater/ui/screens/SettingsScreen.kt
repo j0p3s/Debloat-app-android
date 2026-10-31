@@ -46,16 +46,17 @@ fun SettingsScreen(vm: MainViewModel) {
                 expert,
             ) { if (it) askExpert = true else vm.prefs.setExpertMode(false) }
             SettingRow(
-                "Keep app data when removing",
-                "Default for the checkbox in the remove dialog. With data kept, apps come back instantly with their data, but almost no storage is freed. Turn it off to free space (app data is deleted).",
-                keepData,
-            ) { vm.prefs.setKeepData(it) }
+                "Delete app data when removing",
+                "Pre-selects \"Delete app data\" in the remove dialog. Frees space, but the data is gone for good and restored apps start fresh. " +
+                    "Off (recommended): data is kept, so apps can be restored with all their data.",
+                !keepData,
+            ) { vm.prefs.setKeepData(!it) }
             Card {
                 Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     Text("Backups", style = MaterialTheme.typography.titleMedium)
                     Text(
                         "Backups cannot be turned off. Every disable or remove creates a restore point and a verified APK copy first. " +
-                            "App data cannot be copied without root, so use \"keep data\" when you might want an app back.",
+                            "App data cannot be copied without root, so choose \"Keep app data\" when you might want an app back with its data.",
                         style = MaterialTheme.typography.bodySmall,
                     )
                 }

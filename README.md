@@ -42,8 +42,9 @@ An Android app that debloats **any Android version from Android 11 to Android 17
   space. It shows every command that *would* run and reports whether any errors would happen. After a passed
   test you can continue with the real run.
 - **Disable**: `pm disable-user`. Packages stay installed and can be re-enabled any time.
-- **Remove**: `pm uninstall --user <id>`. With **keep data** (`-k`) apps come back instantly with their data
-  but almost no space is freed. Without it the app data is deleted to free space. System apps can always be
+- **Remove**: you choose **Keep app data** (default, `pm uninstall -k --user <id>`: apps come back with their
+  data, but almost no space is freed) or **Delete app data** (`pm uninstall --user <id>`: frees space, data is
+  gone for good). System apps can always be
   restored with `install-existing`. Deleted user apps are reinstalled from their APK backup.
 - **Remove all**: select everything in a tab (or across tabs) and remove it in one run.
 - **App manager**: every user and system app, with search, filters (user/system, enabled/disabled/removed),
@@ -88,8 +89,8 @@ Prefer **Disable** for Extreme packages: it is the easiest change to undo.
 
 ## Limitations
 
-- App *data* cannot be copied without root. Use "keep data" when removing apps you might want back with their data.
-- Disabling and removing with "keep data" free (almost) no storage. Removing a system app frees its data and
+- App *data* cannot be copied without root. Choose "Keep app data" when removing apps you might want back with their data.
+- Disabling and removing with "Keep app data" free (almost) no storage. Removing a system app frees its data and
   updates, but its original APK stays on the read-only system partition.
 - Backups live in the app's external files folder and are deleted if Debloater is uninstalled, so export them.
 - A factory reset brings back every system app removed with `--user`.

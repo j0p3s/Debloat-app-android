@@ -282,7 +282,7 @@ private fun SizeTable(app: AppInfo) {
         }
         if (app.state != AppState.UNINSTALLED) {
             val freed = SpaceEstimator.estimate(app, Action.REMOVE, keepData = false)
-            line("Removing without keeping data frees about", OperationEngine.fmtSize(freed), bold = true)
+            line("Remove & delete data frees about", OperationEngine.fmtSize(freed), bold = true)
             if (app.isSystem) {
                 Text("The APK of a system app stays on the read-only system partition.", style = MaterialTheme.typography.bodySmall)
             }
