@@ -28,7 +28,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import io.github.j0p3s.debloater.data.Action
+import io.github.j0p3s.debloater.data.AppState
 import io.github.j0p3s.debloater.data.SafetyLevel
+import io.github.j0p3s.debloater.data.SpaceEstimator
+import io.github.j0p3s.debloater.data.StorageInfo
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import io.github.j0p3s.debloater.ops.OperationEngine
 import io.github.j0p3s.debloater.ui.PendingOperation
 
@@ -36,6 +42,7 @@ import io.github.j0p3s.debloater.ui.PendingOperation
 fun ConfirmOperationDialog(
     pending: PendingOperation,
     keepDataDefault: Boolean,
+    storage: StorageInfo?,
     onDismiss: () -> Unit,
     onConfirm: (keepData: Boolean, dryRun: Boolean, action: Action) -> Unit,
 ) {
@@ -82,21 +89,51 @@ fun ConfirmOperationDialog(
                 when (action) {
                     Action.DISABLE -> Text("Disabled apps stay installed but cannot run. You can enable them again at any time.", style = MaterialTheme.typography.bodySmall)
                     Action.REMOVE -> Text(
-                        "System apps are uninstalled for your user only (pm uninstall -k --user). They can be restored from Backups, and a factory reset also brings them back.",
+                        "Apps are uninstalled for your user (pm uninstall --user). System apps can always be restored, and a factory reset also brings them back. User apps are restored from their APK backup.",
                         style = MaterialTheme.typography.bodySmall,
                     )
                     else -> {}
                 }
-                val total = apps.sumOf { it.apkSize }
-                Text("${apps.size - userApps} system · $userApps user · ${OperationEngine.fmtSize(total)} of APKs", style = MaterialTheme.typography.labelMedium)
+                Text(
+                    "${apps.size - userApps} system · $userApps user · ${OperationEngine.fmtSize(apps.sumOf { it.totalBytes })} total size",
+                    style = MaterialTheme.typography.labelMedium,
+                )
 
-                if (action == Action.REMOVE && userApps > 0) {
+                if (action == Action.REMOVE) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Checkbox(keepData, { keepData = it })
                         Text(
-                            "Keep app data for user apps (restorable instantly). Turn this off to delete user apps completely; their APKs are still backed up.",
+                            "Keep app data. Apps come back instantly with their data, but almost no space is freed. " +
+                                "Turn this off to free space: app data is deleted (it cannot be backed up without root), APKs are still backed up.",
                             style = MaterialTheme.typography.bodySmall,
                         )
+                    }
+                }
+
+                // ---- storage impact
+                val estimate = SpaceEstimator.estimate(apps, action, keepData)
+                val backupNeed = if (destructive) apps.filter { it.state != AppState.UNINSTALLED }.sumOf { it.apkSize } else 0L
+                Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceVariant)) {
+                    Column(Modifier.padding(10.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                        Text("Storage", style = MaterialTheme.typography.labelLarge)
+                        storage?.let { StorageBar(it) }
+                        if (destructive) {
+                            Text(
+                                "Estimated space freed: ${OperationEngine.fmtSize(estimate)}" +
+                                    if (apps.any { !it.sizeExact } && estimate > 0) " or more (some data sizes unknown)" else "",
+                                fontWeight = FontWeight.SemiBold,
+                                style = MaterialTheme.typography.bodySmall,
+                            )
+                            when {
+                                action == Action.DISABLE -> Text("Disabling does not free space; the apps and their data stay on the phone.", style = MaterialTheme.typography.bodySmall)
+                                keepData -> Text("With \"keep data\" the data (and user-app APKs) stay on the phone.", style = MaterialTheme.typography.bodySmall)
+                                else -> {}
+                            }
+                            Text("APK backups need about ${OperationEngine.fmtSize(backupNeed)}.", style = MaterialTheme.typography.bodySmall)
+                            storage?.let {
+                                if (backupNeed > it.freeBytes) Text("Not enough free space for the backups!", color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
+                            }
+                        }
                     }
                 }
 

@@ -13,6 +13,7 @@ import io.github.j0p3s.debloater.data.AppInfo
 import io.github.j0p3s.debloater.data.DebloatDatabase
 import io.github.j0p3s.debloater.data.PackageRepository
 import io.github.j0p3s.debloater.data.Prefs
+import io.github.j0p3s.debloater.data.StorageInfo
 import io.github.j0p3s.debloater.ops.OperationEngine
 import io.github.j0p3s.debloater.ops.RestoreItem
 import io.github.j0p3s.debloater.shizuku.ShizukuManager
@@ -70,6 +71,19 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
 
     private var lastRequest: LastRequest? = null
 
+    private val _storage = MutableStateFlow<StorageInfo?>(null)
+    /** Total and free internal storage of the phone. */
+    val storage: StateFlow<StorageInfo?> = _storage.asStateFlow()
+
+    private val _backupsBytes = MutableStateFlow(0L)
+    /** Disk space used by all APK backups and restore points. */
+    val backupsBytes: StateFlow<Long> = _backupsBytes.asStateFlow()
+
+    private val _usageAccess = MutableStateFlow(repo.hasUsageAccess())
+    /** Whether exact app/data/cache sizes are available. */
+    val usageAccess: StateFlow<Boolean> = _usageAccess.asStateFlow()
+    private var triedUsageGrant = false
+
     /** Selections survive configuration changes because they live here. */
     private val _debloatSelection = MutableStateFlow<Set<String>>(emptySet())
     val debloatSelection: StateFlow<Set<String>> = _debloatSelection.asStateFlow()
@@ -82,6 +96,24 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     init {
         refreshApps()
         refreshSessions()
+        // Once Shizuku is ready, give ourselves Usage access so exact data sizes can be read.
+        viewModelScope.launch {
+            shizukuStatus.collect { st ->
+                if (st == ShizukuStatus.READY && !repo.hasUsageAccess() && !triedUsageGrant) {
+                    triedUsageGrant = true
+                    grantUsageAccessWithShizuku()
+                }
+            }
+        }
+    }
+
+    fun grantUsageAccessWithShizuku() {
+        viewModelScope.launch {
+            val pkg = getApplication<Application>().packageName
+            ShizukuManager.exec("appops set $pkg GET_USAGE_STATS allow")
+            if (repo.hasUsageAccess()) refreshApps()
+            else _usageAccess.value = false
+        }
     }
 
     // ------------------------------------------------------------ navigation
@@ -104,11 +136,17 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
 
     // ------------------------------------------------------------ data
 
-    fun refreshShizuku() = ShizukuManager.refresh()
+    fun refreshShizuku() {
+        ShizukuManager.refresh()
+        // The user may have granted Usage access in Settings meanwhile.
+        if (repo.hasUsageAccess() != _usageAccess.value) refreshApps()
+    }
 
     fun refreshApps() {
         viewModelScope.launch {
             _loading.value = true
+            _usageAccess.value = repo.hasUsageAccess()
+            _storage.value = withContext(Dispatchers.IO) { runCatching { repo.storageInfo() }.getOrNull() }
             val list = runCatching { repo.loadAll() }.getOrDefault(emptyList())
             _apps.value = list
             _loading.value = false
@@ -117,7 +155,10 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun refreshSessions() {
-        viewModelScope.launch(Dispatchers.IO) { _sessions.value = backups.listSessions() }
+        viewModelScope.launch(Dispatchers.IO) {
+            _sessions.value = backups.listSessions()
+            _backupsBytes.value = backups.totalBytes()
+        }
     }
 
     // ------------------------------------------------------------ operations
@@ -206,6 +247,8 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch(Dispatchers.IO) {
             backups.deleteSession(id)
             _sessions.value = backups.listSessions()
+            _backupsBytes.value = backups.totalBytes()
+            _storage.value = runCatching { repo.storageInfo() }.getOrNull()
         }
     }
 
@@ -225,6 +268,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
                 "Imported $n file(s)"
             }.getOrElse { "Import failed: ${it.message}" }
             _sessions.value = backups.listSessions()
+            _backupsBytes.value = backups.totalBytes()
         }
     }
 

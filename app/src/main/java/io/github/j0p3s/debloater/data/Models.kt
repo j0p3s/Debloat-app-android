@@ -55,7 +55,16 @@ data class AppInfo(
     val entry: DebloatEntry?,
     val protectedReason: String?,
     val applicationInfo: ApplicationInfo,
+    /** APK, compiled code and native libraries (from StorageStatsManager), or the APK size as a fallback. */
+    val appBytes: Long = apkSize,
+    /** All app data for this user, cache included. 0 when unknown. */
+    val dataBytes: Long = 0,
+    /** Cache part of [dataBytes]. */
+    val cacheBytes: Long = 0,
+    /** True when sizes come from StorageStatsManager (needs Usage access), false = APK size only. */
+    val sizeExact: Boolean = false,
 ) {
+    val totalBytes: Long get() = appBytes + dataBytes
     val isProtected get() = protectedReason != null
     val level: SafetyLevel
         get() = when {
@@ -71,4 +80,31 @@ enum class Action(val verb: String, val pastTense: String) {
     REMOVE("Remove", "removed"),
     ENABLE("Enable", "enabled"),
     RESTORE("Restore", "restored"),
+}
+
+/** Internal storage (/data) of the phone. */
+data class StorageInfo(val totalBytes: Long, val freeBytes: Long) {
+    val usedBytes: Long get() = (totalBytes - freeBytes).coerceAtLeast(0)
+    val usedFraction: Float get() = if (totalBytes <= 0) 0f else usedBytes / totalBytes.toFloat()
+}
+
+/**
+ * Estimates how much storage an action frees.
+ *
+ * - Disable frees nothing: the app and its data stay on the phone.
+ * - Remove with "keep data" (pm uninstall -k) keeps the data and, for user apps, the APK,
+ *   so it frees (almost) nothing. That is what makes instant restores possible.
+ * - Remove without keeping data deletes the data. User apps are deleted completely
+ *   (APK + data). System apps keep their APK on the read-only system partition.
+ */
+object SpaceEstimator {
+    fun estimate(app: AppInfo, action: Action, keepData: Boolean): Long = when {
+        action != Action.REMOVE -> 0L
+        app.state == AppState.UNINSTALLED -> 0L
+        keepData -> 0L
+        app.isSystem -> app.dataBytes
+        else -> app.totalBytes
+    }
+
+    fun estimate(apps: List<AppInfo>, action: Action, keepData: Boolean): Long = apps.sumOf { estimate(it, action, keepData) }
 }

@@ -50,7 +50,11 @@ import io.github.j0p3s.debloater.shizuku.ShizukuManager
 import io.github.j0p3s.debloater.shizuku.ShizukuStatus
 import io.github.j0p3s.debloater.ui.MainViewModel
 import io.github.j0p3s.debloater.ui.Screen
+import io.github.j0p3s.debloater.ops.OperationEngine
+import io.github.j0p3s.debloater.ui.components.StorageBar
 import io.github.j0p3s.debloater.ui.theme.ErrorColor
+import io.github.j0p3s.debloater.ui.theme.WarnColor
+import androidx.compose.material3.TextButton
 import io.github.j0p3s.debloater.ui.theme.OkColor
 import io.github.j0p3s.debloater.ui.theme.levelColor
 
@@ -63,6 +67,9 @@ fun HomeScreen(vm: MainViewModel) {
     val uid by vm.shizukuUid.collectAsStateWithLifecycle()
     val apps by vm.apps.collectAsStateWithLifecycle()
     val sessions by vm.sessions.collectAsStateWithLifecycle()
+    val storage by vm.storage.collectAsStateWithLifecycle()
+    val backupsBytes by vm.backupsBytes.collectAsStateWithLifecycle()
+    val usageAccess by vm.usageAccess.collectAsStateWithLifecycle()
     val ctx = LocalContext.current
 
     Scaffold(
@@ -121,6 +128,50 @@ fun HomeScreen(vm: MainViewModel) {
                 }
             }
 
+            // ---- Storage
+            storage?.let { st ->
+                Card {
+                    Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                        Text("Storage", style = MaterialTheme.typography.titleMedium)
+                        StorageBar(st)
+                        val freed = sessions.sumOf { it.freedBytes }
+                        Row {
+                            Text("Space freed by Debloater", Modifier.weight(1f), style = MaterialTheme.typography.bodySmall)
+                            Text(OperationEngine.fmtSize(freed), color = OkColor, fontWeight = FontWeight.SemiBold, style = MaterialTheme.typography.bodySmall)
+                        }
+                        Row {
+                            Text("Used by backups", Modifier.weight(1f), style = MaterialTheme.typography.bodySmall)
+                            Text(OperationEngine.fmtSize(backupsBytes), style = MaterialTheme.typography.bodySmall)
+                        }
+                        if (apps.isNotEmpty()) {
+                            val userApps = apps.filter { !it.isSystem && it.state != AppState.UNINSTALLED }
+                            Row {
+                                Text("User apps (${userApps.size})", Modifier.weight(1f), style = MaterialTheme.typography.bodySmall)
+                                Text(OperationEngine.fmtSize(userApps.sumOf { it.totalBytes }), style = MaterialTheme.typography.bodySmall)
+                            }
+                            val sys = apps.filter { it.isSystem && it.state != AppState.UNINSTALLED }
+                            Row {
+                                Text("System apps (${sys.size})", Modifier.weight(1f), style = MaterialTheme.typography.bodySmall)
+                                Text(OperationEngine.fmtSize(sys.sumOf { it.totalBytes }), style = MaterialTheme.typography.bodySmall)
+                            }
+                        }
+                        if (!usageAccess) {
+                            Text(
+                                "App data sizes are unknown: only APK sizes are shown. " +
+                                    if (status == ShizukuStatus.READY) "Tap to grant Usage access through Shizuku." else "Start Shizuku, or grant Usage access in Settings.",
+                                style = MaterialTheme.typography.bodySmall, color = WarnColor,
+                            )
+                            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                if (status == ShizukuStatus.READY) OutlinedButton(onClick = vm::grantUsageAccessWithShizuku) { Text("Grant with Shizuku") }
+                                TextButton(onClick = {
+                                    runCatching { ctx.startActivity(Intent(android.provider.Settings.ACTION_USAGE_ACCESS_SETTINGS)) }
+                                }) { Text("Open settings") }
+                            }
+                        }
+                    }
+                }
+            }
+
             // ---- Stats
             if (apps.isNotEmpty()) {
                 Card {
@@ -129,10 +180,10 @@ fun HomeScreen(vm: MainViewModel) {
                         val dark = isSystemInDarkTheme()
                         listOf(SafetyLevel.RECOMMENDED, SafetyLevel.SAFE, SafetyLevel.EXTREME).forEach { level ->
                             val ofLevel = apps.filter { it.level == level }
-                            val active = ofLevel.count { it.state == AppState.ENABLED }
+                            val activeApps = ofLevel.filter { it.state == AppState.ENABLED }
                             Row {
                                 Text(level.title, color = levelColor(level, dark), fontWeight = FontWeight.SemiBold, modifier = Modifier.weight(1f))
-                                Text("$active active · ${ofLevel.size - active} already debloated")
+                                Text("${activeApps.size} active (${OperationEngine.fmtSize(activeApps.sumOf { it.totalBytes })}) · ${ofLevel.size - activeApps.size} done")
                             }
                         }
                         Text(

@@ -40,7 +40,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.j0p3s.debloater.data.Action
 import io.github.j0p3s.debloater.ops.LineKind
 import io.github.j0p3s.debloater.ui.MainViewModel
+import io.github.j0p3s.debloater.ops.OperationEngine
 import io.github.j0p3s.debloater.ui.components.BackTopBar
+import io.github.j0p3s.debloater.ui.components.StorageBar
 import io.github.j0p3s.debloater.ui.theme.ErrorColor
 import io.github.j0p3s.debloater.ui.theme.OkColor
 import io.github.j0p3s.debloater.ui.theme.WarnColor
@@ -138,6 +140,16 @@ fun OperationScreen(vm: MainViewModel) {
                         if (!s.dryRun && s.sessionId != null) {
                             Text("Backup saved as ${s.sessionId}. You can restore it in Backups & restore.", style = MaterialTheme.typography.bodySmall)
                         }
+                        if (s.action == Action.REMOVE || s.action == Action.DISABLE) {
+                            Text(
+                                if (s.dryRun) "Would free about ${OperationEngine.fmtSize(s.estimatedBytes)}"
+                                else "Space freed: ${OperationEngine.fmtSize(s.freedBytes)} (estimated ${OperationEngine.fmtSize(s.estimatedBytes)})" +
+                                    if (s.backupBytes > 0) " · backups use ${OperationEngine.fmtSize(s.backupBytes)}" else "",
+                                fontWeight = FontWeight.SemiBold,
+                                style = MaterialTheme.typography.bodySmall,
+                            )
+                        }
+                        (s.storageAfter ?: s.storageBefore)?.let { StorageBar(it, Modifier.padding(top = 6.dp)) }
                     }
                 }
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {

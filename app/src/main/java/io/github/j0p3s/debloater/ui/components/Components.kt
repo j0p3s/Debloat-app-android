@@ -44,6 +44,8 @@ import androidx.core.graphics.drawable.toBitmap
 import io.github.j0p3s.debloater.data.AppInfo
 import io.github.j0p3s.debloater.data.AppState
 import io.github.j0p3s.debloater.data.SafetyLevel
+import io.github.j0p3s.debloater.data.StorageInfo
+import androidx.compose.material3.LinearProgressIndicator
 import io.github.j0p3s.debloater.ops.OperationEngine
 import io.github.j0p3s.debloater.ui.theme.levelColor
 import kotlinx.coroutines.Dispatchers
@@ -131,7 +133,7 @@ fun AppRow(
                 LevelPill(app.level)
                 if (app.state != AppState.ENABLED) StatePill(app.state)
                 Pill(if (app.isSystem) "System" else "User", MaterialTheme.colorScheme.outline)
-                if (app.apkSize > 0) Pill(OperationEngine.fmtSize(app.apkSize), MaterialTheme.colorScheme.outline)
+                if (app.totalBytes > 0) Pill(sizeLabel(app), MaterialTheme.colorScheme.outline)
             }
             if (showDescription) {
                 val desc = app.protectedReason?.let { "Protected: $it" } ?: app.entry?.description
@@ -165,4 +167,31 @@ fun BackTopBar(title: String, onBack: () -> Unit, actions: @Composable () -> Uni
         },
         actions = { actions() },
     )
+}
+
+/** "1.2 GB" with exact sizes (app + data), or "APK 45 MB" when data size is unknown. */
+fun sizeLabel(app: AppInfo): String =
+    if (app.sizeExact) OperationEngine.fmtSize(app.totalBytes) else "APK ${OperationEngine.fmtSize(app.apkSize)}"
+
+/** Used/total bar with free space, for the phone's internal storage. */
+@Composable
+fun StorageBar(storage: StorageInfo, modifier: Modifier = Modifier) {
+    Column(modifier, verticalArrangement = Arrangement.spacedBy(4.dp)) {
+        LinearProgressIndicator(
+            progress = { storage.usedFraction },
+            modifier = Modifier.fillMaxWidth(),
+            color = when {
+                storage.usedFraction > 0.9f -> MaterialTheme.colorScheme.error
+                storage.usedFraction > 0.75f -> Color(0xFFEF8F00)
+                else -> MaterialTheme.colorScheme.primary
+            },
+        )
+        Row {
+            Text(
+                "${OperationEngine.fmtSize(storage.usedBytes)} used of ${OperationEngine.fmtSize(storage.totalBytes)}",
+                style = MaterialTheme.typography.bodySmall, modifier = Modifier.weight(1f),
+            )
+            Text("${OperationEngine.fmtSize(storage.freeBytes)} free", style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.SemiBold)
+        }
+    }
 }

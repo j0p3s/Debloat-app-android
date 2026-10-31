@@ -50,6 +50,7 @@ import io.github.j0p3s.debloater.ops.OperationEngine
 import io.github.j0p3s.debloater.ui.MainViewModel
 import io.github.j0p3s.debloater.ui.components.BackTopBar
 import io.github.j0p3s.debloater.ui.components.Pill
+import io.github.j0p3s.debloater.ui.components.StorageBar
 import io.github.j0p3s.debloater.ui.theme.ErrorColor
 import io.github.j0p3s.debloater.ui.theme.OkColor
 import io.github.j0p3s.debloater.ui.theme.WarnColor
@@ -66,6 +67,7 @@ fun BackupsScreen(vm: MainViewModel) {
     var openLog by remember { mutableStateOf<File?>(null) }
     var confirmDelete by remember { mutableStateOf<BackupSession?>(null) }
     var totalSize by remember { mutableStateOf(0L) }
+    val storage by vm.storage.collectAsStateWithLifecycle()
 
     LaunchedEffect(sessions) {
         withContext(Dispatchers.IO) {
@@ -92,7 +94,9 @@ fun BackupsScreen(vm: MainViewModel) {
                                 "If a backup cannot be made, the app is not touched.",
                             style = MaterialTheme.typography.bodySmall,
                         )
-                        Text("${sessions.size} backup(s) · ${OperationEngine.fmtSize(totalSize)} · ${vm.backups.root.absolutePath}", style = MaterialTheme.typography.labelSmall)
+                        Text("${sessions.size} backup(s) using ${OperationEngine.fmtSize(totalSize)} · space freed so far ${OperationEngine.fmtSize(sessions.sumOf { it.freedBytes })}", style = MaterialTheme.typography.labelMedium)
+                        storage?.let { StorageBar(it) }
+                        Text(vm.backups.root.absolutePath, style = MaterialTheme.typography.labelSmall)
                         Text(
                             "Backups are deleted if you uninstall Debloater. Export them to keep a copy.",
                             style = MaterialTheme.typography.bodySmall, color = WarnColor,
@@ -168,6 +172,8 @@ private fun SessionCard(s: BackupSession, vm: MainViewModel, onDelete: () -> Uni
                     )
                     Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.padding(top = 4.dp)) {
                         Pill("$done changed", OkColor)
+                        if (s.freedBytes > 0) Pill("freed ${OperationEngine.fmtSize(s.freedBytes)}", OkColor)
+                        if (s.backupBytes > 0) Pill("backup ${OperationEngine.fmtSize(s.backupBytes)}", MaterialTheme.colorScheme.outline)
                         if (restored > 0) Pill("$restored restored", MaterialTheme.colorScheme.primary)
                         if (failed > 0) Pill("$failed failed", ErrorColor)
                         if (!s.finished) Pill("interrupted", WarnColor)
@@ -188,7 +194,9 @@ private fun SessionCard(s: BackupSession, vm: MainViewModel, onDelete: () -> Uni
                             Text(e.label, style = MaterialTheme.typography.bodyMedium)
                             Text(
                                 "${e.packageName} · was ${e.stateBefore.title.lowercase()} · ${e.status.name.lowercase().replace('_', ' ')}" +
-                                    if (e.apkFiles.isNotEmpty()) " · APK ${OperationEngine.fmtSize(e.apkBytes)}" else "",
+                                    (if (e.sizeBytes > 0) " · size ${OperationEngine.fmtSize(e.sizeBytes)}" else "") +
+                                    (if (e.freedBytes > 0) " · freed ${OperationEngine.fmtSize(e.freedBytes)}" else "") +
+                                    (if (e.apkFiles.isNotEmpty()) " · APK backup ${OperationEngine.fmtSize(e.apkBytes)}" else ""),
                                 style = MaterialTheme.typography.bodySmall,
                             )
                             if (e.status == EntryStatus.FAILED || e.status == EntryStatus.SKIPPED) {

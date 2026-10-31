@@ -20,6 +20,10 @@ data class BackupEntry(
     val apkBytes: Long = 0,
     val status: EntryStatus = EntryStatus.PENDING,
     val message: String = "",
+    /** Measured: free space on /data right after the command minus right before it. */
+    val freedBytes: Long = 0,
+    /** App + data size of the package when it was changed (0 if unknown). */
+    val sizeBytes: Long = 0,
 ) {
     fun toJson(): JSONObject = JSONObject()
         .put("package", packageName)
@@ -34,6 +38,8 @@ data class BackupEntry(
         .put("apkBytes", apkBytes)
         .put("status", status.name)
         .put("message", message)
+        .put("freedBytes", freedBytes)
+        .put("sizeBytes", sizeBytes)
 
     companion object {
         fun fromJson(o: JSONObject) = BackupEntry(
@@ -49,6 +55,8 @@ data class BackupEntry(
             apkBytes = o.optLong("apkBytes"),
             status = runCatching { EntryStatus.valueOf(o.getString("status")) }.getOrDefault(EntryStatus.PENDING),
             message = o.optString("message"),
+            freedBytes = o.optLong("freedBytes"),
+            sizeBytes = o.optLong("sizeBytes"),
         )
     }
 }
@@ -85,7 +93,18 @@ class BackupSession(
     val device: DeviceInfo,
     val entries: MutableList<BackupEntry>,
     var finished: Boolean = false,
+    /** Free bytes on /data before the run and after it (-1 = unknown). */
+    var freeBefore: Long = -1,
+    var freeAfter: Long = -1,
+    var totalStorage: Long = -1,
+    /** Size of the APK backups written by this run. */
+    var backupBytes: Long = 0,
+    /** Estimate shown before the run. */
+    var estimatedBytes: Long = 0,
 ) {
+    /** Space freed on the phone by this run (sum of the measured per-app values). */
+    val freedBytes: Long get() = entries.sumOf { it.freedBytes }
+
     val title: String get() = "${action.verb} · ${entries.size} app(s)"
 
     fun toJson(): JSONObject = JSONObject()
@@ -96,6 +115,11 @@ class BackupSession(
         .put("userId", userId)
         .put("device", device.toJson())
         .put("finished", finished)
+        .put("freeBefore", freeBefore)
+        .put("freeAfter", freeAfter)
+        .put("totalStorage", totalStorage)
+        .put("backupBytes", backupBytes)
+        .put("estimatedBytes", estimatedBytes)
         .put("entries", JSONArray().also { a -> entries.forEach { a.put(it.toJson()) } })
 
     companion object {
@@ -109,6 +133,11 @@ class BackupSession(
                 device = DeviceInfo.fromJson(o.optJSONObject("device")),
                 entries = MutableList(arr.length()) { BackupEntry.fromJson(arr.getJSONObject(it)) },
                 finished = o.optBoolean("finished"),
+                freeBefore = o.optLong("freeBefore", -1),
+                freeAfter = o.optLong("freeAfter", -1),
+                totalStorage = o.optLong("totalStorage", -1),
+                backupBytes = o.optLong("backupBytes"),
+                estimatedBytes = o.optLong("estimatedBytes"),
             )
         }
     }

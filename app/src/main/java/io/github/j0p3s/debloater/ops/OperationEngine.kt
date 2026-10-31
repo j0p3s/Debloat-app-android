@@ -9,6 +9,8 @@ import io.github.j0p3s.debloater.data.AppInfo
 import io.github.j0p3s.debloater.data.AppState
 import io.github.j0p3s.debloater.data.PackageRepository
 import io.github.j0p3s.debloater.data.SafetyLevel
+import io.github.j0p3s.debloater.data.SpaceEstimator
+import io.github.j0p3s.debloater.data.StorageInfo
 import io.github.j0p3s.debloater.shizuku.ShellResult
 import io.github.j0p3s.debloater.shizuku.ShizukuManager
 import kotlinx.coroutines.Dispatchers
@@ -43,6 +45,16 @@ data class OperationState(
     val cancelled: Boolean = false,
     val sessionId: String? = null,
     val logFile: String? = null,
+    val keepData: Boolean = true,
+    /** Phone storage at the start and the end of the run. */
+    val storageBefore: StorageInfo? = null,
+    val storageAfter: StorageInfo? = null,
+    /** Estimated space this run frees (shown for tests and before real runs). */
+    val estimatedBytes: Long = 0,
+    /** Measured space freed (sum of per-app measurements around each command). */
+    val freedBytes: Long = 0,
+    /** Space used by the APK backups of this run. */
+    val backupBytes: Long = 0,
 ) {
     val hasErrors get() = failed > 0
 }
@@ -103,6 +115,10 @@ class OperationEngine(
                 append("Finished: ${s.ok} succeeded, ${s.skipped} skipped, ${s.failed} failed.")
             }
             if (s.cancelled) append(" (cancelled by user)")
+            if (s.action == Action.REMOVE || s.action == Action.DISABLE) {
+                if (s.dryRun) append(" Estimated space freed: ${fmtSize(s.estimatedBytes)}.")
+                else append(" Space freed: ${fmtSize(s.freedBytes)}.")
+            }
         }
         log(if (s.failed == 0) LineKind.OK else LineKind.ERROR, summary)
         val text = renderLog(_state.value!!)
@@ -129,7 +145,9 @@ class OperationEngine(
         return when (action) {
             Action.DISABLE -> "pm disable-user --user $u $p"
             // System apps are always removed per-user with -k so they can be reinstalled with install-existing.
-            Action.REMOVE -> if (app.isSystem || keepData) "pm uninstall -k --user $u $p" else "pm uninstall --user $u $p"
+            // Without -k the app data is deleted (frees space). System apps can still be brought back
+            // with install-existing because their APK stays on the system partition.
+            Action.REMOVE -> if (keepData) "pm uninstall -k --user $u $p" else "pm uninstall --user $u $p"
             Action.ENABLE -> "pm enable --user $u $p"
             // Restore handles both removed (install-existing) and disabled packages.
             Action.RESTORE -> if (repo.stateOf(p) == AppState.UNINSTALLED) {
@@ -197,6 +215,16 @@ class OperationEngine(
 
         // ---- global checks
         log(LineKind.STEP, "Checking environment")
+        val storageBefore = repo.storageInfo()
+        val estimate = SpaceEstimator.estimate(apps, action, keepData)
+        _state.update { it?.copy(storageBefore = storageBefore, estimatedBytes = estimate, keepData = keepData) }
+        log(LineKind.INFO, "Storage: ${fmtSize(storageBefore.freeBytes)} free of ${fmtSize(storageBefore.totalBytes)} (${fmtSize(storageBefore.usedBytes)} used)")
+        when {
+            action == Action.DISABLE -> log(LineKind.INFO, "Disabling does not free storage: apps and their data stay on the phone")
+            action == Action.REMOVE && keepData -> log(LineKind.INFO, "Removing with \"keep data\" frees almost no storage (data and APKs are kept for instant restore)")
+            action == Action.REMOVE -> log(LineKind.INFO, "Estimated space freed: ${fmtSize(estimate)}${if (apps.any { !it.sizeExact }) " (some app sizes unknown, grant Usage access for exact values)" else ""}")
+            else -> {}
+        }
         log(LineKind.INFO, "Device: ${android.os.Build.MANUFACTURER} ${android.os.Build.MODEL}, Android ${android.os.Build.VERSION.RELEASE} (API ${android.os.Build.VERSION.SDK_INT}), user ${repo.userId}")
         if (android.os.Build.VERSION.SDK_INT > 37) {
             log(LineKind.WARN, "This Android version is newer than Android 17 and has not been tested")
@@ -270,7 +298,26 @@ class OperationEngine(
             if (dryRun) simulate(app, cmd, needsApkBackup) else execute(session!!, app, action, keepData, cmd)
         }
         _state.update { it?.copy(processed = apps.size) }
-        session?.let { it.finished = true; backups.save(it) }
+        val storageAfter = repo.storageInfo()
+        _state.update { it?.copy(storageAfter = storageAfter) }
+        val st = _state.value!!
+        log(LineKind.STEP, "Storage")
+        if (dryRun) {
+            log(LineKind.INFO, "Would free about ${fmtSize(st.estimatedBytes)}; APK backups would use about ${fmtSize(apps.filter { it.state != AppState.UNINSTALLED }.sumOf { it.apkSize })}")
+        } else {
+            log(LineKind.OK, "Space freed on the phone: ${fmtSize(st.freedBytes)} (estimated ${fmtSize(st.estimatedBytes)})")
+            if (st.backupBytes > 0) log(LineKind.INFO, "APK backups of this run use ${fmtSize(st.backupBytes)} (delete old backups to reclaim it)")
+        }
+        log(LineKind.INFO, "Free now: ${fmtSize(storageAfter.freeBytes)} of ${fmtSize(storageAfter.totalBytes)}")
+        session?.let {
+            it.finished = true
+            it.freeBefore = storageBefore.freeBytes
+            it.freeAfter = storageAfter.freeBytes
+            it.totalStorage = storageAfter.totalBytes
+            it.backupBytes = st.backupBytes
+            it.estimatedBytes = st.estimatedBytes
+            backups.save(it)
+        }
         finish(if (dryRun) "test-${stamp()}" else (session?.id ?: "run-${stamp()}"))
     }
 
@@ -301,6 +348,9 @@ class OperationEngine(
             }
             log(LineKind.OK, "All APK files readable, backup possible", app.packageName)
         }
+        log(LineKind.INFO, "Size: ${sizeText(app)}", app.packageName)
+        val est = SpaceEstimator.estimate(app, _state.value?.action ?: Action.DISABLE, _state.value?.keepData ?: true)
+        if (est > 0) log(LineKind.INFO, "Would free about ${fmtSize(est)}", app.packageName)
         log(LineKind.COMMAND, "Would run: $cmd", app.packageName)
         log(LineKind.OK, "OK, ready (no changes made)", app.packageName)
         bump(ok = 1)
@@ -314,7 +364,8 @@ class OperationEngine(
         versionCode = app.versionCode,
         stateBefore = repo.stateOf(app.packageName) ?: app.state,
         action = action,
-        keepData = keepData || app.isSystem,
+        keepData = keepData,
+        sizeBytes = app.totalBytes,
     )
 
     private suspend fun execute(session: BackupSession, app: AppInfo, action: Action, keepData: Boolean, cmd: String) {
@@ -341,15 +392,21 @@ class OperationEngine(
             }
             update(entry.copy(apkFiles = files.map { it.name }, apkBytes = files.sumOf { it.length() }, status = EntryStatus.BACKED_UP))
             log(LineKind.OK, "Backup verified (${fmtSize(entry.apkBytes)})", app.packageName)
+            _state.update { it?.copy(backupBytes = it.backupBytes + entry.apkBytes) }
         }
 
+        log(LineKind.INFO, "Size: ${sizeText(app)}", app.packageName)
         log(LineKind.COMMAND, "$ $cmd", app.packageName)
+        // Measure free space right around the command so APK backups are not counted.
+        val freeBefore = repo.freeBytesNow()
         val r = ShizukuManager.exec(cmd)
+        val freed = (repo.freeBytesNow() - freeBefore).coerceAtLeast(0L)
         logResult(r)
         val after = repo.stateOf(app.packageName)
         if (targetReached(action, after)) {
-            log(LineKind.OK, "${app.label} ${action.pastTense}", app.packageName)
-            update(entry.copy(status = EntryStatus.DONE, message = r.output.take(500)))
+            log(LineKind.OK, "${app.label} ${action.pastTense}" + if (freed > 0) ", freed ${fmtSize(freed)}" else "", app.packageName)
+            update(entry.copy(status = EntryStatus.DONE, message = r.output.take(500), freedBytes = freed))
+            _state.update { it?.copy(freedBytes = it.freedBytes + freed) }
             bump(ok = 1)
         } else {
             val msg = "Command did not take effect (state is ${after?.title ?: "gone"}): ${r.output}".take(500)
@@ -368,6 +425,9 @@ class OperationEngine(
     }
 
     private suspend fun restoreInternal(items: List<RestoreItem>, dryRun: Boolean) {
+        val storageBefore = repo.storageInfo()
+        _state.update { it?.copy(storageBefore = storageBefore) }
+        log(LineKind.INFO, "Storage: ${fmtSize(storageBefore.freeBytes)} free of ${fmtSize(storageBefore.totalBytes)}")
         if (!ShizukuManager.isReady()) {
             log(LineKind.ERROR, "Shizuku is not ready (${ShizukuManager.status.value})")
             bump(failed = items.size)
@@ -466,6 +526,12 @@ class OperationEngine(
             }
         }
         _state.update { it?.copy(processed = items.size) }
+        val storageAfter = repo.storageInfo()
+        _state.update { it?.copy(storageAfter = storageAfter) }
+        if (!dryRun) {
+            val used = (storageBefore.freeBytes - storageAfter.freeBytes).coerceAtLeast(0L)
+            log(LineKind.INFO, "Restored apps use ${fmtSize(used)} again. Free now: ${fmtSize(storageAfter.freeBytes)} of ${fmtSize(storageAfter.totalBytes)}")
+        }
         finish("${if (dryRun) "test-" else ""}restore-${stamp()}")
     }
 
@@ -513,6 +579,10 @@ class OperationEngine(
     }
 
     companion object {
+        fun sizeText(app: AppInfo): String =
+            if (app.sizeExact) "app ${fmtSize(app.appBytes)} + data ${fmtSize(app.dataBytes)} (cache ${fmtSize(app.cacheBytes)}) = ${fmtSize(app.totalBytes)}"
+            else "APK ${fmtSize(app.apkSize)} (data size unknown)"
+
         fun fmtSize(bytes: Long): String = when {
             bytes >= 1L shl 30 -> String.format(Locale.US, "%.1f GB", bytes / (1L shl 30).toDouble())
             bytes >= 1L shl 20 -> String.format(Locale.US, "%.1f MB", bytes / (1L shl 20).toDouble())

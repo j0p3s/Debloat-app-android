@@ -44,6 +44,11 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
+    testOptions {
+        // Lets unit tests create simple framework objects such as ApplicationInfo.
+        unitTests.isReturnDefaultValues = true
+    }
+
     packaging {
         resources.excludes += "/META-INF/{AL2.0,LGPL2.1}"
     }

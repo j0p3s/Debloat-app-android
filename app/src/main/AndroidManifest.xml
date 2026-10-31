@@ -7,6 +7,12 @@
         android:name="android.permission.QUERY_ALL_PACKAGES"
         tools:ignore="QueryAllPackagesPermission" />
 
+    <!-- Usage access: lets StorageStatsManager report app/data/cache sizes of other apps.
+         Granted through Shizuku with `appops set`, or manually in Settings > Usage access. -->
+    <uses-permission
+        android:name="android.permission.PACKAGE_USAGE_STATS"
+        tools:ignore="ProtectedPermissions" />
+
     <queries>
         <package android:name="moe.shizuku.privileged.api" />
     </queries>

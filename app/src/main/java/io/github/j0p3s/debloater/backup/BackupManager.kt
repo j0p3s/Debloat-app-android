@@ -126,6 +126,8 @@ class BackupManager(private val context: Context) {
 
     fun sessionSize(id: String): Long = sessionDir(id).walkTopDown().filter { it.isFile }.sumOf { it.length() }
 
+    fun totalBytes(): Long = root.walkTopDown().filter { it.isFile }.sumOf { it.length() }
+
     fun deleteSession(id: String) {
         sessionDir(id).deleteRecursively()
     }

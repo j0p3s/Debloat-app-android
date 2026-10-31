@@ -45,8 +45,8 @@ fun SettingsScreen(vm: MainViewModel) {
                 expert,
             ) { if (it) askExpert = true else vm.prefs.setExpertMode(false) }
             SettingRow(
-                "Keep data when removing user apps",
-                "Default for the checkbox in the remove dialog. With data kept, an app can be restored instantly with its data. System apps always keep their data.",
+                "Keep app data when removing",
+                "Default for the checkbox in the remove dialog. With data kept, apps come back instantly with their data, but almost no storage is freed. Turn it off to free space (app data is deleted).",
                 keepData,
             ) { vm.prefs.setKeepData(it) }
             Card {

@@ -18,11 +18,20 @@ An Android app that debloats **any Android version from Android 11 to Android 17
   space. It shows every command that *would* run and reports whether any errors would happen. After a passed
   test you can continue with the real run.
 - **Disable**: `pm disable-user`. Packages stay installed and can be re-enabled any time.
-- **Remove**: `pm uninstall -k --user <id>` for system apps (restorable with `install-existing`). For user apps
-  you can keep the data (restorable instantly) or delete them completely.
+- **Remove**: `pm uninstall --user <id>`. With **keep data** (`-k`) apps come back instantly with their data
+  but almost no space is freed. Without it the app data is deleted to free space. System apps can always be
+  restored with `install-existing`. Deleted user apps are reinstalled from their APK backup.
 - **Remove all**: select everything in a tab (or across tabs) and remove it in one run.
 - **App manager**: every user and system app, with search, filters (user/system, enabled/disabled/removed),
-  sort by size, and per-app disable/remove/restore. Multi-select works too.
+  sort by total size or data size, and per-app disable/remove/restore. Multi-select works too.
+- **Sizes and storage**:
+  - every app shows its size (app + data + cache). Exact sizes need Usage access, which the app grants
+    itself through Shizuku (`appops set … GET_USAGE_STATS allow`); otherwise only APK sizes are shown,
+  - the home screen shows total, used and free storage, the space freed by Debloater, the space used by
+    backups, and how much each tier and all user/system apps take,
+  - before a run you see the estimated space freed and the space the backups need; after a run you see the
+    space actually freed (measured around each command, so backups are not counted) and the free space left.
+    Each app's freed space is saved in its backup record.
 - **Backups at all times** (they cannot be turned off):
   - a full-device **baseline snapshot** the first time the app runs,
   - a **restore point** (state of every package) before each run,
@@ -53,7 +62,9 @@ Prefer **Disable** for Extreme packages: it is the easiest change to undo.
 
 ## Limitations
 
-- App *data* cannot be copied without root. Use "keep data" when removing user apps you might want back.
+- App *data* cannot be copied without root. Use "keep data" when removing apps you might want back with their data.
+- Disabling and removing with "keep data" free (almost) no storage. Removing a system app frees its data and
+  updates, but its original APK stays on the read-only system partition.
 - Backups live in the app's external files folder and are deleted if Debloater is uninstalled, so export them.
 - A factory reset brings back every system app removed with `--user`.
 

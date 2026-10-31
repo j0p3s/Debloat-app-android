@@ -44,6 +44,7 @@ import io.github.j0p3s.debloater.data.Action
 import io.github.j0p3s.debloater.data.AppInfo
 import io.github.j0p3s.debloater.data.AppState
 import io.github.j0p3s.debloater.data.SafetyLevel
+import io.github.j0p3s.debloater.ops.OperationEngine
 import io.github.j0p3s.debloater.ui.MainViewModel
 import io.github.j0p3s.debloater.ui.components.AppRow
 import io.github.j0p3s.debloater.ui.components.BackTopBar
@@ -97,7 +98,10 @@ fun DebloatScreen(vm: MainViewModel) {
         bottomBar = {
             if (selection.isNotEmpty()) {
                 BottomAppBar {
-                    Text("${selection.size} selected", Modifier.padding(start = 12.dp).weight(1f))
+                    Column(Modifier.padding(start = 12.dp).weight(1f)) {
+                        Text("${selection.size} selected", style = MaterialTheme.typography.labelLarge)
+                        Text(OperationEngine.fmtSize(selectedApps.sumOf { it.totalBytes }), style = MaterialTheme.typography.bodySmall)
+                    }
                     OutlinedButton(onClick = { vm.request(selectedApps, Action.REMOVE, dryRun = true) }) { Text("Test") }
                     TextButton(onClick = { vm.request(selectedApps, Action.DISABLE, dryRun = false) }) { Text("Disable") }
                     Button(
@@ -124,7 +128,15 @@ fun DebloatScreen(vm: MainViewModel) {
                                 containerColor = levelColor(level, dark).copy(alpha = 0.12f),
                             ),
                         ) {
-                            Text(levelInfo(level), Modifier.padding(12.dp), style = MaterialTheme.typography.bodyMedium)
+                            Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                                Text(levelInfo(level), style = MaterialTheme.typography.bodyMedium)
+                                val active = apps.filter { it.level == level && it.state == AppState.ENABLED && (level != SafetyLevel.UNKNOWN || it.isSystem) }
+                                Text(
+                                    "${active.size} active apps use ${OperationEngine.fmtSize(active.sumOf { it.totalBytes })} " +
+                                        "(${OperationEngine.fmtSize(active.sumOf { it.appBytes })} app + ${OperationEngine.fmtSize(active.sumOf { it.dataBytes })} data)",
+                                    style = MaterialTheme.typography.labelMedium,
+                                )
+                            }
                         }
                         OutlinedTextField(
                             value = query, onValueChange = { query = it },

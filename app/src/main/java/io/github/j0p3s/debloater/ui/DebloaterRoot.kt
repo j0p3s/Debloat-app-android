@@ -45,9 +45,11 @@ fun DebloaterRoot(vm: MainViewModel) {
 
     pending?.let { p ->
         val keepDefault by vm.prefs.keepData.collectAsStateWithLifecycle()
+        val storage by vm.storage.collectAsStateWithLifecycle()
         ConfirmOperationDialog(
             pending = p,
             keepDataDefault = keepDefault,
+            storage = storage,
             onDismiss = vm::dismissPending,
             onConfirm = { keepData, dryRun, action -> vm.confirmPending(keepData, dryRun, action) },
         )

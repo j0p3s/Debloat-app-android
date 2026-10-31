@@ -48,6 +48,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.j0p3s.debloater.data.Action
 import io.github.j0p3s.debloater.data.AppInfo
 import io.github.j0p3s.debloater.data.AppState
+import io.github.j0p3s.debloater.data.SpaceEstimator
 import io.github.j0p3s.debloater.ops.OperationEngine
 import io.github.j0p3s.debloater.ui.MainViewModel
 import io.github.j0p3s.debloater.ui.components.AppIcon
@@ -59,7 +60,7 @@ import io.github.j0p3s.debloater.ui.components.WarningText
 
 private enum class TypeFilter(val title: String) { USER("User apps"), SYSTEM("System apps"), ALL("All") }
 private enum class StateFilter(val title: String) { ANY("Any state"), ENABLED("Enabled"), DISABLED("Disabled"), REMOVED("Removed") }
-private enum class Sort(val title: String) { NAME("Name"), SIZE("Size") }
+private enum class Sort(val title: String) { NAME("Name"), SIZE("Size"), DATA("Data size") }
 
 @Composable
 fun AppManagerScreen(vm: MainViewModel) {
@@ -84,7 +85,13 @@ fun AppManagerScreen(vm: MainViewModel) {
                     StateFilter.REMOVED -> a.state == AppState.UNINSTALLED
                 } &&
                 (query.isBlank() || a.label.contains(query, true) || a.packageName.contains(query, true))
-        }.let { list -> if (sort == Sort.SIZE) list.sortedByDescending { it.apkSize } else list }
+        }.let { list ->
+            when (sort) {
+                Sort.NAME -> list
+                Sort.SIZE -> list.sortedByDescending { it.totalBytes }
+                Sort.DATA -> list.sortedByDescending { it.dataBytes }
+            }
+        }
     }
     val selectedApps = apps.filter { it.packageName in selection }
 
@@ -93,7 +100,10 @@ fun AppManagerScreen(vm: MainViewModel) {
         bottomBar = {
             if (selection.isNotEmpty()) {
                 BottomAppBar {
-                    Text("${selection.size}", Modifier.padding(start = 12.dp).weight(1f))
+                    Column(Modifier.padding(start = 12.dp).weight(1f)) {
+                        Text("${selection.size}", style = MaterialTheme.typography.labelLarge)
+                        Text(OperationEngine.fmtSize(selectedApps.sumOf { it.totalBytes }), style = MaterialTheme.typography.bodySmall)
+                    }
                     OutlinedButton(onClick = { vm.request(selectedApps, Action.REMOVE, dryRun = true) }) { Text("Test") }
                     if (selectedApps.any { it.state != AppState.ENABLED }) {
                         TextButton(onClick = { vm.request(selectedApps.filter { it.state != AppState.ENABLED }, Action.RESTORE, dryRun = false) }) { Text("Restore") }
@@ -124,7 +134,7 @@ fun AppManagerScreen(vm: MainViewModel) {
                         Sort.entries.forEach { FilterChip(sort == it, { sort = it }, label = { Text("Sort: ${it.title}") }) }
                     }
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text("${visible.size} apps", style = MaterialTheme.typography.labelMedium, modifier = Modifier.weight(1f))
+                        Text("${visible.size} apps · ${OperationEngine.fmtSize(visible.sumOf { it.totalBytes })}", style = MaterialTheme.typography.labelMedium, modifier = Modifier.weight(1f))
                         TextButton(onClick = { vm.setManagerSelection(selection + visible.filter { isSelectable(it, expert) }.map { it.packageName }) }) { Text("Select all") }
                         TextButton(onClick = { vm.setManagerSelection(emptySet()) }) { Text("Clear") }
                     }
@@ -161,7 +171,8 @@ private fun AppDetailsDialog(app: AppInfo, canModify: Boolean, vm: MainViewModel
                 Text(app.packageName, style = MaterialTheme.typography.bodySmall)
                 Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) { LevelPill(app.level); StatePill(app.state) }
                 Text("Version ${app.versionName} (${app.versionCode})", style = MaterialTheme.typography.bodySmall)
-                Text("${if (app.isSystem) "System" else "User"} app · APK ${OperationEngine.fmtSize(app.apkSize)} · ${app.apkPaths.size} file(s)", style = MaterialTheme.typography.bodySmall)
+                Text("${if (app.isSystem) "System" else "User"} app · ${app.apkPaths.size} APK file(s)", style = MaterialTheme.typography.bodySmall)
+                SizeTable(app)
                 app.entry?.let {
                     Text("${it.vendor}: ${it.description}", style = MaterialTheme.typography.bodySmall)
                     it.warning?.let { w -> WarningText(w) }
@@ -200,4 +211,31 @@ private fun AppDetailsDialog(app: AppInfo, canModify: Boolean, vm: MainViewModel
             }) { Text("System app info") }
         },
     )
+}
+
+@Composable
+private fun SizeTable(app: AppInfo) {
+    Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+        @Composable
+        fun line(label: String, value: String, bold: Boolean = false) = Row {
+            Text(label, Modifier.weight(1f), style = MaterialTheme.typography.bodySmall)
+            Text(value, style = MaterialTheme.typography.bodySmall, fontWeight = if (bold) FontWeight.Bold else FontWeight.Normal)
+        }
+        line("APK", OperationEngine.fmtSize(app.apkSize))
+        if (app.sizeExact) {
+            line("App (APK, code, libraries)", OperationEngine.fmtSize(app.appBytes))
+            line("Data", OperationEngine.fmtSize(app.dataBytes - app.cacheBytes))
+            line("Cache", OperationEngine.fmtSize(app.cacheBytes))
+            line("Total", OperationEngine.fmtSize(app.totalBytes), bold = true)
+        } else {
+            Text("Data size unknown (grant Usage access on the home screen).", style = MaterialTheme.typography.bodySmall)
+        }
+        if (app.state != AppState.UNINSTALLED) {
+            val freed = SpaceEstimator.estimate(app, Action.REMOVE, keepData = false)
+            line("Removing without keeping data frees about", OperationEngine.fmtSize(freed), bold = true)
+            if (app.isSystem) {
+                Text("The APK of a system app stays on the read-only system partition.", style = MaterialTheme.typography.bodySmall)
+            }
+        }
+    }
 }
