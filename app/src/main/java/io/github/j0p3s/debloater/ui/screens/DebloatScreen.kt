@@ -4,17 +4,17 @@ import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -22,8 +22,6 @@ import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.InputChip
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.foundation.layout.size
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
@@ -40,34 +38,39 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import io.github.j0p3s.debloater.R
 import io.github.j0p3s.debloater.data.Action
 import io.github.j0p3s.debloater.data.AppInfo
 import io.github.j0p3s.debloater.data.AppState
 import io.github.j0p3s.debloater.data.SafetyLevel
-import io.github.j0p3s.debloater.ops.OperationEngine
+import io.github.j0p3s.debloater.data.sortedBy
 import io.github.j0p3s.debloater.ui.MainViewModel
 import io.github.j0p3s.debloater.ui.components.AppRow
 import io.github.j0p3s.debloater.ui.components.BackTopBar
+import io.github.j0p3s.debloater.ui.components.SelectionBar
 import io.github.j0p3s.debloater.ui.components.SortMenu
 import io.github.j0p3s.debloater.ui.components.VendorChips
-import io.github.j0p3s.debloater.data.sortedBy
+import io.github.j0p3s.debloater.ui.components.formatSize
 import io.github.j0p3s.debloater.ui.theme.levelColor
 
+@Composable
 private fun levelInfo(level: SafetyLevel) = when (level) {
-    SafetyLevel.RECOMMENDED -> "Bloatware, ads, telemetry, duplicates and apps you can get back from a store. Recommended for almost everyone; check you have another app for anything you use (browser, gallery…)."
-    SafetyLevel.SAFE -> "Safe to remove: the system is not affected, but these are apps you might still use (for example YouTube, Maps or Gmail)."
-    SafetyLevel.EXTREME -> "Extreme debloat. These can break features such as notifications, payments, updates, the camera or calls. Read every warning, and run a test first."
-    SafetyLevel.EXPERT -> "Expert mode: packages that can break important features (rated Expert by UAD-NG). Prefer Disable, and test first."
-    SafetyLevel.UNSAFE -> "Expert mode: critical packages. Removing them can cause boot loops or a non-working phone. Disable rather than remove, and test first."
-    SafetyLevel.UNKNOWN -> "Expert mode: system apps that are not in the debloat list. Their effect is unknown."
+    SafetyLevel.RECOMMENDED -> stringResource(R.string.tier_recommended_info)
+    SafetyLevel.SAFE -> stringResource(R.string.tier_safe_info)
+    SafetyLevel.EXTREME -> stringResource(R.string.tier_extreme_info)
+    SafetyLevel.EXPERT -> stringResource(R.string.tier_expert_info)
+    SafetyLevel.UNSAFE -> stringResource(R.string.tier_unsafe_info)
+    SafetyLevel.UNKNOWN -> stringResource(R.string.tier_unknown_info)
 }
 
 /** Whether the user may select this app for disable/remove. */
 fun isSelectable(app: AppInfo, expert: Boolean) =
     !app.isProtected && (expert || !app.level.needsExpertMode || (app.level == SafetyLevel.UNKNOWN && !app.isSystem))
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun DebloatScreen(vm: MainViewModel) {
     val apps by vm.apps.collectAsStateWithLifecycle()
@@ -84,13 +87,13 @@ fun DebloatScreen(vm: MainViewModel) {
     val allTiers = tiers.toSet()
     // The tiers shown in the list. Tabs set it to all tiers or one tier; the vendor buttons set it to
     // exactly what they select (e.g. Recommended + Safe). Saved as names so it survives rotation.
-    var scopeNames by rememberSaveable { mutableStateOf("") }
+    var scopeNames by rememberSaveable { mutableStateOf(SafetyLevel.RECOMMENDED.name) }
     val scope: Set<SafetyLevel> = scopeNames.split(',').mapNotNull { n -> SafetyLevel.entries.firstOrNull { it.name == n } }
         .filter { it in allTiers }.toSet().ifEmpty { allTiers }
     fun setScope(levels: Set<SafetyLevel>) { scopeNames = levels.joinToString(",") { it.name } }
     val isAll = scope == allTiers
     val single: SafetyLevel? = scope.singleOrNull()
-    // Tab 0 is "All"; tabs 1.. are the tiers. A combined scope (e.g. Recommended + Safe) highlights "All".
+    // Tab 0 is All; tabs 1.. are the tiers. A combined scope highlights All.
     val selectedTab = if (single != null && !isAll) tiers.indexOf(single) + 1 else 0
     var query by rememberSaveable { mutableStateOf("") }
     var showChanged by rememberSaveable { mutableStateOf(false) }
@@ -119,24 +122,19 @@ fun DebloatScreen(vm: MainViewModel) {
     }
     val selectedApps = apps.filter { it.packageName in selection }
     val dark = isSystemInDarkTheme()
+    val levelTitles = SafetyLevel.entries.associateWith { stringResource(it.titleRes) }
 
     Scaffold(
-        topBar = { BackTopBar("Debloat", onBack = { vm.back() }) },
+        topBar = { BackTopBar(stringResource(R.string.debloat), onBack = { vm.back() }) },
         bottomBar = {
             if (selection.isNotEmpty()) {
-                BottomAppBar {
-                    Column(Modifier.padding(start = 12.dp).weight(1f)) {
-                        Text("${selection.size} selected", style = MaterialTheme.typography.labelLarge)
-                        Text(OperationEngine.fmtSize(selectedApps.sumOf { it.totalBytes }), style = MaterialTheme.typography.bodySmall)
-                    }
-                    OutlinedButton(onClick = { vm.request(selectedApps, Action.REMOVE, dryRun = true) }) { Text("Test") }
-                    TextButton(onClick = { vm.request(selectedApps, Action.DISABLE, dryRun = false) }) { Text("Disable") }
-                    Button(
-                        onClick = { vm.request(selectedApps, Action.REMOVE, dryRun = false) },
-                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
-                        modifier = Modifier.padding(end = 8.dp),
-                    ) { Text("Remove") }
-                }
+                SelectionBar(
+                    count = selection.size,
+                    size = formatSize(selectedApps.sumOf { it.totalBytes }),
+                    onTest = { vm.request(selectedApps, Action.DISABLE, dryRun = true) },
+                    onDisable = { vm.request(selectedApps, Action.DISABLE, dryRun = false) },
+                    onRemove = { vm.request(selectedApps, Action.REMOVE, dryRun = false) },
+                )
             }
         },
     ) { pad ->
@@ -146,12 +144,12 @@ fun DebloatScreen(vm: MainViewModel) {
                     it.level in levels && it.state == AppState.ENABLED && (it.level != SafetyLevel.UNKNOWN || it.isSystem) &&
                         (vendor == null || it.vendor == vendor)
                 }
-                Tab(selected = selectedTab == 0, onClick = { setScope(allTiers) }, text = { Text("All (${count(allTiers)})") })
+                Tab(selected = selectedTab == 0, onClick = { setScope(allTiers) }, text = { Text(stringResource(R.string.all_count, count(allTiers))) })
                 tiers.forEachIndexed { i, l ->
                     Tab(
                         selected = selectedTab == i + 1,
                         onClick = { setScope(setOf(l)) },
-                        text = { Text("${l.title} (${count(setOf(l))})", color = levelColor(l, dark)) },
+                        text = { Text("${stringResource(l.titleRes)} (${count(setOf(l))})", color = levelColor(l, dark)) },
                     )
                 }
             }
@@ -159,14 +157,13 @@ fun DebloatScreen(vm: MainViewModel) {
                 item {
                     Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         Text(
-                            "Vendor" + (deviceVendor?.let { " · this phone: $it" } ?: ""),
+                            stringResource(R.string.vendor_filter, deviceVendor ?: "—"),
                             style = MaterialTheme.typography.labelLarge,
                         )
                         VendorChips(vendorCounts, vendor, deviceVendor) { vendor = it }
                         vendor?.let { v ->
                             VendorQuickSelect(
                                 vendor = v,
-                                isThisPhone = v == deviceVendor,
                                 apps = inTabs.filter { it.vendor == v && it.state == AppState.ENABLED && isSelectable(it, expert) },
                                 selection = selection,
                                 onSelect = { newSelection, levels ->
@@ -180,8 +177,8 @@ fun DebloatScreen(vm: MainViewModel) {
                             InputChip(
                                 selected = true,
                                 onClick = { setScope(allTiers) },
-                                label = { Text("Showing: ${tiers.filter { it in scope }.joinToString(" + ") { it.title }}") },
-                                trailingIcon = { Icon(Icons.Default.Close, contentDescription = "Show all tiers", modifier = Modifier.size(18.dp)) },
+                                label = { Text(stringResource(R.string.showing_tiers, tiers.filter { it in scope }.joinToString(" + ") { levelTitles.getValue(it) })) },
+                                trailingIcon = { Icon(Icons.Default.Close, contentDescription = stringResource(R.string.show_all_tiers), modifier = Modifier.size(18.dp)) },
                             )
                         }
                         Card(
@@ -192,7 +189,7 @@ fun DebloatScreen(vm: MainViewModel) {
                             Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                                 Text(
                                     single?.let { levelInfo(it) }
-                                        ?: "Every tier together: each app shows its tier (Recommended, Safe, Extreme…). Read the warnings on Extreme and higher before removing.",
+                                        ?: stringResource(R.string.all_tiers_description),
                                     style = MaterialTheme.typography.bodyMedium,
                                 )
                                 // Respects the vendor filter, like the list below.
@@ -201,8 +198,7 @@ fun DebloatScreen(vm: MainViewModel) {
                                         (vendor == null || it.vendor == vendor)
                                 }
                                 Text(
-                                    "${active.size} active ${vendor?.let { "$it " } ?: ""}apps use ${OperationEngine.fmtSize(active.sumOf { it.totalBytes })} " +
-                                        "(${OperationEngine.fmtSize(active.sumOf { it.appBytes })} app + ${OperationEngine.fmtSize(active.sumOf { it.dataBytes })} data)",
+                                    stringResource(R.string.active_apps_size, active.size, formatSize(active.sumOf { it.totalBytes }), formatSize(active.sumOf { it.appBytes }), formatSize(active.sumOf { it.dataBytes })),
                                     style = MaterialTheme.typography.labelMedium,
                                 )
                             }
@@ -210,19 +206,19 @@ fun DebloatScreen(vm: MainViewModel) {
                         OutlinedTextField(
                             value = query, onValueChange = { query = it },
                             leadingIcon = { Icon(Icons.Default.Search, null) },
-                            placeholder = { Text("Search name, package or vendor") },
+                            placeholder = { Text(stringResource(R.string.search_packages)) },
                             singleLine = true, modifier = Modifier.fillMaxWidth(),
                         )
-                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            FilterChip(showChanged, { showChanged = !showChanged }, label = { Text("Show disabled/removed") })
+                        FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            FilterChip(showChanged, { showChanged = !showChanged }, label = { Text(stringResource(R.string.show_changed)) })
                             SortMenu(sort, vm.prefs::setSort)
                         }
-                        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            Text("${visible.size} apps · ${OperationEngine.fmtSize(visible.sumOf { it.totalBytes })}", style = MaterialTheme.typography.labelMedium, modifier = Modifier.weight(1f))
+                        FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Text(stringResource(R.string.apps_size, visible.size, formatSize(visible.sumOf { it.totalBytes })), style = MaterialTheme.typography.labelMedium)
                             TextButton(onClick = {
                                 vm.setDebloatSelection(selection + visible.filter { isSelectable(it, expert) && it.state == AppState.ENABLED }.map { it.packageName })
-                            }) { Text("Select all") }
-                            TextButton(onClick = { vm.setDebloatSelection(selection - visible.map { it.packageName }.toSet()) }) { Text("Clear") }
+                            }) { Text(stringResource(R.string.select_all)) }
+                            TextButton(onClick = { vm.setDebloatSelection(selection - visible.map { it.packageName }.toSet()) }) { Text(stringResource(R.string.clear)) }
                         }
                     }
                 }
@@ -231,7 +227,7 @@ fun DebloatScreen(vm: MainViewModel) {
                 } else if (visible.isEmpty()) {
                     item {
                         Text(
-                            "No ${if (single != null) single.title.lowercase() + " " else ""}packages ${vendor?.let { "from $it " } ?: ""}${if (showChanged) "" else "left "}on this device.",
+                            stringResource(R.string.no_apps),
                             Modifier.padding(24.dp), style = MaterialTheme.typography.bodyMedium,
                         )
                     }
@@ -258,7 +254,6 @@ fun DebloatScreen(vm: MainViewModel) {
 @Composable
 private fun VendorQuickSelect(
     vendor: String,
-    isThisPhone: Boolean,
     apps: List<AppInfo>,
     selection: Set<String>,
     /** New selection, and the tiers the list should show (null = all tiers). */
@@ -271,10 +266,9 @@ private fun VendorQuickSelect(
     val selectedHere = selection.count { it in vendorPkgs }
     Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)) {
         Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-            Text("Debloat $vendor apps", style = MaterialTheme.typography.titleSmall)
+            Text(stringResource(R.string.vendor_title, vendor), style = MaterialTheme.typography.titleSmall)
             Text(
-                (if (isThisPhone) "Made by the maker of this phone. " else "") +
-                    "${apps.size} active app(s), ${OperationEngine.fmtSize(apps.sumOf { it.totalBytes })}. $selectedHere selected.",
+                stringResource(R.string.vendor_selection, apps.size, formatSize(apps.sumOf { it.totalBytes }), selectedHere),
                 style = MaterialTheme.typography.bodySmall,
             )
             androidx.compose.foundation.layout.FlowRow(
@@ -282,19 +276,19 @@ private fun VendorQuickSelect(
                 verticalArrangement = Arrangement.spacedBy(2.dp),
             ) {
                 OutlinedButton(onClick = { onSelect(selection - vendorPkgs + rec.map { it.packageName }, setOf(SafetyLevel.RECOMMENDED)) }, enabled = rec.isNotEmpty()) {
-                    Text("Recommended (${rec.size})", color = levelColor(SafetyLevel.RECOMMENDED, dark))
+                    Text(stringResource(R.string.select_recommended, rec.size), color = levelColor(SafetyLevel.RECOMMENDED, dark))
                 }
                 OutlinedButton(onClick = { onSelect(selection - vendorPkgs + (rec + safe).map { it.packageName }, setOf(SafetyLevel.RECOMMENDED, SafetyLevel.SAFE)) }, enabled = rec.size + safe.size > 0) {
-                    Text("+ Safe (${rec.size + safe.size})", color = levelColor(SafetyLevel.SAFE, dark))
+                    Text(stringResource(R.string.select_safe, rec.size + safe.size), color = levelColor(SafetyLevel.SAFE, dark))
                 }
                 OutlinedButton(onClick = { onSelect(selection + vendorPkgs, null) }, enabled = apps.isNotEmpty()) {
-                    Text("Everything (${apps.size})", color = levelColor(SafetyLevel.EXTREME, dark))
+                    Text(stringResource(R.string.select_everything, apps.size), color = levelColor(SafetyLevel.EXTREME, dark))
                 }
-                TextButton(onClick = { onSelect(selection - vendorPkgs, null) }, enabled = selectedHere > 0) { Text("Clear") }
+                TextButton(onClick = { onSelect(selection - vendorPkgs, null) }, enabled = selectedHere > 0) { Text(stringResource(R.string.clear)) }
             }
             if (apps.any { it.level.isRisky }) {
                 Text(
-                    "\"Everything\" includes ${apps.filter { it.level.isRisky }.map { it.level.title }.distinct().joinToString("/")} packages: read the warnings and run a test first.",
+                    stringResource(R.string.everything_warning),
                     style = MaterialTheme.typography.bodySmall,
                     color = levelColor(SafetyLevel.EXTREME, dark),
                 )

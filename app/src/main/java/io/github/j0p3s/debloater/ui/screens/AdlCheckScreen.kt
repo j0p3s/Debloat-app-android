@@ -4,6 +4,8 @@ import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,9 +13,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.BottomAppBar
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FilterChip
@@ -32,35 +31,39 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import io.github.j0p3s.debloater.R
 import io.github.j0p3s.debloater.data.Action
 import io.github.j0p3s.debloater.data.AppInfo
 import io.github.j0p3s.debloater.data.AppState
-import io.github.j0p3s.debloater.ops.OperationEngine
+import io.github.j0p3s.debloater.data.sortedBy
 import io.github.j0p3s.debloater.ui.MainViewModel
 import io.github.j0p3s.debloater.ui.components.AppRow
 import io.github.j0p3s.debloater.ui.components.BackTopBar
+import io.github.j0p3s.debloater.ui.components.SelectionBar
 import io.github.j0p3s.debloater.ui.components.SortMenu
-import io.github.j0p3s.debloater.data.sortedBy
+import io.github.j0p3s.debloater.ui.components.formatSize
 import io.github.j0p3s.debloater.ui.theme.ErrorColor
 import io.github.j0p3s.debloater.ui.theme.OkColor
 import io.github.j0p3s.debloater.ui.theme.WarnColor
 
 /** The four removal values of the Android Debloat List, with their meaning. */
-enum class AdlCategory(val key: String, val title: String, val meaning: String) {
-    DELETE("delete", "Delete", "Safe to just get rid of"),
-    REPLACE("replace", "Replace", "Remove after installing a replacement"),
-    CAUTION("caution", "Caution", "Might not be safe to remove"),
-    UNSAFE("unsafe", "Unsafe", "Unsafe to remove"),
+enum class AdlCategory(val key: String, @param:androidx.annotation.StringRes @get:androidx.annotation.StringRes val titleRes: Int, @param:androidx.annotation.StringRes @get:androidx.annotation.StringRes val meaningRes: Int) {
+    DELETE("delete", R.string.delete, R.string.adl_delete_help),
+    REPLACE("replace", R.string.adl_replace, R.string.adl_replace_help),
+    CAUTION("caution", R.string.adl_caution, R.string.adl_caution_help),
+    UNSAFE("unsafe", R.string.unsafe, R.string.adl_unsafe_help),
 }
 
 /**
  * Checks the phone against the Android Debloat List (adl.muntashir.dev): which listed apps are
  * installed, grouped by ADL's own removal rating, with links to each app's page on the website.
  */
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun AdlCheckScreen(vm: MainViewModel) {
     val apps by vm.apps.collectAsStateWithLifecycle()
@@ -89,22 +92,16 @@ fun AdlCheckScreen(vm: MainViewModel) {
     }
 
     Scaffold(
-        topBar = { BackTopBar("Android Debloat List check", onBack = { vm.back() }) },
+        topBar = { BackTopBar(stringResource(R.string.adl_check), onBack = { vm.back() }) },
         bottomBar = {
             if (selection.isNotEmpty()) {
-                BottomAppBar {
-                    Column(Modifier.padding(start = 12.dp).weight(1f)) {
-                        Text("${selection.size} selected", style = MaterialTheme.typography.labelLarge)
-                        Text(OperationEngine.fmtSize(selectedApps.sumOf { it.totalBytes }), style = MaterialTheme.typography.bodySmall)
-                    }
-                    OutlinedButton(onClick = { vm.request(selectedApps, Action.REMOVE, dryRun = true) }) { Text("Test") }
-                    TextButton(onClick = { vm.request(selectedApps, Action.DISABLE, dryRun = false) }) { Text("Disable") }
-                    Button(
-                        onClick = { vm.request(selectedApps, Action.REMOVE, dryRun = false) },
-                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
-                        modifier = Modifier.padding(end = 8.dp),
-                    ) { Text("Remove") }
-                }
+                SelectionBar(
+                    count = selection.size,
+                    size = formatSize(selectedApps.sumOf { it.totalBytes }),
+                    onTest = { vm.request(selectedApps, Action.DISABLE, dryRun = true) },
+                    onDisable = { vm.request(selectedApps, Action.DISABLE, dryRun = false) },
+                    onRemove = { vm.request(selectedApps, Action.REMOVE, dryRun = false) },
+                )
             }
         },
     ) { pad ->
@@ -114,13 +111,11 @@ fun AdlCheckScreen(vm: MainViewModel) {
                     Card {
                         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                             Text(
-                                "${listed.size} of the ${apps.size} packages on this phone are in the Android Debloat List",
+                                stringResource(R.string.adl_coverage, listed.size, apps.size),
                                 style = MaterialTheme.typography.titleMedium,
                             )
                             Text(
-                                "${active.size} are still active (${OperationEngine.fmtSize(active.sumOf { it.totalBytes })}), " +
-                                    "${listed.size - active.size} already disabled or removed. " +
-                                    "${listed.count { it.isSystem }} of your $systemApps system apps are covered.",
+                                stringResource(R.string.adl_stats, active.size, formatSize(active.sumOf { it.totalBytes }), listed.size - active.size, listed.count { it.isSystem }, systemApps),
                                 style = MaterialTheme.typography.bodySmall,
                             )
                             AdlCategory.entries.forEach { c ->
@@ -128,49 +123,47 @@ fun AdlCheckScreen(vm: MainViewModel) {
                                 val on = ofCat.count { it.state == AppState.ENABLED }
                                 Row {
                                     Text(
-                                        c.title, Modifier.weight(0.3f), fontWeight = FontWeight.SemiBold,
+                                        stringResource(c.titleRes), Modifier.weight(0.3f), fontWeight = FontWeight.SemiBold,
                                         color = when (c) {
                                             AdlCategory.DELETE -> OkColor; AdlCategory.REPLACE -> MaterialTheme.colorScheme.primary
                                             AdlCategory.CAUTION -> WarnColor; AdlCategory.UNSAFE -> ErrorColor
                                         },
                                     )
-                                    Text("$on active · ${ofCat.size - on} done", Modifier.weight(0.35f), style = MaterialTheme.typography.bodySmall)
-                                    Text(c.meaning, Modifier.weight(0.45f), style = MaterialTheme.typography.bodySmall)
+                                    Text(stringResource(R.string.adl_active, on, ofCat.size - on), Modifier.weight(0.35f), style = MaterialTheme.typography.bodySmall)
+                                    Text(stringResource(c.meaningRes), Modifier.weight(0.45f), style = MaterialTheme.typography.bodySmall)
                                 }
                             }
                             Text(
-                                "Ratings in the app's lists combine ADL with other lists; the most cautious one is used. " +
-                                    "ADL's own rating is shown here.",
+                                stringResource(R.string.adl_rating_help),
                                 style = MaterialTheme.typography.labelSmall,
                             )
-                            OutlinedButton(onClick = { open("https://adl.muntashir.dev/") }) { Text("Open adl.muntashir.dev") }
+                            OutlinedButton(onClick = { open("https://adl.muntashir.dev/") }) { Text(stringResource(R.string.open_adl_home)) }
                         }
                     }
                     LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                        item { FilterChip(category == null, { category = null }, label = { Text("All (${visibleCount(listed, null, showChanged)})") }) }
+                        item { FilterChip(category == null, { category = null }, label = { Text(stringResource(R.string.all_count, visibleCount(listed, null, showChanged))) }) }
                         items(AdlCategory.entries.size) { i ->
                             val c = AdlCategory.entries[i]
-                            FilterChip(category == c, { category = if (category == c) null else c }, label = { Text("${c.title} (${visibleCount(listed, c, showChanged)})") })
+                            FilterChip(category == c, { category = if (category == c) null else c }, label = { Text("${stringResource(c.titleRes)} (${visibleCount(listed, c, showChanged)})") })
                         }
                     }
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        FilterChip(showChanged, { showChanged = !showChanged }, label = { Text("Show disabled/removed") })
-                        Box(Modifier.weight(1f))
+                    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        FilterChip(showChanged, { showChanged = !showChanged }, label = { Text(stringResource(R.string.show_changed)) })
                         SortMenu(sort, vm.prefs::setSort)
                     }
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text("${visible.size} apps · ${OperationEngine.fmtSize(visible.sumOf { it.totalBytes })}", style = MaterialTheme.typography.labelMedium, modifier = Modifier.weight(1f))
+                    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text(stringResource(R.string.apps_size, visible.size, formatSize(visible.sumOf { it.totalBytes })), style = MaterialTheme.typography.labelMedium)
                         TextButton(onClick = {
                             vm.setDebloatSelection(selection + visible.filter { isSelectable(it, expert) && it.state == AppState.ENABLED }.map { it.packageName })
-                        }) { Text("Select all") }
-                        TextButton(onClick = { vm.setDebloatSelection(selection - visible.map { it.packageName }.toSet()) }) { Text("Clear") }
+                        }) { Text(stringResource(R.string.select_all)) }
+                        TextButton(onClick = { vm.setDebloatSelection(selection - visible.map { it.packageName }.toSet()) }) { Text(stringResource(R.string.clear)) }
                     }
                 }
             }
             if (loading && apps.isEmpty()) {
                 item { Box(Modifier.fillMaxWidth().padding(32.dp), contentAlignment = Alignment.Center) { CircularProgressIndicator() } }
             } else if (visible.isEmpty()) {
-                item { Text("No matching ADL apps on this phone.", Modifier.padding(24.dp)) }
+                item { Text(stringResource(R.string.no_adl), Modifier.padding(24.dp)) }
             }
             items(visible, key = { it.packageName }) { app ->
                 val selectable = isSelectable(app, expert)
@@ -181,10 +174,10 @@ fun AdlCheckScreen(vm: MainViewModel) {
                     AppRow(app, app.packageName in selection, selectable, onToggle = toggle, onClick = toggle, onInfo = { details = app })
                     Row(Modifier.padding(start = 64.dp, bottom = 4.dp), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
                         Text(
-                            "ADL: ${app.entry?.adlRemoval}" + (app.entry?.alternatives?.takeIf { it.isNotEmpty() }?.let { " · ${it.size} open-source alternative(s)" } ?: ""),
+                            stringResource(R.string.adl_alternatives, stringResource(AdlCategory.entries.first { it.key == app.entry!!.adlRemoval }.titleRes), app.entry?.alternatives?.size ?: 0),
                             style = MaterialTheme.typography.labelSmall,
                         )
-                        TextButton(onClick = { open(app.entry!!.adlUrl) }) { Text("View on ADL") }
+                        TextButton(onClick = { open(app.entry!!.adlUrl) }) { Text(stringResource(R.string.view_adl)) }
                     }
                 }
                 HorizontalDivider()

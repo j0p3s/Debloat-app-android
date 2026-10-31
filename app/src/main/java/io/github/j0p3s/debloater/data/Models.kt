@@ -1,6 +1,8 @@
 package io.github.j0p3s.debloater.data
 
 import android.content.pm.ApplicationInfo
+import androidx.annotation.StringRes
+import io.github.j0p3s.debloater.R
 
 /**
  * How safe it is to remove a package (ordered from least to most risky).
@@ -12,13 +14,13 @@ import android.content.pm.ApplicationInfo
  * - [UNSAFE]: critical. Removing it can break the phone or cause a boot loop. Locked unless expert mode is on.
  * - [UNKNOWN]: not in any debloat list.
  */
-enum class SafetyLevel(val title: String) {
-    RECOMMENDED("Recommended"),
-    SAFE("Safe"),
-    EXTREME("Extreme"),
-    EXPERT("Expert"),
-    UNSAFE("Unsafe"),
-    UNKNOWN("Unlisted");
+enum class SafetyLevel(val title: String, @param:StringRes @get:StringRes val titleRes: Int) {
+    RECOMMENDED("Recommended", R.string.recommended),
+    SAFE("Safe", R.string.safe),
+    EXTREME("Extreme", R.string.extreme),
+    EXPERT("Expert", R.string.expert),
+    UNSAFE("Unsafe", R.string.unsafe),
+    UNKNOWN("Unlisted", R.string.unlisted);
 
     /** Needs expert mode to be selected (for UNKNOWN only when it is a system app). */
     val needsExpertMode: Boolean get() = this == EXPERT || this == UNSAFE || this == UNKNOWN
@@ -83,10 +85,10 @@ data class DebloatEntry(
     }
 }
 
-enum class AppState(val title: String) {
-    ENABLED("Enabled"),
-    DISABLED("Disabled"),
-    UNINSTALLED("Removed"),
+enum class AppState(val title: String, @param:StringRes @get:StringRes val titleRes: Int) {
+    ENABLED("Enabled", R.string.enabled),
+    DISABLED("Disabled", R.string.disabled),
+    UNINSTALLED("Removed", R.string.removed),
 }
 
 data class AppInfo(
@@ -123,11 +125,11 @@ data class AppInfo(
 }
 
 /** What to do with a package. */
-enum class Action(val verb: String, val pastTense: String) {
-    DISABLE("Disable", "disabled"),
-    REMOVE("Remove", "removed"),
-    ENABLE("Enable", "enabled"),
-    RESTORE("Restore", "restored"),
+enum class Action(val verb: String, val pastTense: String, @param:StringRes @get:StringRes val verbRes: Int) {
+    DISABLE("Disable", "disabled", R.string.disable),
+    REMOVE("Remove", "removed", R.string.remove),
+    ENABLE("Enable", "enabled", R.string.enable),
+    RESTORE("Restore", "restored", R.string.restore),
 }
 
 /** Internal storage (/data) of the phone. */

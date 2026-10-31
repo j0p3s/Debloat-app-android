@@ -29,7 +29,7 @@ fun DebloaterRoot(vm: MainViewModel) {
 
     LaunchedEffect(message) {
         message?.let {
-            Toast.makeText(ctx, it, Toast.LENGTH_LONG).show()
+            Toast.makeText(ctx, ctx.getString(it.resource, *it.args.toTypedArray()), Toast.LENGTH_LONG).show()
             vm.consumeMessage()
         }
     }

@@ -1,11 +1,21 @@
 package io.github.j0p3s.debloater.backup
 
+import androidx.annotation.StringRes
+import io.github.j0p3s.debloater.R
 import io.github.j0p3s.debloater.data.Action
 import io.github.j0p3s.debloater.data.AppState
 import org.json.JSONArray
 import org.json.JSONObject
 
-enum class EntryStatus { PENDING, BACKED_UP, DONE, FAILED, SKIPPED, RESTORED, RESTORE_FAILED }
+enum class EntryStatus(@param:StringRes @get:StringRes val titleRes: Int) {
+    PENDING(R.string.status_pending),
+    BACKED_UP(R.string.status_backed_up),
+    DONE(R.string.status_done),
+    FAILED(R.string.status_failed),
+    SKIPPED(R.string.status_skipped),
+    RESTORED(R.string.status_restored),
+    RESTORE_FAILED(R.string.status_restore_failed)
+}
 
 data class BackupEntry(
     val packageName: String,

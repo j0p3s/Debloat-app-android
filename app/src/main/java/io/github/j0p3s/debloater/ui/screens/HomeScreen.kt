@@ -1,12 +1,13 @@
 package io.github.j0p3s.debloater.ui.screens
 
 import android.content.Intent
-import androidx.core.net.toUri
 import android.os.Build
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -35,33 +36,39 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import io.github.j0p3s.debloater.R
 import io.github.j0p3s.debloater.data.AppState
 import io.github.j0p3s.debloater.data.SafetyLevel
 import io.github.j0p3s.debloater.shizuku.ShizukuManager
 import io.github.j0p3s.debloater.shizuku.ShizukuStatus
 import io.github.j0p3s.debloater.ui.MainViewModel
 import io.github.j0p3s.debloater.ui.Screen
-import io.github.j0p3s.debloater.ops.OperationEngine
 import io.github.j0p3s.debloater.ui.components.StorageBar
+import io.github.j0p3s.debloater.ui.components.formatSize
 import io.github.j0p3s.debloater.ui.theme.ErrorColor
-import io.github.j0p3s.debloater.ui.theme.WarnColor
-import androidx.compose.material3.TextButton
 import io.github.j0p3s.debloater.ui.theme.OkColor
+import io.github.j0p3s.debloater.ui.theme.WarnColor
 import io.github.j0p3s.debloater.ui.theme.levelColor
 
 private val ANDROID_NAMES = mapOf(30 to "11", 31 to "12", 32 to "12L", 33 to "13", 34 to "14", 35 to "15", 36 to "16", 37 to "17")
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun HomeScreen(vm: MainViewModel) {
     val status by vm.shizukuStatus.collectAsStateWithLifecycle()
@@ -78,8 +85,8 @@ fun HomeScreen(vm: MainViewModel) {
             TopAppBar(
                 title = { Text("Debloater") },
                 actions = {
-                    IconButton(onClick = { vm.refreshShizuku(); vm.refreshApps() }) { Icon(Icons.Default.Refresh, "Refresh") }
-                    IconButton(onClick = { vm.navigate(Screen.SETTINGS) }) { Icon(Icons.Default.Settings, "Settings") }
+                    IconButton(onClick = { vm.refreshShizuku(); vm.refreshApps() }) { Icon(Icons.Default.Refresh, stringResource(R.string.refresh)) }
+                    IconButton(onClick = { vm.navigate(Screen.SETTINGS) }) { Icon(Icons.Default.Settings, stringResource(R.string.settings)) }
                 },
             )
         },
@@ -95,40 +102,46 @@ fun HomeScreen(vm: MainViewModel) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(if (ready) Icons.Default.CheckCircle else Icons.Default.Error, null, tint = if (ready) OkColor else ErrorColor)
                         Spacer(Modifier.width(8.dp))
-                        Text("Shizuku: " + statusText(status), style = MaterialTheme.typography.titleMedium)
+                        Text(stringResource(R.string.shizuku_status, statusText(status)), style = MaterialTheme.typography.titleMedium)
                     }
                     Text(statusHelp(status, uid), style = MaterialTheme.typography.bodyMedium)
                     when (status) {
                         ShizukuStatus.PERMISSION_REQUIRED, ShizukuStatus.PERMISSION_DENIED ->
-                            Button(onClick = { ShizukuManager.requestPermission() }) { Text("Grant permission") }
+                            Button(onClick = { ShizukuManager.requestPermission() }) { Text(stringResource(R.string.permission)) }
                         ShizukuStatus.NOT_RUNNING, ShizukuStatus.OUTDATED -> Button(onClick = {
                             ctx.packageManager.getLaunchIntentForPackage(ShizukuManager.SHIZUKU_PACKAGE)?.let { ctx.startActivity(it) }
-                        }) { Text("Open Shizuku") }
-                        ShizukuStatus.NOT_INSTALLED -> Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            Button(onClick = { open(ctx, "market://details?id=${ShizukuManager.SHIZUKU_PACKAGE}", "https://play.google.com/store/apps/details?id=${ShizukuManager.SHIZUKU_PACKAGE}") }) { Text("Play Store") }
-                            OutlinedButton(onClick = { open(ctx, "https://github.com/RikkaApps/Shizuku/releases", null) }) { Text("GitHub") }
+                        }) { Text(stringResource(R.string.open_shizuku)) }
+                        ShizukuStatus.NOT_INSTALLED -> FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Button(onClick = { open(ctx, "market://details?id=${ShizukuManager.SHIZUKU_PACKAGE}", "https://play.google.com/store/apps/details?id=${ShizukuManager.SHIZUKU_PACKAGE}") }) { Text(stringResource(R.string.play_store)) }
+                            OutlinedButton(onClick = { open(ctx, "https://github.com/RikkaApps/Shizuku/releases", null) }) { Text(stringResource(R.string.github)) }
                         }
                         ShizukuStatus.READY -> {}
                     }
                 }
             }
 
+            NavTile(Icons.Default.CleaningServices, stringResource(R.string.debloat), stringResource(R.string.nav_debloat_help)) { vm.navigate(Screen.DEBLOAT) }
+            GettingStartedCard()
+            NavTile(Icons.Default.Apps, stringResource(R.string.app_manager), stringResource(R.string.nav_manager_help)) { vm.navigate(Screen.APP_MANAGER) }
+            NavTile(Icons.Default.Backup, stringResource(R.string.backups_restore), stringResource(R.string.nav_backup_help, sessions.size)) { vm.navigate(Screen.BACKUPS) }
+            NavTile(Icons.Default.FactCheck, stringResource(R.string.adl_check), stringResource(R.string.nav_adl_help)) { vm.navigate(Screen.ADL_CHECK) }
+
             // ---- Device
             Card {
                 Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    Text("Device", style = MaterialTheme.typography.titleMedium)
+                    Text(stringResource(R.string.device), style = MaterialTheme.typography.titleMedium)
                     val sdk = Build.VERSION.SDK_INT
                     Text("${Build.MANUFACTURER.replaceFirstChar { it.uppercase() }} ${Build.MODEL}")
-                    Text("Android ${ANDROID_NAMES[sdk] ?: Build.VERSION.RELEASE} (API $sdk) · user ${vm.repo.userId}")
+                    Text(stringResource(R.string.android_user, ANDROID_NAMES[sdk] ?: Build.VERSION.RELEASE, sdk, vm.repo.userId))
                     val dv = vm.repo.deviceVendor
                     Text(
-                        if (dv != null) "Vendor: ${dv.name} · ${apps.count { it.vendor == dv.name && it.state == AppState.ENABLED }} active vendor apps"
-                        else "Vendor: not recognised (${Build.BRAND}); Google, AOSP and partner apps still apply",
+                        if (dv != null) stringResource(R.string.vendor_active, dv.name, apps.count { it.vendor == dv.name && it.state == AppState.ENABLED })
+                        else stringResource(R.string.vendor_unknown, Build.BRAND),
                         style = MaterialTheme.typography.bodySmall,
                     )
                     val supported = sdk in 30..37
                     Text(
-                        if (supported) "Supported (Android 11 to 17)" else "Newer than Android 17: untested, test runs are strongly advised",
+                        if (supported) stringResource(R.string.android_supported) else stringResource(R.string.android_untested),
                         color = if (supported) OkColor else ErrorColor,
                         style = MaterialTheme.typography.bodySmall,
                     )
@@ -139,40 +152,39 @@ fun HomeScreen(vm: MainViewModel) {
             storage?.let { st ->
                 Card {
                     Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                        Text("Storage", style = MaterialTheme.typography.titleMedium)
+                        Text(stringResource(R.string.storage), style = MaterialTheme.typography.titleMedium)
                         StorageBar(st)
                         val freed = sessions.sumOf { it.freedBytes }
                         Row {
-                            Text("Space freed by Debloater", Modifier.weight(1f), style = MaterialTheme.typography.bodySmall)
-                            Text(OperationEngine.fmtSize(freed), color = OkColor, fontWeight = FontWeight.SemiBold, style = MaterialTheme.typography.bodySmall)
+                            Text(stringResource(R.string.space_freed), Modifier.weight(1f), style = MaterialTheme.typography.bodySmall)
+                            Text(formatSize(freed), color = OkColor, fontWeight = FontWeight.SemiBold, style = MaterialTheme.typography.bodySmall)
                         }
                         Row {
-                            Text("Used by backups", Modifier.weight(1f), style = MaterialTheme.typography.bodySmall)
-                            Text(OperationEngine.fmtSize(backupsBytes), style = MaterialTheme.typography.bodySmall)
+                            Text(stringResource(R.string.backups_used), Modifier.weight(1f), style = MaterialTheme.typography.bodySmall)
+                            Text(formatSize(backupsBytes), style = MaterialTheme.typography.bodySmall)
                         }
                         if (apps.isNotEmpty()) {
                             val userApps = apps.filter { !it.isSystem && it.state != AppState.UNINSTALLED }
                             Row {
-                                Text("User apps (${userApps.size})", Modifier.weight(1f), style = MaterialTheme.typography.bodySmall)
-                                Text(OperationEngine.fmtSize(userApps.sumOf { it.totalBytes }), style = MaterialTheme.typography.bodySmall)
+                                Text(stringResource(R.string.user_count, userApps.size), Modifier.weight(1f), style = MaterialTheme.typography.bodySmall)
+                                Text(formatSize(userApps.sumOf { it.totalBytes }), style = MaterialTheme.typography.bodySmall)
                             }
                             val sys = apps.filter { it.isSystem && it.state != AppState.UNINSTALLED }
                             Row {
-                                Text("System apps (${sys.size})", Modifier.weight(1f), style = MaterialTheme.typography.bodySmall)
-                                Text(OperationEngine.fmtSize(sys.sumOf { it.totalBytes }), style = MaterialTheme.typography.bodySmall)
+                                Text(stringResource(R.string.system_count, sys.size), Modifier.weight(1f), style = MaterialTheme.typography.bodySmall)
+                                Text(formatSize(sys.sumOf { it.totalBytes }), style = MaterialTheme.typography.bodySmall)
                             }
                         }
                         if (!usageAccess) {
                             Text(
-                                "App data sizes are unknown: only APK sizes are shown. " +
-                                    if (status == ShizukuStatus.READY) "Tap to grant Usage access through Shizuku." else "Start Shizuku, or grant Usage access in Settings.",
+                                stringResource(R.string.usage_help),
                                 style = MaterialTheme.typography.bodySmall, color = WarnColor,
                             )
-                            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                                if (status == ShizukuStatus.READY) OutlinedButton(onClick = vm::grantUsageAccessWithShizuku) { Text("Grant with Shizuku") }
+                            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                                if (status == ShizukuStatus.READY) OutlinedButton(onClick = vm::grantUsageAccessWithShizuku) { Text(stringResource(R.string.grant_shizuku)) }
                                 TextButton(onClick = {
                                     runCatching { ctx.startActivity(Intent(android.provider.Settings.ACTION_USAGE_ACCESS_SETTINGS)) }
-                                }) { Text("Open settings") }
+                                }) { Text(stringResource(R.string.open_settings)) }
                             }
                         }
                     }
@@ -183,28 +195,23 @@ fun HomeScreen(vm: MainViewModel) {
             if (apps.isNotEmpty()) {
                 Card {
                     Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                        Text("On this device", style = MaterialTheme.typography.titleMedium)
+                        Text(stringResource(R.string.on_device), style = MaterialTheme.typography.titleMedium)
                         val dark = isSystemInDarkTheme()
                         listOf(SafetyLevel.RECOMMENDED, SafetyLevel.SAFE, SafetyLevel.EXTREME).forEach { level ->
                             val ofLevel = apps.filter { it.level == level }
                             val activeApps = ofLevel.filter { it.state == AppState.ENABLED }
                             Row {
-                                Text(level.title, color = levelColor(level, dark), fontWeight = FontWeight.SemiBold, modifier = Modifier.weight(1f))
-                                Text("${activeApps.size} active (${OperationEngine.fmtSize(activeApps.sumOf { it.totalBytes })}) · ${ofLevel.size - activeApps.size} done")
+                                Text(stringResource(level.titleRes), color = levelColor(level, dark), fontWeight = FontWeight.SemiBold, modifier = Modifier.weight(1f))
+                                Text(stringResource(R.string.tier_stats, activeApps.size, formatSize(activeApps.sumOf { it.totalBytes }), ofLevel.size - activeApps.size))
                             }
                         }
                         Text(
-                            "${apps.size} packages · ${apps.count { !it.isSystem }} user apps · ${apps.count { it.state == AppState.DISABLED }} disabled · ${apps.count { it.state == AppState.UNINSTALLED }} removed",
+                            stringResource(R.string.device_stats, apps.size, apps.count { !it.isSystem }, apps.count { it.state == AppState.DISABLED }, apps.count { it.state == AppState.UNINSTALLED }),
                             style = MaterialTheme.typography.bodySmall,
                         )
                     }
                 }
             }
-
-            NavTile(Icons.Default.CleaningServices, "Debloat", "Recommended, safe and extreme debloat lists with test runs") { vm.navigate(Screen.DEBLOAT) }
-            NavTile(Icons.Default.FactCheck, "Android Debloat List check", "See which apps from adl.muntashir.dev are installed on this phone") { vm.navigate(Screen.ADL_CHECK) }
-            NavTile(Icons.Default.Apps, "App manager", "Disable, remove or restore any user or system app") { vm.navigate(Screen.APP_MANAGER) }
-            NavTile(Icons.Default.Backup, "Backups & restore", "${sessions.size} backup(s). Restore points and APK copies are made before every change") { vm.navigate(Screen.BACKUPS) }
         }
     }
 }
@@ -223,22 +230,24 @@ private fun NavTile(icon: ImageVector, title: String, subtitle: String, onClick:
     }
 }
 
+@Composable
 private fun statusText(s: ShizukuStatus) = when (s) {
-    ShizukuStatus.NOT_INSTALLED -> "not installed"
-    ShizukuStatus.NOT_RUNNING -> "not running"
-    ShizukuStatus.PERMISSION_REQUIRED -> "permission needed"
-    ShizukuStatus.PERMISSION_DENIED -> "permission denied"
-    ShizukuStatus.OUTDATED -> "update required"
-    ShizukuStatus.READY -> "ready"
+    ShizukuStatus.NOT_INSTALLED -> stringResource(R.string.shizuku_missing)
+    ShizukuStatus.NOT_RUNNING -> stringResource(R.string.shizuku_stopped)
+    ShizukuStatus.PERMISSION_REQUIRED -> stringResource(R.string.shizuku_permission)
+    ShizukuStatus.PERMISSION_DENIED -> stringResource(R.string.shizuku_denied)
+    ShizukuStatus.OUTDATED -> stringResource(R.string.shizuku_outdated)
+    ShizukuStatus.READY -> stringResource(R.string.shizuku_ready)
 }
 
+@Composable
 private fun statusHelp(s: ShizukuStatus, uid: Int) = when (s) {
-    ShizukuStatus.NOT_INSTALLED -> "Install Shizuku, then start it with Wireless debugging (Android 11+) or with root. No PC needed."
-    ShizukuStatus.NOT_RUNNING -> "Open Shizuku and tap Start (Wireless debugging or root). It has to be started again after every reboot unless you have root."
-    ShizukuStatus.PERMISSION_REQUIRED -> "Allow Debloater to use Shizuku."
-    ShizukuStatus.PERMISSION_DENIED -> "Permission was denied. Tap to ask again, or allow Debloater in the Shizuku app."
-    ShizukuStatus.OUTDATED -> "Your Shizuku version is too old. Please update Shizuku."
-    ShizukuStatus.READY -> "Running as ${if (uid == 0) "root" else if (uid == 2000) "ADB shell" else "uid $uid"}. You can browse apps without Shizuku, but every change goes through it."
+    ShizukuStatus.NOT_INSTALLED -> stringResource(R.string.shizuku_install_help)
+    ShizukuStatus.NOT_RUNNING -> stringResource(R.string.shizuku_start_help)
+    ShizukuStatus.PERMISSION_REQUIRED -> stringResource(R.string.shizuku_allow_help)
+    ShizukuStatus.PERMISSION_DENIED -> stringResource(R.string.shizuku_denied_help)
+    ShizukuStatus.OUTDATED -> stringResource(R.string.shizuku_update_help)
+    ShizukuStatus.READY -> stringResource(R.string.shizuku_ready_help, if (uid == 0) "root" else if (uid == 2000) "ADB shell" else "uid $uid")
 }
 
 private fun open(ctx: android.content.Context, uri: String, fallback: String?) {
@@ -246,5 +255,22 @@ private fun open(ctx: android.content.Context, uri: String, fallback: String?) {
         ctx.startActivity(Intent(Intent.ACTION_VIEW, uri.toUri()).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
     } catch (_: Exception) {
         fallback?.let { runCatching { ctx.startActivity(Intent(Intent.ACTION_VIEW, it.toUri()).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) } }
+    }
+}
+
+@Composable
+private fun GettingStartedCard() {
+    var expanded by rememberSaveable { mutableStateOf(false) }
+    Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)) {
+        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(stringResource(R.string.start_title), style = MaterialTheme.typography.titleMedium)
+            TextButton(onClick = { expanded = !expanded }) {
+                Text(stringResource(if (expanded) R.string.hide_guide else R.string.show_guide))
+            }
+            if (expanded) {
+                Text(stringResource(R.string.start_steps), style = MaterialTheme.typography.bodyMedium)
+                Text(stringResource(R.string.test_limits), style = MaterialTheme.typography.bodySmall)
+            }
+        }
     }
 }
