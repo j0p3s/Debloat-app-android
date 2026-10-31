@@ -11,6 +11,7 @@ import io.github.j0p3s.debloater.backup.EntryStatus
 import io.github.j0p3s.debloater.data.Action
 import io.github.j0p3s.debloater.data.AppInfo
 import io.github.j0p3s.debloater.data.DebloatDatabase
+import io.github.j0p3s.debloater.data.ListUpdater
 import io.github.j0p3s.debloater.data.PackageRepository
 import io.github.j0p3s.debloater.data.Prefs
 import io.github.j0p3s.debloater.data.StorageInfo
@@ -24,6 +25,14 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+
+/** State of an in-app debloat list update. */
+sealed interface ListUpdateState {
+    data object Idle : ListUpdateState
+    data class Running(val step: String) : ListUpdateState
+    data class Done(val report: ListUpdater.Report) : ListUpdateState
+    data class Failed(val message: String) : ListUpdateState
+}
 
 enum class Screen { HOME, DEBLOAT, APP_MANAGER, OPERATION, BACKUPS, SETTINGS, ADL_CHECK }
 
@@ -45,7 +54,12 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     val backups = BackupManager(app)
     val engine = OperationEngine(repo, backups)
     val prefs = Prefs(app)
-    val database: DebloatDatabase by lazy { DebloatDatabase.get(app) }
+    /** Current debloat list (re-read after an in-app update). */
+    val database: DebloatDatabase get() = DebloatDatabase.get(getApplication())
+    val listUpdater = ListUpdater(app)
+
+    private val _listUpdate = MutableStateFlow<ListUpdateState>(ListUpdateState.Idle)
+    val listUpdate: StateFlow<ListUpdateState> = _listUpdate.asStateFlow()
 
     val shizukuStatus: StateFlow<ShizukuStatus> = ShizukuManager.status
     val shizukuUid: StateFlow<Int> = ShizukuManager.serverUid
@@ -96,6 +110,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     init {
         refreshApps()
         refreshSessions()
+        maybeAutoUpdateLists()
         // Once Shizuku is ready, give ourselves Usage access so exact data sizes can be read.
         viewModelScope.launch {
             shizukuStatus.collect { st ->
@@ -105,6 +120,40 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
                 }
             }
         }
+    }
+
+    // ------------------------------------------------------------ list updates
+
+    /** Downloads the newest lists from GitHub, validates them and reloads the app list. */
+    fun updateLists(silent: Boolean = false) {
+        if (_listUpdate.value is ListUpdateState.Running) return
+        viewModelScope.launch {
+            _listUpdate.value = ListUpdateState.Running("Starting…")
+            _listUpdate.value = try {
+                val report = listUpdater.update { step -> _listUpdate.value = ListUpdateState.Running(step) }
+                refreshApps()
+                if (silent && report.anyUpdated) _message.value = "Debloat lists updated (${report.packages} packages)"
+                ListUpdateState.Done(report)
+            } catch (t: Throwable) {
+                ListUpdateState.Failed(t.message ?: t.toString())
+            }
+        }
+    }
+
+    /** Goes back to the lists built into the APK. */
+    fun resetLists() {
+        viewModelScope.launch {
+            withContext(Dispatchers.IO) { listUpdater.reset() }
+            _listUpdate.value = ListUpdateState.Idle
+            refreshApps()
+            _message.value = "Using the built-in lists again"
+        }
+    }
+
+    private fun maybeAutoUpdateLists() {
+        if (!prefs.autoUpdateLists.value) return
+        val last = listUpdater.lastChecked() ?: 0L
+        if (System.currentTimeMillis() - last > 7L * 24 * 60 * 60 * 1000) updateLists(silent = true)
     }
 
     fun grantUsageAccessWithShizuku() {

@@ -37,6 +37,12 @@ An Android app that debloats **any Android version from Android 11 to Android 17
   which listed apps are installed, grouped by ADL's rating (Delete, Replace, Caution, Unsafe), with a link to
   each app's page on the site and its suggested open-source replacements. You can select and test/disable/remove
   them from there.
+- **Update lists in the app**: Settings → Debloat lists → *Update lists* downloads the newest UAD-NG, Android
+  Debloat List and System App Remover data (about 3 MB) straight from their GitHub repositories, after asking
+  first. The new files are loaded and checked before they replace the current lists; a source that fails keeps
+  its previous version, and *Use built-in* goes back to the lists inside the APK. Optional weekly automatic
+  check. Debloater's own list is only updated when its repository is public and has a higher `version`. The
+  internet permission is used for nothing else.
 - **Test run**: simulates the whole process step by step without changing anything. It checks Shizuku access,
   that the shell can see each package, that every APK can be read and backed up, and that there is enough free
   space. It shows every command that *would* run and reports whether any errors would happen. After a passed
@@ -107,8 +113,8 @@ GitHub Actions builds both APKs on every push (see the `debloater-apks` artifact
 ## License
 
 GPL-3.0, see `LICENSE`. The app bundles GPL-3.0 data from UAD-NG and System App Remover and AGPL-3.0 data
-from the Android Debloat List; see `NOTICE.md`. Update the lists with `tools/update_uad_list.sh` and
-`tools/update_adl_list.sh`.
+from the Android Debloat List; see `NOTICE.md`. The app can update the lists itself (Settings →
+Debloat lists); `tools/update_uad_list.sh` and `tools/update_adl_list.sh` update the copies built into the APK.
 
 ## Project layout
 

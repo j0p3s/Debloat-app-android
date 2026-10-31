@@ -37,14 +37,27 @@ class DebloatDatabase private constructor(private val entries: Map<String, Deblo
 
         fun get(context: Context): DebloatDatabase = instance ?: synchronized(this) {
             instance ?: run {
-                fun asset(name: String) = runCatching { context.assets.open(name).bufferedReader().use { it.readText() } }.getOrNull()
-                val adl = ADL_FILES.mapNotNull { asset("adl/$it.json") }
-                val suggestions = runCatching { context.assets.list("adl/suggestions") }.getOrNull().orEmpty()
-                    .filter { it.endsWith(".json") }
-                    .mapNotNull { f -> asset("adl/suggestions/$f")?.let { f.removeSuffix(".json") to it } }
-                    .toMap()
-                load(asset("debloat_list.json")!!, asset("uad_lists.json"), asset("uad_overrides.json"), adl, suggestions)
+                // Lists downloaded in the app (Settings > Update lists) win over the built-in ones.
+                val downloaded = runCatching { loadFrom(ListFiles(context, preferDownloaded = true)) }.getOrNull()
+                downloaded ?: loadFrom(ListFiles(context, preferDownloaded = false))
             }.also { instance = it }
+        }
+
+        /** Forget the loaded list, e.g. after an update, so the next [get] reads the files again. */
+        fun reset() {
+            synchronized(this) { instance = null }
+        }
+
+        /** Loads all sources through [files] (path relative to the list root, e.g. "adl/oem.json"). */
+        fun loadFrom(files: ListSource): DebloatDatabase {
+            val adl = ADL_FILES.mapNotNull { files.read("adl/$it.json") }
+            val suggestions = files.list("adl/suggestions").filter { it.endsWith(".json") }
+                .mapNotNull { f -> files.read("adl/suggestions/$f")?.let { f.removeSuffix(".json") to it } }
+                .toMap()
+            return load(
+                files.read("debloat_list.json") ?: error("debloat_list.json missing"),
+                files.read("uad_lists.json"), files.read("uad_overrides.json"), adl, suggestions,
+            )
         }
 
         fun load(
@@ -65,7 +78,8 @@ class DebloatDatabase private constructor(private val entries: Map<String, Deblo
 
             // 2. UAD-NG: {"package.name": {list, description, dependencies, neededBy, labels, removal}}
             if (uadJson != null) {
-                for ((pkg, o) in readObjectEntries(uadJson)) {
+                for ((pkg, value) in readObjectEntries(uadJson)) {
+                    val o = value as? JSONObject ?: continue
                     if (!PackageRepository.isValidPackageName(pkg)) continue
                     val level = uadLevel(o.optString("removal")) ?: continue
                     val details = o.optString("description").trim().ifBlank { null }
@@ -158,11 +172,7 @@ class DebloatDatabase private constructor(private val entries: Map<String, Deblo
 
             // 4. Overrides: "Unsafe", "Advanced" or "CantUninstall". Keys ending in "_" are prefixes.
             if (overridesJson != null) {
-                val ov = JSONObject(overridesJson).optJSONObject("overrides") ?: JSONObject()
-                val keys = ov.keys()
-                while (keys.hasNext()) {
-                    val key = keys.next()
-                    val kind = ov.optString(key)
+                for ((key, kind) in parseOverrides(overridesJson)) {
                     val targets = if (key.endsWith("_")) map.keys.filter { it.startsWith(key) } else listOf(key)
                     for (pkg in targets) {
                         if (!PackageRepository.isValidPackageName(pkg)) continue
@@ -189,23 +199,36 @@ class DebloatDatabase private constructor(private val entries: Map<String, Deblo
          * Reads the top-level object entry by entry. Unlike JSONObject(String) this accepts duplicate
          * keys (UAD-NG's file has a few): every occurrence is returned and merged with the stricter rating.
          */
-        private fun readObjectEntries(json: String): List<Pair<String, JSONObject>> {
+        /** Number of top-level entries in a JSON object, duplicates included. */
+        fun countEntries(json: String): Int = readObjectEntries(json).size
+
+        private fun readObjectEntries(json: String): List<Pair<String, Any>> {
             val t = JSONTokener(json)
-            val out = ArrayList<Pair<String, JSONObject>>(6000)
+            val out = ArrayList<Pair<String, Any>>(6000)
             if (t.nextClean() != '{') throw JSONException("Expected an object")
             if (t.nextClean() == '}') return out
             t.back()
             while (true) {
                 val key = t.nextValue() as? String ?: throw JSONException("Expected a key")
                 if (t.nextClean() != ':') throw JSONException("Expected ':' after $key")
-                val value = t.nextValue()
-                if (value is JSONObject) out += key to value
+                out += key to t.nextValue()
                 when (t.nextClean()) {
                     ',' -> continue
                     '}' -> return out
                     else -> throw JSONException("Expected ',' or '}' after $key")
                 }
             }
+        }
+
+        /**
+         * Overrides come either wrapped ({"overrides": {...}}, the bundled copy) or as the flat object
+         * published by System App Remover, which has duplicate keys. Both are accepted.
+         */
+        fun parseOverrides(json: String): List<Pair<String, String>> {
+            val entries = readObjectEntries(json)
+            val wrapped = entries.firstOrNull { it.first == "overrides" }?.second as? JSONObject
+            if (wrapped != null) return wrapped.keys().asSequence().map { it to wrapped.optString(it) }.toList()
+            return entries.mapNotNull { (k, v) -> (v as? String)?.let { k to it } }.distinctBy { it.first }
         }
 
         private fun JSONArray?.strings(): List<String> =
@@ -307,5 +330,37 @@ class DebloatDatabase private constructor(private val entries: Map<String, Deblo
                 sources = listOf(SOURCE_OWN),
             )
         }
+    }
+}
+
+/** Where list files come from: built-in assets, or files downloaded in the app. */
+interface ListSource {
+    fun read(path: String): String?
+    fun list(dir: String): List<String>
+}
+
+/**
+ * Built-in lists live in the APK assets; updated lists are downloaded to files/lists with the same paths.
+ * With [preferDownloaded] a downloaded file is used when present, otherwise the built-in one.
+ */
+class ListFiles(private val context: Context, private val preferDownloaded: Boolean) : ListSource {
+    private val root get() = java.io.File(context.filesDir, ListFiles.DIR)
+
+    override fun read(path: String): String? {
+        if (preferDownloaded) {
+            val f = java.io.File(root, path)
+            if (f.isFile) return runCatching { f.readText() }.getOrNull()
+        }
+        return runCatching { context.assets.open(path).bufferedReader().use { it.readText() } }.getOrNull()
+    }
+
+    override fun list(dir: String): List<String> {
+        val bundled = runCatching { context.assets.list(dir) }.getOrNull().orEmpty().toList()
+        val downloaded = if (preferDownloaded) java.io.File(root, dir).list().orEmpty().toList() else emptyList()
+        return (bundled + downloaded).distinct()
+    }
+
+    companion object {
+        const val DIR = "lists"
     }
 }

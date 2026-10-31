@@ -1,5 +1,5 @@
 {
- "version": 1,
+ "version": 2,
  "description": "Curated debloat list. Levels: RECOMMENDED, SAFE, EXTREME (always has a warning), UNSAFE (locked unless expert mode).",
  "packages": [
   {

@@ -7,6 +7,9 @@
         android:name="android.permission.QUERY_ALL_PACKAGES"
         tools:ignore="QueryAllPackagesPermission" />
 
+    <!-- Only used to download newer debloat lists when you ask for it (Settings > Debloat lists). -->
+    <uses-permission android:name="android.permission.INTERNET" />
+
     <!-- Usage access: lets StorageStatsManager report app/data/cache sizes of other apps.
          Granted through Shizuku with `appops set`, or manually in Settings > Usage access. -->
     <uses-permission

@@ -25,6 +25,14 @@ class Prefs(context: Context) {
         sp.edit { putString(KEY_SORT, v.name) }; _sort.value = v
     }
 
+    private val _autoUpdateLists = MutableStateFlow(sp.getBoolean(KEY_AUTO_UPDATE, false))
+    /** Download newer debloat lists automatically, at most once a week, when the app opens. */
+    val autoUpdateLists: StateFlow<Boolean> = _autoUpdateLists.asStateFlow()
+
+    fun setAutoUpdateLists(v: Boolean) {
+        sp.edit { putBoolean(KEY_AUTO_UPDATE, v) }; _autoUpdateLists.value = v
+    }
+
     fun setExpertMode(v: Boolean) {
         sp.edit { putBoolean(KEY_EXPERT, v) }; _expertMode.value = v
     }
@@ -37,5 +45,6 @@ class Prefs(context: Context) {
         const val KEY_EXPERT = "expert_mode"
         const val KEY_KEEP_DATA = "keep_data"
         const val KEY_SORT = "sort"
+        const val KEY_AUTO_UPDATE = "auto_update_lists"
     }
 }
