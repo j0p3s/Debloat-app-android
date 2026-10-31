@@ -16,8 +16,8 @@ import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LinearProgressIndicator
@@ -32,17 +32,19 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import io.github.j0p3s.debloater.R
 import io.github.j0p3s.debloater.data.Action
 import io.github.j0p3s.debloater.ops.LineKind
 import io.github.j0p3s.debloater.ui.MainViewModel
-import io.github.j0p3s.debloater.ops.OperationEngine
 import io.github.j0p3s.debloater.ui.components.BackTopBar
 import io.github.j0p3s.debloater.ui.components.StorageBar
+import io.github.j0p3s.debloater.ui.components.formatSize
 import io.github.j0p3s.debloater.ui.theme.ErrorColor
 import io.github.j0p3s.debloater.ui.theme.OkColor
 import io.github.j0p3s.debloater.ui.theme.WarnColor
@@ -62,12 +64,12 @@ fun OperationScreen(vm: MainViewModel) {
 
     Scaffold(
         topBar = {
-            BackTopBar(s.title, onBack = { vm.back() }) {
+            BackTopBar(if (s.dryRun) stringResource(R.string.test) else stringResource(s.action.verbRes), onBack = { vm.back() }) {
                 if (s.finished) {
                     IconButton(onClick = {
                         val send = Intent(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, vm.logText())
-                        ctx.startActivity(Intent.createChooser(send, "Share log"))
-                    }) { Icon(Icons.Default.Share, "Share log") }
+                        ctx.startActivity(Intent.createChooser(send, ctx.getString(R.string.share_log)))
+                    }) { Icon(Icons.Default.Share, stringResource(R.string.share_log)) }
                 }
             }
         },
@@ -75,7 +77,7 @@ fun OperationScreen(vm: MainViewModel) {
         Column(Modifier.padding(pad).fillMaxSize().padding(12.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             if (s.dryRun) {
                 Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer)) {
-                    Text("TEST MODE: the process is simulated and checked, and nothing on your device is changed.", Modifier.padding(12.dp), fontWeight = FontWeight.SemiBold)
+                    Text(stringResource(R.string.test_mode), Modifier.padding(12.dp), fontWeight = FontWeight.SemiBold)
                 }
             }
             LinearProgressIndicator(
@@ -83,7 +85,7 @@ fun OperationScreen(vm: MainViewModel) {
                 modifier = Modifier.fillMaxWidth(),
             )
             Text(
-                if (s.finished) "Done: ${s.processed}/${s.total}" else "Working on ${s.current ?: "…"} (${s.processed}/${s.total})",
+                stringResource(R.string.operation_progress, s.processed, s.total, s.current ?: "…"),
                 style = MaterialTheme.typography.labelLarge,
             )
             Row(horizontalArrangement = Arrangement.spacedBy(16.dp)) {
@@ -122,29 +124,28 @@ fun OperationScreen(vm: MainViewModel) {
             }
 
             if (!s.finished) {
-                OutlinedButton(onClick = vm::cancelOperation, modifier = Modifier.fillMaxWidth()) { Text("Cancel after the current app") }
+                OutlinedButton(onClick = vm::cancelOperation, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.cancel_after)) }
             } else {
                 val passed = s.failed == 0
                 Card(colors = CardDefaults.cardColors(containerColor = (if (passed) OkColor else ErrorColor).copy(alpha = 0.15f))) {
                     Column(Modifier.padding(12.dp)) {
                         Text(
                             when {
-                                s.dryRun && passed -> "Test passed: no errors. Nothing was changed."
-                                s.dryRun -> "Test found ${s.failed} problem(s). Nothing was changed."
-                                passed -> "Completed successfully"
-                                else -> "Completed with ${s.failed} error(s)"
+                                s.dryRun && passed -> stringResource(R.string.passed)
+                                s.dryRun -> stringResource(R.string.test_problems, s.failed)
+                                passed -> stringResource(R.string.completed)
+                                else -> stringResource(R.string.operation_errors, s.failed)
                             },
                             fontWeight = FontWeight.Bold,
                             color = if (passed) OkColor else ErrorColor,
                         )
                         if (!s.dryRun && s.sessionId != null) {
-                            Text("Backup saved as ${s.sessionId}. You can restore it in Backups & restore.", style = MaterialTheme.typography.bodySmall)
+                            Text(stringResource(R.string.backup_saved, s.sessionId ?: ""), style = MaterialTheme.typography.bodySmall)
                         }
                         if (s.action == Action.REMOVE || s.action == Action.DISABLE) {
                             Text(
-                                if (s.dryRun) "Would free about ${OperationEngine.fmtSize(s.estimatedBytes)}"
-                                else "Space freed: ${OperationEngine.fmtSize(s.freedBytes)} (estimated ${OperationEngine.fmtSize(s.estimatedBytes)})" +
-                                    if (s.backupBytes > 0) " · backups use ${OperationEngine.fmtSize(s.backupBytes)}" else "",
+                                if (s.dryRun) stringResource(R.string.would_free, formatSize(s.estimatedBytes))
+                                else stringResource(R.string.operation_storage, formatSize(s.freedBytes), formatSize(s.estimatedBytes), formatSize(s.backupBytes)),
                                 fontWeight = FontWeight.SemiBold,
                                 style = MaterialTheme.typography.bodySmall,
                             )
@@ -154,15 +155,15 @@ fun OperationScreen(vm: MainViewModel) {
                 }
                 if (!s.dryRun && s.action == Action.REMOVE && s.failedPackages.isNotEmpty()) {
                     OutlinedButton(onClick = vm::retryFailedWithDisable, modifier = Modifier.fillMaxWidth()) {
-                        Text("Retry ${s.failedPackages.size} failed app(s) with Disable")
+                        Text(stringResource(R.string.retry_disable, s.failedPackages.size))
                     }
                 }
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
-                    OutlinedButton(onClick = { vm.back() }, modifier = Modifier.weight(1f)) { Text("Close") }
+                    OutlinedButton(onClick = { vm.back() }, modifier = Modifier.weight(1f)) { Text(stringResource(R.string.close)) }
                     if (s.dryRun && s.ok > 0) {
                         val label = when (s.action) {
-                            Action.RESTORE -> "Restore now"
-                            else -> "Continue…"
+                            Action.RESTORE -> stringResource(R.string.restore_now)
+                            else -> stringResource(R.string.continue_action)
                         }
                         Button(
                             onClick = vm::runTestedForReal,

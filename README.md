@@ -5,6 +5,14 @@ An Android app that debloats **any Android version from Android 11 to Android 17
 
 ## Features
 
+- **Languages**: English, Spanish, French and German. The app follows the device language by default.
+  Choose another language in **Settings → Language**, or in Android's per-app language settings on
+  Android 13+. Your choice is remembered on Android 11 and 12 too. Source app descriptions, warnings
+  and technical logs can remain in English; the interface and confirmation guidance are translated.
+- **Getting started**: the home screen puts the main actions first and explains the workflow.
+  Debloat opens on **Recommended**. Selection actions wrap for longer translations and large fonts,
+  with **Test first** as the primary action. A test checks access and backups; it cannot predict every
+  effect on phone features.
 - **Debloat lists** with about 5,400 packages, merged from three sources (the most cautious rating wins when
   they disagree):
   - Debloater's own list (473 packages with short descriptions, warnings and per-Android-version rules),
@@ -86,12 +94,12 @@ An Android app that debloats **any Android version from Android 11 to Android 17
 ## Usage
 
 1. Install and start Shizuku, then open Debloater and grant the Shizuku permission.
-2. Open **Debloat**, pick a tab, select packages (or **Select all**).
-3. Tap **Test** to see the whole process without changing anything.
+2. Open **Debloat**. Start with a few apps you do not use in **Recommended**.
+3. Tap **Test first** to check the process without changing anything. Read each app's warnings too.
 4. If the test passes, tap **Continue…** and choose **Disable** or **Remove**.
 5. Use **Backups & restore** to undo anything.
 
-Prefer **Disable** for Extreme packages: it is the easiest change to undo.
+For a first attempt, prefer **Disable** for any tier. It keeps the app and its data and is easy to undo.
 
 ## Limitations
 
@@ -104,11 +112,15 @@ Prefer **Disable** for Extreme packages: it is the easiest change to undo.
 ## Building
 
 ```bash
+python3 tools/check_translations.py           # coverage and format arguments for every language
 ./gradlew testDebugUnitTest assembleDebug     # app/build/outputs/apk/debug/app-debug.apk
+./gradlew lintDebug
 ./gradlew assembleRelease                     # minified, signed with the debug key for sideloading
 ```
 
 GitHub Actions builds both APKs on every push (see the `debloater-apks` artifact).
+
+See [localization guidance](docs/LOCALIZATION.md) for adding translations and checking language changes.
 
 ## License
 
