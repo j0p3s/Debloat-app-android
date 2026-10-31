@@ -265,4 +265,5 @@
     <string name="show_guide">Show getting-started guide</string>
     <string name="hide_guide">Hide guide</string>
     <string name="updating_lists">Updating lists…</string>
+    <string name="own_list_builtin">Bundled with the app; updated through APK releases. ADL and UAD update separately.</string>
 </resources>

@@ -2,14 +2,13 @@ package io.github.j0p3s.debloater.data
 
 import android.content.Context
 import io.github.j0p3s.debloater.BuildConfig
+import io.github.j0p3s.debloater.R
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.File
 import java.io.IOException
-import java.net.HttpURLConnection
-import java.net.URL
 import java.security.MessageDigest
 
 /**
@@ -68,7 +67,7 @@ class ListUpdater(private val context: Context) {
         progress("Downloading the UAD-NG list…")
         results += runSource("UAD-NG") {
             val text = download(UAD_URL)
-            val n = DebloatDatabase.countEntries(text)
+            val n = DebloatDatabase.load("""{"packages":[]}""", uadJson = text).countFrom(DebloatDatabase.SOURCE_UAD)
             if (n < 1000) throw IOException("only $n packages, looks incomplete")
             if (!changed("uad_lists.json", text)) SourceResult("UAD-NG", SourceResult.Status.UNCHANGED, "$n packages")
             else { write("uad_lists.json", text); SourceResult("UAD-NG", SourceResult.Status.UPDATED, "$n packages") }
@@ -86,16 +85,23 @@ class ListUpdater(private val context: Context) {
                 for (i in 0 until a.length()) a.optJSONObject(i)?.optString("suggestions")?.takeIf { it.isNotBlank() }?.let { suggestionIds += it }
             }
             if (total < 1000) throw IOException("only $total packages, looks incomplete")
-            var anyChange = false
-            files.forEach { (name, text) -> if (changed("adl/$name.json", text)) { write("adl/$name.json", text); anyChange = true } }
+            // Validate actual package records before staging any file from this source.
+            val parsed = DebloatDatabase.load("""{"packages":[]}""", adlJsons = files.values.toList())
+            if (parsed.countFrom(DebloatDatabase.SOURCE_ADL) < 1000) throw IOException("too few valid ADL packages")
+            val staged = files.mapKeys { (name, _) -> "adl/$name.json" }.toMutableMap()
+            var missingSuggestions = 0
             progress("Downloading ${suggestionIds.size} suggestion lists…")
             for (id in suggestionIds) {
                 if (!PackageRepository.isValidPackageName(id)) continue
-                val text = runCatching { download("$ADL_BASE/suggestions/$id.json") }.getOrNull() ?: continue
-                if (runCatching { JSONArray(text) }.isFailure) continue
-                if (changed("adl/suggestions/$id.json", text)) { write("adl/suggestions/$id.json", text); anyChange = true }
+                val text = runCatching { download("$ADL_BASE/suggestions/$id.json") }.getOrNull()
+                if (text == null) { missingSuggestions++; continue }
+                if (runCatching { JSONArray(text) }.isFailure) { missingSuggestions++; continue }
+                staged["adl/suggestions/$id.json"] = text
             }
-            SourceResult("Android Debloat List", if (anyChange) SourceResult.Status.UPDATED else SourceResult.Status.UNCHANGED, "$total packages")
+            var anyChange = false
+            staged.forEach { (path, text) -> if (changed(path, text)) { write(path, text); anyChange = true } }
+            val detail = "$total packages" + if (missingSuggestions > 0) "; $missingSuggestions suggestion lists unavailable (previous copies kept)" else ""
+            SourceResult("Android Debloat List", if (anyChange) SourceResult.Status.UPDATED else SourceResult.Status.UNCHANGED, detail)
         }
 
         // 3. System App Remover overrides
@@ -111,19 +117,9 @@ class ListUpdater(private val context: Context) {
             else { write("uad_overrides.json", text); SourceResult("System App Remover", SourceResult.Status.UPDATED, "$n overrides") }
         }
 
-        // 4. Debloater's own list (only if the repository is public and has a newer version)
-        progress("Checking Debloater's own list…")
-        results += runSource("Debloater list") {
-            val text = try {
-                download(OWN_URL)
-            } catch (e: IOException) {
-                return@runSource SourceResult("Debloater list", SourceResult.Status.SKIPPED, "not published (${e.message})")
-            }
-            val newVersion = JSONObject(text).optInt("version")
-            val curVersion = current.read("debloat_list.json")?.let { JSONObject(it).optInt("version") } ?: 0
-            if (newVersion <= curVersion) SourceResult("Debloater list", SourceResult.Status.UNCHANGED, "version $curVersion")
-            else { write("debloat_list.json", text); SourceResult("Debloater list", SourceResult.Status.UPDATED, "version $newVersion") }
-        }
+        // The app repository is private. Do not send unauthenticated requests that always return 404,
+        // or embed credentials in the APK. App-specific rules ship with APK updates.
+        results += SourceResult("Debloater list", SourceResult.Status.SKIPPED, context.getString(R.string.own_list_builtin))
 
         // Validate the whole merged list from the new files before switching.
         progress("Checking the new lists…")
@@ -185,36 +181,8 @@ class ListUpdater(private val context: Context) {
             "https://raw.githubusercontent.com/Universal-Debloater-Alliance/universal-android-debloater-next-generation/main/resources/assets/uad_lists.json"
         const val ADL_BASE = "https://raw.githubusercontent.com/MuntashirAkon/android-debloat-list/master"
         const val SAR_URL = "https://raw.githubusercontent.com/santhosh-D-subramani/Debloater/main/uad_overrides.json"
-        const val OWN_URL = "https://raw.githubusercontent.com/j0p3s/Debloat-app-android/main/app/src/main/assets/debloat_list.json"
-        private const val MAX_BYTES = 16L * 1024 * 1024
-
-        fun download(url: String): String {
-            require(url.startsWith("https://")) { "Only HTTPS downloads are allowed" }
-            val c = URL(url).openConnection() as HttpURLConnection
-            try {
-                c.connectTimeout = 15_000
-                c.readTimeout = 30_000
-                c.setRequestProperty("User-Agent", "Debloater/${BuildConfig.VERSION_NAME} (Android)")
-                val code = c.responseCode
-                if (code != HttpURLConnection.HTTP_OK) throw IOException("HTTP $code")
-                val bytes = c.inputStream.use { input ->
-                    val out = java.io.ByteArrayOutputStream()
-                    val buf = ByteArray(64 * 1024)
-                    var total = 0L
-                    while (true) {
-                        val n = input.read(buf)
-                        if (n < 0) break
-                        total += n
-                        if (total > MAX_BYTES) throw IOException("File too large")
-                        out.write(buf, 0, n)
-                    }
-                    out.toByteArray()
-                }
-                return String(bytes, Charsets.UTF_8)
-            } finally {
-                c.disconnect()
-            }
-        }
+        fun download(url: String): String =
+            ListDownload.read(url, "Debloater/${BuildConfig.VERSION_NAME} (Android)")
 
         fun sha(text: String): String =
             MessageDigest.getInstance("SHA-256").digest(text.toByteArray()).joinToString("") { "%02x".format(it) }

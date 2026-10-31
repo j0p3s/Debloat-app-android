@@ -31,6 +31,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -48,6 +49,7 @@ import kotlinx.coroutines.withContext
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun SettingsScreen(vm: MainViewModel) {
+    val uriHandler = LocalUriHandler.current
     val expert by vm.prefs.expertMode.collectAsStateWithLifecycle()
     val keepData by vm.prefs.keepData.collectAsStateWithLifecycle()
     var askExpert by remember { mutableStateOf(false) }
@@ -95,6 +97,15 @@ fun SettingsScreen(vm: MainViewModel) {
             Card {
                 Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     Text(stringResource(R.string.debloat_lists), style = MaterialTheme.typography.titleMedium)
+                    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        TextButton(onClick = { uriHandler.openUri(ListUpdater.UAD_URL) }) { Text("UAD-NG") }
+                        TextButton(onClick = { uriHandler.openUri("https://github.com/MuntashirAkon/android-debloat-list") }) { Text("Android Debloat List") }
+                    }
+                    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        DebloatDatabase.ADL_FILES.forEach { name ->
+                            TextButton(onClick = { uriHandler.openUri("${ListUpdater.ADL_BASE}/$name.json") }) { Text("$name.json") }
+                        }
+                    }
                     Text(stats?.let { stringResource(R.string.list_stats, *it.toTypedArray()) } ?: stringResource(R.string.loading), style = MaterialTheme.typography.bodySmall)
                     Text(
                         vm.listUpdater.lastUpdated()?.let { stringResource(R.string.lists_downloaded, dateFmt.format(java.util.Date(it))) }
