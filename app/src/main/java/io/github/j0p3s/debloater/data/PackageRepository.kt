@@ -23,6 +23,9 @@ class PackageRepository(private val context: Context) {
     /** Android user id this app runs as (0 for the main user, 10+ for secondary users/work profiles). */
     val userId: Int = Process.myUid() / 100_000
 
+    /** Brand of this phone, e.g. Xiaomi / Redmi / POCO for a Redmi Note. */
+    val deviceVendor: Vendor? = VendorCatalog.detect(Build.MANUFACTURER, Build.BRAND)
+
     private val storageStats: StorageStatsManager? = context.getSystemService(StorageStatsManager::class.java)
 
     suspend fun loadAll(): List<AppInfo> = withContext(Dispatchers.IO) {
@@ -99,6 +102,7 @@ class PackageRepository(private val context: Context) {
         val stats = if (exactSizes) runCatching {
             storageStats!!.queryStatsForPackage(ai.storageUuid, ai.packageName, Process.myUserHandle())
         }.getOrNull() else null
+        val entry = db.get(ai.packageName, Build.VERSION.SDK_INT)
         return AppInfo(
             packageName = ai.packageName,
             label = runCatching { ai.loadLabel(pm).toString() }.getOrDefault(ai.packageName),
@@ -108,7 +112,8 @@ class PackageRepository(private val context: Context) {
             versionCode = info?.longVersionCode ?: 0L,
             apkPaths = paths,
             apkSize = apkSize,
-            entry = db.get(ai.packageName, Build.VERSION.SDK_INT),
+            entry = entry,
+            vendor = VendorCatalog.vendorOf(ai.packageName, entry?.vendor),
             protectedReason = protected[ai.packageName],
             applicationInfo = ai,
             appBytes = stats?.appBytes ?: apkSize,

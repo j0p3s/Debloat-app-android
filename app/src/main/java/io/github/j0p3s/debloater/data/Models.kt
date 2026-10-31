@@ -63,6 +63,8 @@ data class AppInfo(
     val cacheBytes: Long = 0,
     /** True when sizes come from StorageStatsManager (needs Usage access), false = APK size only. */
     val sizeExact: Boolean = false,
+    /** Phone maker or publisher, e.g. "Samsung" or "Google" ([VendorCatalog]). */
+    val vendor: String = VendorCatalog.OTHER,
 ) {
     val totalBytes: Long get() = appBytes + dataBytes
     val isProtected get() = protectedReason != null

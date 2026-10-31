@@ -5,14 +5,20 @@ An Android app that debloats **any Android version from Android 11 to Android 17
 
 ## Features
 
-- **Debloat lists** (390 curated packages for Google/AOSP, Samsung, Xiaomi, OnePlus/OPPO/Realme, Motorola,
-  Huawei, Facebook, Microsoft, Amazon, carriers and preinstalled partner apps):
+- **Debloat lists** (473 curated packages for Google/AOSP, Samsung, Xiaomi/Redmi/POCO, Nubia/RedMagic, ZTE, LG,
+  Sony, OnePlus/OPPO/Realme, vivo/iQOO, Motorola, Huawei/Honor, ASUS, Nokia/HMD, TECNO/Infinix/itel, Lenovo,
+  Facebook, Microsoft, Amazon, carriers and preinstalled partner apps):
   - **Recommended**: ads, telemetry, sponsored installers and duplicates. Safe for almost everyone.
   - **Safe**: no effect on the system, but apps you might still use (YouTube, Maps, Gmail…).
   - **Extreme**: aggressive debloat. Every entry has a **warning** that says what breaks, and you must
     confirm that you read the warnings.
   - **Unsafe / Unlisted** (expert mode only): critical packages and system apps not in the list.
   - Some entries change level per Android version (for example Health Connect became a system module in Android 14).
+- **Debloat by vendor**: the phone's brand is detected automatically (Redmi and POCO map to Xiaomi, RedMagic
+  to Nubia, and so on). Filter the lists by vendor and select one vendor's apps in one tap: Recommended only,
+  Recommended + Safe, or everything including Extreme. Packages that are not in the list are still grouped
+  by vendor from their package name (for example `com.zte.*`, `cn.nubia.*`, `com.lge.*`), so in expert mode
+  the Unlisted tab and the app manager can filter and remove any vendor's apps too.
 - **Test run**: simulates the whole process step by step without changing anything. It checks Shizuku access,
   that the shell can see each package, that every APK can be read and backed up, and that there is enough free
   space. It shows every command that *would* run and reports whether any errors would happen. After a passed

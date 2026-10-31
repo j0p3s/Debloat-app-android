@@ -98,6 +98,7 @@ fun StatePill(state: AppState) {
     Pill(state.title, c)
 }
 
+@OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
 @Composable
 fun AppRow(
     app: AppInfo,
@@ -129,10 +130,15 @@ fun AppRow(
                 maxLines = 1, overflow = TextOverflow.Ellipsis)
             Text(app.packageName, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1, overflow = TextOverflow.Ellipsis)
-            Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.padding(top = 4.dp)) {
+            androidx.compose.foundation.layout.FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+                modifier = Modifier.padding(top = 4.dp),
+            ) {
                 LevelPill(app.level)
                 if (app.state != AppState.ENABLED) StatePill(app.state)
                 Pill(if (app.isSystem) "System" else "User", MaterialTheme.colorScheme.outline)
+                if (app.vendor != io.github.j0p3s.debloater.data.VendorCatalog.OTHER) Pill(app.vendor, MaterialTheme.colorScheme.tertiary)
                 if (app.totalBytes > 0) Pill(sizeLabel(app), MaterialTheme.colorScheme.outline)
             }
             if (showDescription) {
@@ -192,6 +198,37 @@ fun StorageBar(storage: StorageInfo, modifier: Modifier = Modifier) {
                 style = MaterialTheme.typography.bodySmall, modifier = Modifier.weight(1f),
             )
             Text("${OperationEngine.fmtSize(storage.freeBytes)} free", style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.SemiBold)
+        }
+    }
+}
+
+/**
+ * Horizontal row of vendor filter chips. [counts] maps vendor name to number of apps,
+ * [selected] null means "All vendors". The detected brand of this phone is listed first.
+ */
+@Composable
+fun VendorChips(
+    counts: Map<String, Int>,
+    selected: String?,
+    deviceVendor: String?,
+    onSelect: (String?) -> Unit,
+) {
+    val ordered = counts.entries
+        .sortedWith(compareByDescending<Map.Entry<String, Int>> { it.key == deviceVendor }.thenByDescending { it.value })
+    androidx.compose.foundation.lazy.LazyRow(horizontalArrangement = Arrangement.spacedBy(6.dp)) {
+        item {
+            androidx.compose.material3.FilterChip(
+                selected = selected == null, onClick = { onSelect(null) },
+                label = { Text("All vendors (${counts.values.sum()})") },
+            )
+        }
+        items(ordered.size) { i ->
+            val (name, n) = ordered[i]
+            androidx.compose.material3.FilterChip(
+                selected = selected == name,
+                onClick = { onSelect(if (selected == name) null else name) },
+                label = { Text(if (name == deviceVendor) "📱 $name ($n)" else "$name ($n)") },
+            )
         }
     }
 }

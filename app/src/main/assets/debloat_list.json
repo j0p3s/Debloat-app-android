@@ -2148,105 +2148,105 @@
   {
    "id": "com.miui.analytics",
    "name": "MIUI Analytics",
-   "vendor": "Xiaomi",
+   "vendor": "Xiaomi / Redmi / POCO",
    "level": "RECOMMENDED",
    "desc": "Telemetry."
   },
   {
    "id": "com.miui.msa.global",
    "name": "MIUI System Ads",
-   "vendor": "Xiaomi",
+   "vendor": "Xiaomi / Redmi / POCO",
    "level": "RECOMMENDED",
    "desc": "System-wide ads."
   },
   {
    "id": "com.miui.systemAdSolution",
    "name": "MIUI Ad Solution",
-   "vendor": "Xiaomi",
+   "vendor": "Xiaomi / Redmi / POCO",
    "level": "RECOMMENDED",
    "desc": "System-wide ads."
   },
   {
    "id": "com.miui.daemon",
    "name": "MIUI Daemon",
-   "vendor": "Xiaomi",
+   "vendor": "Xiaomi / Redmi / POCO",
    "level": "RECOMMENDED",
    "desc": "Collects usage statistics."
   },
   {
    "id": "com.miui.bugreport",
    "name": "Bug Report",
-   "vendor": "Xiaomi",
+   "vendor": "Xiaomi / Redmi / POCO",
    "level": "RECOMMENDED",
    "desc": "Feedback tool."
   },
   {
    "id": "com.miui.hybrid",
    "name": "Quick Apps",
-   "vendor": "Xiaomi",
+   "vendor": "Xiaomi / Redmi / POCO",
    "level": "RECOMMENDED",
    "desc": "Instant mini-apps."
   },
   {
    "id": "com.miui.hybrid.accessory",
    "name": "Quick Apps accessory",
-   "vendor": "Xiaomi",
+   "vendor": "Xiaomi / Redmi / POCO",
    "level": "RECOMMENDED",
    "desc": "Instant mini-apps."
   },
   {
    "id": "com.miui.yellowpage",
    "name": "Yellow Pages",
-   "vendor": "Xiaomi",
+   "vendor": "Xiaomi / Redmi / POCO",
    "level": "RECOMMENDED",
    "desc": "Caller ID directory."
   },
   {
    "id": "com.xiaomi.mipicks",
    "name": "GetApps",
-   "vendor": "Xiaomi",
+   "vendor": "Xiaomi / Redmi / POCO",
    "level": "RECOMMENDED",
    "desc": "Xiaomi app store with ads."
   },
   {
    "id": "com.xiaomi.discover",
    "name": "System apps updater",
-   "vendor": "Xiaomi",
+   "vendor": "Xiaomi / Redmi / POCO",
    "level": "RECOMMENDED",
    "desc": "Updates Xiaomi apps."
   },
   {
    "id": "com.miui.miservice",
    "name": "Services & feedback",
-   "vendor": "Xiaomi",
+   "vendor": "Xiaomi / Redmi / POCO",
    "level": "RECOMMENDED",
    "desc": "Support app."
   },
   {
    "id": "com.xiaomi.glgm",
    "name": "Games",
-   "vendor": "Xiaomi",
+   "vendor": "Xiaomi / Redmi / POCO",
    "level": "RECOMMENDED",
    "desc": "Games hub."
   },
   {
    "id": "com.miui.android.fashiongallery",
    "name": "Wallpaper carousel",
-   "vendor": "Xiaomi",
+   "vendor": "Xiaomi / Redmi / POCO",
    "level": "RECOMMENDED",
    "desc": "Lock screen wallpaper ads."
   },
   {
    "id": "com.xiaomi.mirecycle",
    "name": "Mi Recycle",
-   "vendor": "Xiaomi",
+   "vendor": "Xiaomi / Redmi / POCO",
    "level": "RECOMMENDED",
    "desc": "Recycling info."
   },
   {
    "id": "com.mi.globalbrowser",
    "name": "Mi Browser",
-   "vendor": "Xiaomi",
+   "vendor": "Xiaomi / Redmi / POCO",
    "level": "SAFE",
    "desc": "Browser.",
    "warn": "Install another browser first."
@@ -2254,49 +2254,49 @@
   {
    "id": "com.miui.player",
    "name": "Mi Music",
-   "vendor": "Xiaomi",
+   "vendor": "Xiaomi / Redmi / POCO",
    "level": "SAFE",
    "desc": "Music player."
   },
   {
    "id": "com.miui.videoplayer",
    "name": "Mi Video",
-   "vendor": "Xiaomi",
+   "vendor": "Xiaomi / Redmi / POCO",
    "level": "SAFE",
    "desc": "Video player."
   },
   {
    "id": "com.miui.notes",
    "name": "Notes",
-   "vendor": "Xiaomi",
+   "vendor": "Xiaomi / Redmi / POCO",
    "level": "SAFE",
    "desc": "Notes app."
   },
   {
    "id": "com.miui.compass",
    "name": "Compass",
-   "vendor": "Xiaomi",
+   "vendor": "Xiaomi / Redmi / POCO",
    "level": "SAFE",
    "desc": "Compass."
   },
   {
    "id": "com.miui.weather2",
    "name": "Weather",
-   "vendor": "Xiaomi",
+   "vendor": "Xiaomi / Redmi / POCO",
    "level": "SAFE",
    "desc": "Weather."
   },
   {
    "id": "com.miui.fm",
    "name": "FM Radio",
-   "vendor": "Xiaomi",
+   "vendor": "Xiaomi / Redmi / POCO",
    "level": "SAFE",
    "desc": "Radio."
   },
   {
    "id": "com.mi.android.globalFileexplorer",
    "name": "File Manager",
-   "vendor": "Xiaomi",
+   "vendor": "Xiaomi / Redmi / POCO",
    "level": "SAFE",
    "desc": "File manager.",
    "warn": "Install another file manager first."
@@ -2304,126 +2304,126 @@
   {
    "id": "com.miui.cloudservice",
    "name": "Xiaomi Cloud",
-   "vendor": "Xiaomi",
+   "vendor": "Xiaomi / Redmi / POCO",
    "level": "SAFE",
    "desc": "Xiaomi cloud sync."
   },
   {
    "id": "com.miui.cloudbackup",
    "name": "Cloud Backup",
-   "vendor": "Xiaomi",
+   "vendor": "Xiaomi / Redmi / POCO",
    "level": "SAFE",
    "desc": "Xiaomi cloud backup."
   },
   {
    "id": "com.miui.micloudsync",
    "name": "Cloud Sync",
-   "vendor": "Xiaomi",
+   "vendor": "Xiaomi / Redmi / POCO",
    "level": "SAFE",
    "desc": "Xiaomi cloud sync."
   },
   {
    "id": "com.miui.cleanmaster",
    "name": "Cleaner",
-   "vendor": "Xiaomi",
+   "vendor": "Xiaomi / Redmi / POCO",
    "level": "SAFE",
    "desc": "Cleaner."
   },
   {
    "id": "com.xiaomi.midrop",
    "name": "ShareMe",
-   "vendor": "Xiaomi",
+   "vendor": "Xiaomi / Redmi / POCO",
    "level": "SAFE",
    "desc": "File sharing."
   },
   {
    "id": "com.mi.health",
    "name": "Mi Health",
-   "vendor": "Xiaomi",
+   "vendor": "Xiaomi / Redmi / POCO",
    "level": "SAFE",
    "desc": "Health app."
   },
   {
    "id": "com.miui.calculator",
    "name": "Calculator",
-   "vendor": "Xiaomi",
+   "vendor": "Xiaomi / Redmi / POCO",
    "level": "SAFE",
    "desc": "Calculator."
   },
   {
    "id": "com.xiaomi.scanner",
    "name": "Scanner",
-   "vendor": "Xiaomi",
+   "vendor": "Xiaomi / Redmi / POCO",
    "level": "SAFE",
    "desc": "QR/document scanner."
   },
   {
    "id": "com.miui.screenrecorder",
    "name": "Screen Recorder",
-   "vendor": "Xiaomi",
+   "vendor": "Xiaomi / Redmi / POCO",
    "level": "SAFE",
    "desc": "Screen recorder."
   },
   {
    "id": "com.duokan.phone.remotecontroller",
    "name": "Mi Remote",
-   "vendor": "Xiaomi",
+   "vendor": "Xiaomi / Redmi / POCO",
    "level": "SAFE",
    "desc": "IR remote."
   },
   {
    "id": "com.mipay.wallet",
    "name": "Mi Pay",
-   "vendor": "Xiaomi",
+   "vendor": "Xiaomi / Redmi / POCO",
    "level": "SAFE",
    "desc": "Payments."
   },
   {
    "id": "com.xiaomi.payment",
    "name": "Mi Credit",
-   "vendor": "Xiaomi",
+   "vendor": "Xiaomi / Redmi / POCO",
    "level": "SAFE",
    "desc": "Payments."
   },
   {
    "id": "com.miui.huanji",
    "name": "Mi Mover",
-   "vendor": "Xiaomi",
+   "vendor": "Xiaomi / Redmi / POCO",
    "level": "SAFE",
    "desc": "Data transfer."
   },
   {
    "id": "com.miui.touchassistant",
    "name": "Quick Ball",
-   "vendor": "Xiaomi",
+   "vendor": "Xiaomi / Redmi / POCO",
    "level": "SAFE",
    "desc": "Floating shortcut ball."
   },
   {
    "id": "com.miui.virtualsim",
    "name": "Mi Roaming",
-   "vendor": "Xiaomi",
+   "vendor": "Xiaomi / Redmi / POCO",
    "level": "SAFE",
    "desc": "Virtual SIM roaming."
   },
   {
    "id": "com.miui.newmidrive",
    "name": "Mi Drive",
-   "vendor": "Xiaomi",
+   "vendor": "Xiaomi / Redmi / POCO",
    "level": "SAFE",
    "desc": "Cloud drive."
   },
   {
    "id": "com.miui.personalassistant",
    "name": "App Vault",
-   "vendor": "Xiaomi",
+   "vendor": "Xiaomi / Redmi / POCO",
    "level": "SAFE",
    "desc": "Swipe-left widgets page."
   },
   {
    "id": "com.facemoji.lite.xiaomi",
    "name": "Facemoji Keyboard",
-   "vendor": "Xiaomi",
+   "vendor": "Xiaomi / Redmi / POCO",
    "level": "SAFE",
    "desc": "Keyboard.",
    "warn": "Make sure another keyboard is selected first."
@@ -2431,7 +2431,7 @@
   {
    "id": "com.xiaomi.joyose",
    "name": "Joyose",
-   "vendor": "Xiaomi",
+   "vendor": "Xiaomi / Redmi / POCO",
    "level": "EXTREME",
    "desc": "Thermal and game performance control.",
    "warn": "Some devices throttle more or lose performance profiles."
@@ -2439,7 +2439,7 @@
   {
    "id": "com.miui.gallery",
    "name": "Gallery",
-   "vendor": "Xiaomi",
+   "vendor": "Xiaomi / Redmi / POCO",
    "level": "EXTREME",
    "desc": "Gallery and screenshot editor.",
    "warn": "Screenshot editing and photo viewing break."
@@ -2447,7 +2447,7 @@
   {
    "id": "com.miui.home",
    "name": "System launcher",
-   "vendor": "Xiaomi",
+   "vendor": "Xiaomi / Redmi / POCO",
    "level": "EXTREME",
    "desc": "MIUI launcher.",
    "warn": "Install and select another launcher first. Recents may break."
@@ -2455,7 +2455,7 @@
   {
    "id": "com.miui.securityadd",
    "name": "Security add-on",
-   "vendor": "Xiaomi",
+   "vendor": "Xiaomi / Redmi / POCO",
    "level": "EXTREME",
    "desc": "Security center helper.",
    "warn": "Security center features can fail."
@@ -2463,7 +2463,7 @@
   {
    "id": "com.miui.backup",
    "name": "Backup",
-   "vendor": "Xiaomi",
+   "vendor": "Xiaomi / Redmi / POCO",
    "level": "EXTREME",
    "desc": "Local backup.",
    "warn": "Local backups stop working."
@@ -2471,7 +2471,7 @@
   {
    "id": "com.xiaomi.account",
    "name": "Xiaomi account",
-   "vendor": "Xiaomi",
+   "vendor": "Xiaomi / Redmi / POCO",
    "level": "EXTREME",
    "desc": "Xiaomi account.",
    "warn": "Find Device and cloud features stop."
@@ -2479,7 +2479,7 @@
   {
    "id": "com.miui.powerkeeper",
    "name": "Battery and performance",
-   "vendor": "Xiaomi",
+   "vendor": "Xiaomi / Redmi / POCO",
    "level": "EXTREME",
    "desc": "Battery management.",
    "warn": "Battery saver and app background limits break."
@@ -2487,7 +2487,7 @@
   {
    "id": "com.miui.guardprovider",
    "name": "Security guard",
-   "vendor": "Xiaomi",
+   "vendor": "Xiaomi / Redmi / POCO",
    "level": "EXTREME",
    "desc": "Malware scanning.",
    "warn": "App installation scans may fail."
@@ -2495,10 +2495,63 @@
   {
    "id": "com.xiaomi.xmsf",
    "name": "Xiaomi Service Framework",
-   "vendor": "Xiaomi",
+   "vendor": "Xiaomi / Redmi / POCO",
    "level": "EXTREME",
    "desc": "Xiaomi push and services.",
    "warn": "Xiaomi apps stop receiving notifications."
+  },
+  {
+   "id": "com.mi.globalminusscreen",
+   "name": "App Vault (global)",
+   "vendor": "Xiaomi / Redmi / POCO",
+   "level": "SAFE",
+   "desc": "Swipe-left widgets page on global ROMs."
+  },
+  {
+   "id": "com.miui.voiceassist",
+   "name": "Mi AI / Voice assistant",
+   "vendor": "Xiaomi / Redmi / POCO",
+   "level": "SAFE",
+   "desc": "Xiaomi voice assistant."
+  },
+  {
+   "id": "com.xiaomi.calendar",
+   "name": "Xiaomi Calendar",
+   "vendor": "Xiaomi / Redmi / POCO",
+   "level": "SAFE",
+   "desc": "Calendar app."
+  },
+  {
+   "id": "com.miui.mediaeditor",
+   "name": "Gallery Editor",
+   "vendor": "Xiaomi / Redmi / POCO",
+   "level": "SAFE",
+   "desc": "Photo editor used by the gallery.",
+   "warn": "Editing photos from the Gallery stops working."
+  },
+  {
+   "id": "com.mi.android.globallauncher",
+   "name": "POCO Launcher",
+   "vendor": "Xiaomi / Redmi / POCO",
+   "level": "EXTREME",
+   "desc": "Launcher on POCO phones.",
+   "warn": "Install and select another launcher first."
+  },
+  {
+   "id": "com.miui.theme.lite",
+   "name": "Themes (lite)",
+   "vendor": "Xiaomi / Redmi / POCO",
+   "level": "EXTREME",
+   "desc": "Theme store.",
+   "warn": "Applied themes may reset."
+  },
+  {
+   "id": "com.android.thememanager",
+   "name": "Themes",
+   "vendor": "Xiaomi / Redmi / POCO",
+   "level": "EXTREME",
+   "desc": "MIUI/HyperOS theme manager.",
+   "warn": "Applied themes, wallpapers and fonts may reset or crash."
   },
   {
    "id": "com.oplus.statistics.rom",
@@ -2883,6 +2936,568 @@
    "vendor": "Carrier",
    "level": "SAFE",
    "desc": "Carrier account app."
+  },
+  {
+   "id": "com.lge.lgworld",
+   "name": "LG SmartWorld",
+   "vendor": "LG",
+   "level": "RECOMMENDED",
+   "desc": "LG app and theme store."
+  },
+  {
+   "id": "com.lge.qhelp",
+   "name": "Quick Help",
+   "vendor": "LG",
+   "level": "RECOMMENDED",
+   "desc": "Support and tips app."
+  },
+  {
+   "id": "com.lge.smartdoctor.webview",
+   "name": "Smart Doctor",
+   "vendor": "LG",
+   "level": "SAFE",
+   "desc": "Diagnostics and optimisation."
+  },
+  {
+   "id": "com.lge.gametuner",
+   "name": "Game Tools",
+   "vendor": "LG",
+   "level": "SAFE",
+   "desc": "Game tuning overlay."
+  },
+  {
+   "id": "com.lge.music",
+   "name": "LG Music",
+   "vendor": "LG",
+   "level": "SAFE",
+   "desc": "Music player."
+  },
+  {
+   "id": "com.lge.videoplayer",
+   "name": "LG Video",
+   "vendor": "LG",
+   "level": "SAFE",
+   "desc": "Video player."
+  },
+  {
+   "id": "com.lge.qmemoplus",
+   "name": "QuickMemo+",
+   "vendor": "LG",
+   "level": "SAFE",
+   "desc": "Notes app.",
+   "warn": "Your memos are kept only if backed up."
+  },
+  {
+   "id": "com.lge.voicerecorder",
+   "name": "Voice Recorder",
+   "vendor": "LG",
+   "level": "SAFE",
+   "desc": "Voice recorder."
+  },
+  {
+   "id": "com.lge.fmradio",
+   "name": "FM Radio",
+   "vendor": "LG",
+   "level": "SAFE",
+   "desc": "Radio."
+  },
+  {
+   "id": "com.lge.task",
+   "name": "Tasks",
+   "vendor": "LG",
+   "level": "SAFE",
+   "desc": "To-do app."
+  },
+  {
+   "id": "com.lge.easyhome",
+   "name": "EasyHome",
+   "vendor": "LG",
+   "level": "SAFE",
+   "desc": "Simplified home screen."
+  },
+  {
+   "id": "com.lge.filemanager",
+   "name": "File Manager",
+   "vendor": "LG",
+   "level": "SAFE",
+   "desc": "File manager.",
+   "warn": "Install another file manager first."
+  },
+  {
+   "id": "com.lge.email",
+   "name": "LG Email",
+   "vendor": "LG",
+   "level": "SAFE",
+   "desc": "Email app."
+  },
+  {
+   "id": "com.lge.bnr",
+   "name": "LG Backup",
+   "vendor": "LG",
+   "level": "SAFE",
+   "desc": "Local backup and transfer.",
+   "warn": "LG backups and phone transfer stop working."
+  },
+  {
+   "id": "com.lge.updatecenter",
+   "name": "Update Center",
+   "vendor": "LG",
+   "level": "EXTREME",
+   "desc": "LG app and system updates.",
+   "warn": "LG apps and system updates may stop arriving."
+  },
+  {
+   "id": "com.lge.launcher3",
+   "name": "LG Home",
+   "vendor": "LG",
+   "level": "EXTREME",
+   "desc": "LG launcher.",
+   "warn": "Install and select another launcher first."
+  },
+  {
+   "id": "com.lge.ime",
+   "name": "LG Keyboard",
+   "vendor": "LG",
+   "level": "EXTREME",
+   "desc": "Keyboard.",
+   "warn": "Install and select another keyboard first."
+  },
+  {
+   "id": "com.lge.camera",
+   "name": "LG Camera",
+   "vendor": "LG",
+   "level": "EXTREME",
+   "desc": "Camera.",
+   "warn": "No camera app. Other apps cannot take photos."
+  },
+  {
+   "id": "com.lge.clock",
+   "name": "LG Clock",
+   "vendor": "LG",
+   "level": "EXTREME",
+   "desc": "Clock and alarms.",
+   "warn": "Your alarms will not ring."
+  },
+  {
+   "id": "com.sonymobile.xperialounge.services",
+   "name": "Xperia Lounge",
+   "vendor": "Sony",
+   "level": "RECOMMENDED",
+   "desc": "Promotions and content."
+  },
+  {
+   "id": "com.sonymobile.support",
+   "name": "Support",
+   "vendor": "Sony",
+   "level": "RECOMMENDED",
+   "desc": "Support app."
+  },
+  {
+   "id": "com.sonymobile.retaildemo",
+   "name": "Retail demo",
+   "vendor": "Sony",
+   "level": "RECOMMENDED",
+   "desc": "Store demo mode."
+  },
+  {
+   "id": "com.sonyericsson.music",
+   "name": "Music",
+   "vendor": "Sony",
+   "level": "SAFE",
+   "desc": "Music player."
+  },
+  {
+   "id": "com.sonymobile.gameenhancer",
+   "name": "Game Enhancer",
+   "vendor": "Sony",
+   "level": "SAFE",
+   "desc": "Game tools overlay."
+  },
+  {
+   "id": "com.sonymobile.cinemapro",
+   "name": "Cinema Pro",
+   "vendor": "Sony",
+   "level": "SAFE",
+   "desc": "Pro video recording."
+  },
+  {
+   "id": "com.sonymobile.photopro",
+   "name": "Photo Pro",
+   "vendor": "Sony",
+   "level": "EXTREME",
+   "desc": "Camera app.",
+   "warn": "No camera app. Other apps cannot take photos."
+  },
+  {
+   "id": "com.sonyericsson.conversations",
+   "name": "Messaging",
+   "vendor": "Sony",
+   "level": "EXTREME",
+   "desc": "SMS app.",
+   "warn": "No SMS until another messaging app is set as default."
+  },
+  {
+   "id": "com.sonymobile.home",
+   "name": "Xperia Home",
+   "vendor": "Sony",
+   "level": "EXTREME",
+   "desc": "Launcher.",
+   "warn": "Install and select another launcher first."
+  },
+  {
+   "id": "cn.nubia.neostore",
+   "name": "Nubia App Store",
+   "vendor": "Nubia / RedMagic",
+   "level": "RECOMMENDED",
+   "desc": "Nubia app store."
+  },
+  {
+   "id": "cn.nubia.feedback",
+   "name": "Feedback",
+   "vendor": "Nubia / RedMagic",
+   "level": "RECOMMENDED",
+   "desc": "Feedback and bug reporting."
+  },
+  {
+   "id": "cn.nubia.browser",
+   "name": "Nubia Browser",
+   "vendor": "Nubia / RedMagic",
+   "level": "SAFE",
+   "desc": "Browser.",
+   "warn": "Install another browser first."
+  },
+  {
+   "id": "cn.nubia.music.preset",
+   "name": "Nubia Music",
+   "vendor": "Nubia / RedMagic",
+   "level": "SAFE",
+   "desc": "Music player."
+  },
+  {
+   "id": "cn.nubia.gamelauncher",
+   "name": "Game Space",
+   "vendor": "Nubia / RedMagic",
+   "level": "EXTREME",
+   "desc": "RedMagic Game Space (shoulder triggers, fan, performance modes).",
+   "warn": "Game Space, shoulder triggers and performance modes stop working."
+  },
+  {
+   "id": "cn.nubia.launcher",
+   "name": "Nubia Launcher",
+   "vendor": "Nubia / RedMagic",
+   "level": "EXTREME",
+   "desc": "Launcher.",
+   "warn": "Install and select another launcher first."
+  },
+  {
+   "id": "com.zte.heartyservice",
+   "name": "Hearty Service",
+   "vendor": "ZTE",
+   "level": "RECOMMENDED",
+   "desc": "User experience and feedback service."
+  },
+  {
+   "id": "com.zte.assistant",
+   "name": "ZTE Voice Assistant",
+   "vendor": "ZTE",
+   "level": "SAFE",
+   "desc": "Voice assistant."
+  },
+  {
+   "id": "com.zte.weather",
+   "name": "Weather",
+   "vendor": "ZTE",
+   "level": "SAFE",
+   "desc": "Weather app."
+  },
+  {
+   "id": "com.zte.mifavor.launcher",
+   "name": "MiFavor Launcher",
+   "vendor": "ZTE",
+   "level": "EXTREME",
+   "desc": "ZTE launcher.",
+   "warn": "Install and select another launcher first."
+  },
+  {
+   "id": "com.zte.zdm",
+   "name": "System Update",
+   "vendor": "ZTE",
+   "level": "EXTREME",
+   "desc": "OTA updates.",
+   "warn": "You will not get system updates."
+  },
+  {
+   "id": "com.vivo.appstore",
+   "name": "V-Appstore",
+   "vendor": "vivo / iQOO",
+   "level": "RECOMMENDED",
+   "desc": "vivo app store with ads."
+  },
+  {
+   "id": "com.vivo.hiboard",
+   "name": "Smart Launcher page (Jovi)",
+   "vendor": "vivo / iQOO",
+   "level": "RECOMMENDED",
+   "desc": "Swipe page with suggestions."
+  },
+  {
+   "id": "com.vivo.website",
+   "name": "vivo.com",
+   "vendor": "vivo / iQOO",
+   "level": "RECOMMENDED",
+   "desc": "Shop and promotions."
+  },
+  {
+   "id": "com.vivo.browser",
+   "name": "vivo Browser",
+   "vendor": "vivo / iQOO",
+   "level": "SAFE",
+   "desc": "Browser.",
+   "warn": "Install another browser first."
+  },
+  {
+   "id": "com.vivo.easyshare",
+   "name": "EasyShare",
+   "vendor": "vivo / iQOO",
+   "level": "SAFE",
+   "desc": "Phone transfer and file sharing."
+  },
+  {
+   "id": "com.vivo.weather",
+   "name": "Weather",
+   "vendor": "vivo / iQOO",
+   "level": "SAFE",
+   "desc": "Weather."
+  },
+  {
+   "id": "com.vivo.globalsearch",
+   "name": "Global Search",
+   "vendor": "vivo / iQOO",
+   "level": "SAFE",
+   "desc": "Search from the home screen."
+  },
+  {
+   "id": "com.vivo.compass",
+   "name": "Compass",
+   "vendor": "vivo / iQOO",
+   "level": "SAFE",
+   "desc": "Compass."
+  },
+  {
+   "id": "com.vivo.assistant",
+   "name": "Jovi Assistant",
+   "vendor": "vivo / iQOO",
+   "level": "SAFE",
+   "desc": "Voice assistant."
+  },
+  {
+   "id": "com.bbk.calendar",
+   "name": "Calendar",
+   "vendor": "vivo / iQOO",
+   "level": "SAFE",
+   "desc": "Calendar."
+  },
+  {
+   "id": "com.android.bbkmusic",
+   "name": "i Music",
+   "vendor": "vivo / iQOO",
+   "level": "SAFE",
+   "desc": "Music player."
+  },
+  {
+   "id": "com.bbk.theme",
+   "name": "i Theme",
+   "vendor": "vivo / iQOO",
+   "level": "EXTREME",
+   "desc": "Themes.",
+   "warn": "Applied themes may reset."
+  },
+  {
+   "id": "com.bbk.launcher2",
+   "name": "vivo Launcher",
+   "vendor": "vivo / iQOO",
+   "level": "EXTREME",
+   "desc": "Launcher.",
+   "warn": "Install and select another launcher first."
+  },
+  {
+   "id": "com.vivo.gallery",
+   "name": "Albums",
+   "vendor": "vivo / iQOO",
+   "level": "EXTREME",
+   "desc": "Gallery.",
+   "warn": "Screenshot editing and photo viewing break."
+  },
+  {
+   "id": "com.iqoo.secure",
+   "name": "i Manager",
+   "vendor": "vivo / iQOO",
+   "level": "EXTREME",
+   "desc": "Security, permissions and cleaning.",
+   "warn": "Permission and battery management pages can break."
+  },
+  {
+   "id": "com.asus.ia.asusapp",
+   "name": "MyASUS",
+   "vendor": "ASUS",
+   "level": "RECOMMENDED",
+   "desc": "Support and promotions."
+  },
+  {
+   "id": "com.asus.userfeedback",
+   "name": "User feedback",
+   "vendor": "ASUS",
+   "level": "RECOMMENDED",
+   "desc": "Feedback tool."
+  },
+  {
+   "id": "com.asus.weathertime",
+   "name": "Weather",
+   "vendor": "ASUS",
+   "level": "SAFE",
+   "desc": "Weather and clock widget."
+  },
+  {
+   "id": "com.asus.soundrecorder",
+   "name": "Sound Recorder",
+   "vendor": "ASUS",
+   "level": "SAFE",
+   "desc": "Voice recorder."
+  },
+  {
+   "id": "com.asus.filemanager",
+   "name": "File Manager",
+   "vendor": "ASUS",
+   "level": "SAFE",
+   "desc": "File manager.",
+   "warn": "Install another file manager first."
+  },
+  {
+   "id": "com.asus.calculator",
+   "name": "Calculator",
+   "vendor": "ASUS",
+   "level": "SAFE",
+   "desc": "Calculator."
+  },
+  {
+   "id": "com.asus.launcher",
+   "name": "ASUS Launcher",
+   "vendor": "ASUS",
+   "level": "EXTREME",
+   "desc": "Launcher.",
+   "warn": "Install and select another launcher first."
+  },
+  {
+   "id": "com.asus.mobilemanager",
+   "name": "Mobile Manager",
+   "vendor": "ASUS",
+   "level": "EXTREME",
+   "desc": "Battery, permissions and cleaning.",
+   "warn": "Battery and permission pages can break."
+  },
+  {
+   "id": "com.asus.gallery",
+   "name": "ASUS Gallery",
+   "vendor": "ASUS",
+   "level": "EXTREME",
+   "desc": "Gallery.",
+   "warn": "Photo viewing and editing break."
+  },
+  {
+   "id": "com.hmdglobal.support",
+   "name": "My Phone / Support",
+   "vendor": "Nokia / HMD",
+   "level": "SAFE",
+   "desc": "HMD support app."
+  },
+  {
+   "id": "com.hmdglobal.app.camera",
+   "name": "Nokia Camera",
+   "vendor": "Nokia / HMD",
+   "level": "EXTREME",
+   "desc": "Camera.",
+   "warn": "No camera app. Other apps cannot take photos."
+  },
+  {
+   "id": "com.transsnet.store",
+   "name": "Palm Store",
+   "vendor": "TECNO / Infinix / itel",
+   "level": "RECOMMENDED",
+   "desc": "Transsion app store with ads."
+  },
+  {
+   "id": "net.bat.store",
+   "name": "AHA Games",
+   "vendor": "TECNO / Infinix / itel",
+   "level": "RECOMMENDED",
+   "desc": "Games store with ads."
+  },
+  {
+   "id": "com.transsion.carlcare",
+   "name": "Carlcare",
+   "vendor": "TECNO / Infinix / itel",
+   "level": "RECOMMENDED",
+   "desc": "Support and service app."
+  },
+  {
+   "id": "com.afmobi.boomplayer",
+   "name": "Boomplay",
+   "vendor": "TECNO / Infinix / itel",
+   "level": "SAFE",
+   "desc": "Music streaming."
+  },
+  {
+   "id": "com.talpa.hibrowser",
+   "name": "Phoenix Browser",
+   "vendor": "TECNO / Infinix / itel",
+   "level": "SAFE",
+   "desc": "Browser.",
+   "warn": "Install another browser first."
+  },
+  {
+   "id": "com.funbase.xradio",
+   "name": "FM Radio",
+   "vendor": "TECNO / Infinix / itel",
+   "level": "SAFE",
+   "desc": "Radio."
+  },
+  {
+   "id": "com.transsion.phonemaster",
+   "name": "Phone Master",
+   "vendor": "TECNO / Infinix / itel",
+   "level": "EXTREME",
+   "desc": "Cleaner, battery and app management.",
+   "warn": "Battery saving and background app management can break."
+  },
+  {
+   "id": "com.transsion.hilauncher",
+   "name": "XOS/HiOS Launcher",
+   "vendor": "TECNO / Infinix / itel",
+   "level": "EXTREME",
+   "desc": "Launcher.",
+   "warn": "Install and select another launcher first."
+  },
+  {
+   "id": "com.lenovo.anyshare.gps",
+   "name": "SHAREit",
+   "vendor": "Lenovo",
+   "level": "RECOMMENDED",
+   "desc": "File sharing app with ads."
+  },
+  {
+   "id": "com.lenovo.leos.appstore",
+   "name": "Lenovo App Store",
+   "vendor": "Lenovo",
+   "level": "RECOMMENDED",
+   "desc": "App store."
+  },
+  {
+   "id": "com.lenovo.ota",
+   "name": "System Update",
+   "vendor": "Lenovo",
+   "level": "EXTREME",
+   "desc": "OTA updates.",
+   "warn": "You will not get system updates."
   }
  ]
 }

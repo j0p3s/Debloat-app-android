@@ -48,6 +48,7 @@ import io.github.j0p3s.debloater.ops.OperationEngine
 import io.github.j0p3s.debloater.ui.MainViewModel
 import io.github.j0p3s.debloater.ui.components.AppRow
 import io.github.j0p3s.debloater.ui.components.BackTopBar
+import io.github.j0p3s.debloater.ui.components.VendorChips
 import io.github.j0p3s.debloater.ui.theme.levelColor
 
 private fun levelInfo(level: SafetyLevel) = when (level) {
@@ -80,10 +81,21 @@ fun DebloatScreen(vm: MainViewModel) {
     val level = tabs[tab]
     var query by rememberSaveable { mutableStateOf("") }
     var showChanged by rememberSaveable { mutableStateOf(false) }
+    var vendor by rememberSaveable { mutableStateOf<String?>(null) }
+    val deviceVendor = vm.repo.deviceVendor?.name
 
-    val visible = remember(apps, level, query, showChanged) {
+    // Apps that can appear in any of the visible tabs, used for vendor counts and quick selection.
+    val inTabs = remember(apps, tabs) {
+        apps.filter { a -> a.level in tabs && (a.level != SafetyLevel.UNKNOWN || a.isSystem) }
+    }
+    val vendorCounts = remember(inTabs, showChanged) {
+        inTabs.filter { showChanged || it.state == AppState.ENABLED }.groupingBy { it.vendor }.eachCount()
+    }
+
+    val visible = remember(apps, level, query, showChanged, vendor) {
         apps.filter { a ->
             a.level == level &&
+                (vendor == null || a.vendor == vendor) &&
                 (level != SafetyLevel.UNKNOWN || a.isSystem) &&
                 (showChanged || a.state == AppState.ENABLED) &&
                 (query.isBlank() || a.label.contains(query, true) || a.packageName.contains(query, true) ||
@@ -116,13 +128,30 @@ fun DebloatScreen(vm: MainViewModel) {
         Column(Modifier.padding(pad).fillMaxSize()) {
             PrimaryScrollableTabRow(selectedTabIndex = tab, edgePadding = 8.dp) {
                 tabs.forEachIndexed { i, l ->
-                    val count = apps.count { it.level == l && it.state == AppState.ENABLED && (l != SafetyLevel.UNKNOWN || it.isSystem) }
+                    val count = apps.count {
+                        it.level == l && it.state == AppState.ENABLED && (l != SafetyLevel.UNKNOWN || it.isSystem) &&
+                            (vendor == null || it.vendor == vendor)
+                    }
                     Tab(selected = i == tab, onClick = { tab = i }, text = { Text("${l.title} ($count)", color = levelColor(l, dark)) })
                 }
             }
             LazyColumn(Modifier.fillMaxSize()) {
                 item {
                     Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text(
+                            "Vendor" + (deviceVendor?.let { " · this phone: $it" } ?: ""),
+                            style = MaterialTheme.typography.labelLarge,
+                        )
+                        VendorChips(vendorCounts, vendor, deviceVendor) { vendor = it }
+                        vendor?.let { v ->
+                            VendorQuickSelect(
+                                vendor = v,
+                                isThisPhone = v == deviceVendor,
+                                apps = inTabs.filter { it.vendor == v && it.state == AppState.ENABLED && isSelectable(it, expert) },
+                                selection = selection,
+                                onSelect = { vm.setDebloatSelection(it) },
+                            )
+                        }
                         Card(
                             colors = CardDefaults.cardColors(
                                 containerColor = levelColor(level, dark).copy(alpha = 0.12f),
@@ -158,7 +187,7 @@ fun DebloatScreen(vm: MainViewModel) {
                 } else if (visible.isEmpty()) {
                     item {
                         Text(
-                            "No ${level.title.lowercase()} packages ${if (showChanged) "" else "left "}on this device.",
+                            "No ${level.title.lowercase()} packages ${vendor?.let { "from $it " } ?: ""}${if (showChanged) "" else "left "}on this device.",
                             Modifier.padding(24.dp), style = MaterialTheme.typography.bodyMedium,
                         )
                     }
@@ -171,6 +200,58 @@ fun DebloatScreen(vm: MainViewModel) {
                     AppRow(app, app.packageName in selection, selectable, onToggle = toggle, onClick = toggle)
                     HorizontalDivider()
                 }
+            }
+        }
+    }
+}
+
+/**
+ * Bulk selection for one vendor across all tiers: Recommended only, Recommended + Safe, or
+ * everything including Extreme (and Unsafe/Unlisted when expert mode is on).
+ */
+@OptIn(androidx.compose.foundation.layout.ExperimentalLayoutApi::class)
+@Composable
+private fun VendorQuickSelect(
+    vendor: String,
+    isThisPhone: Boolean,
+    apps: List<AppInfo>,
+    selection: Set<String>,
+    onSelect: (Set<String>) -> Unit,
+) {
+    val dark = isSystemInDarkTheme()
+    val rec = apps.filter { it.level == SafetyLevel.RECOMMENDED }
+    val safe = apps.filter { it.level == SafetyLevel.SAFE }
+    val vendorPkgs = apps.map { it.packageName }.toSet()
+    val selectedHere = selection.count { it in vendorPkgs }
+    Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)) {
+        Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            Text("Debloat $vendor apps", style = MaterialTheme.typography.titleSmall)
+            Text(
+                (if (isThisPhone) "Made by the maker of this phone. " else "") +
+                    "${apps.size} active app(s), ${OperationEngine.fmtSize(apps.sumOf { it.totalBytes })}. $selectedHere selected.",
+                style = MaterialTheme.typography.bodySmall,
+            )
+            androidx.compose.foundation.layout.FlowRow(
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                verticalArrangement = Arrangement.spacedBy(2.dp),
+            ) {
+                OutlinedButton(onClick = { onSelect(selection - vendorPkgs + rec.map { it.packageName }) }, enabled = rec.isNotEmpty()) {
+                    Text("Recommended (${rec.size})", color = levelColor(SafetyLevel.RECOMMENDED, dark))
+                }
+                OutlinedButton(onClick = { onSelect(selection - vendorPkgs + (rec + safe).map { it.packageName }) }, enabled = rec.size + safe.size > 0) {
+                    Text("+ Safe (${rec.size + safe.size})", color = levelColor(SafetyLevel.SAFE, dark))
+                }
+                OutlinedButton(onClick = { onSelect(selection + vendorPkgs) }, enabled = apps.isNotEmpty()) {
+                    Text("Everything (${apps.size})", color = levelColor(SafetyLevel.EXTREME, dark))
+                }
+                TextButton(onClick = { onSelect(selection - vendorPkgs) }, enabled = selectedHere > 0) { Text("Clear") }
+            }
+            if (apps.any { it.level == SafetyLevel.EXTREME || it.level == SafetyLevel.UNSAFE || it.level == SafetyLevel.UNKNOWN }) {
+                Text(
+                    "\"Everything\" includes Extreme packages${if (apps.any { it.level == SafetyLevel.UNKNOWN }) " and unlisted ones" else ""}: read the warnings and run a test first.",
+                    style = MaterialTheme.typography.bodySmall,
+                    color = levelColor(SafetyLevel.EXTREME, dark),
+                )
             }
         }
     }

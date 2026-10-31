@@ -54,6 +54,7 @@ import io.github.j0p3s.debloater.ui.MainViewModel
 import io.github.j0p3s.debloater.ui.components.AppIcon
 import io.github.j0p3s.debloater.ui.components.AppRow
 import io.github.j0p3s.debloater.ui.components.BackTopBar
+import io.github.j0p3s.debloater.ui.components.VendorChips
 import io.github.j0p3s.debloater.ui.components.LevelPill
 import io.github.j0p3s.debloater.ui.components.StatePill
 import io.github.j0p3s.debloater.ui.components.WarningText
@@ -75,9 +76,14 @@ fun AppManagerScreen(vm: MainViewModel) {
     var query by rememberSaveable { mutableStateOf("") }
     var details by remember { mutableStateOf<AppInfo?>(null) }
 
-    val visible = remember(apps, type, stateFilter, sort, query) {
-        apps.filter { a ->
-            when (type) { TypeFilter.USER -> !a.isSystem; TypeFilter.SYSTEM -> a.isSystem; TypeFilter.ALL -> true } &&
+    var vendor by rememberSaveable { mutableStateOf<String?>(null) }
+    val ofType = remember(apps, type) {
+        apps.filter { a -> when (type) { TypeFilter.USER -> !a.isSystem; TypeFilter.SYSTEM -> a.isSystem; TypeFilter.ALL -> true } }
+    }
+    val vendorCounts = remember(ofType) { ofType.groupingBy { it.vendor }.eachCount() }
+    val visible = remember(ofType, stateFilter, sort, query, vendor) {
+        ofType.filter { a ->
+            (vendor == null || a.vendor == vendor) &&
                 when (stateFilter) {
                     StateFilter.ANY -> true
                     StateFilter.ENABLED -> a.state == AppState.ENABLED
@@ -133,6 +139,7 @@ fun AppManagerScreen(vm: MainViewModel) {
                         StateFilter.entries.forEach { FilterChip(stateFilter == it, { stateFilter = it }, label = { Text(it.title) }) }
                         Sort.entries.forEach { FilterChip(sort == it, { sort = it }, label = { Text("Sort: ${it.title}") }) }
                     }
+                    VendorChips(vendorCounts, vendor, vm.repo.deviceVendor?.name) { vendor = it }
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text("${visible.size} apps · ${OperationEngine.fmtSize(visible.sumOf { it.totalBytes })}", style = MaterialTheme.typography.labelMedium, modifier = Modifier.weight(1f))
                         TextButton(onClick = { vm.setManagerSelection(selection + visible.filter { isSelectable(it, expert) }.map { it.packageName }) }) { Text("Select all") }
@@ -168,7 +175,7 @@ private fun AppDetailsDialog(app: AppInfo, canModify: Boolean, vm: MainViewModel
         title = { Text(app.label) },
         text = {
             Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                Text(app.packageName, style = MaterialTheme.typography.bodySmall)
+                Text("${app.packageName} · ${app.vendor}", style = MaterialTheme.typography.bodySmall)
                 Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) { LevelPill(app.level); StatePill(app.state) }
                 Text("Version ${app.versionName} (${app.versionCode})", style = MaterialTheme.typography.bodySmall)
                 Text("${if (app.isSystem) "System" else "User"} app · ${app.apkPaths.size} APK file(s)", style = MaterialTheme.typography.bodySmall)

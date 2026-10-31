@@ -119,6 +119,12 @@ fun HomeScreen(vm: MainViewModel) {
                     val sdk = Build.VERSION.SDK_INT
                     Text("${Build.MANUFACTURER.replaceFirstChar { it.uppercase() }} ${Build.MODEL}")
                     Text("Android ${ANDROID_NAMES[sdk] ?: Build.VERSION.RELEASE} (API $sdk) · user ${vm.repo.userId}")
+                    val dv = vm.repo.deviceVendor
+                    Text(
+                        if (dv != null) "Vendor: ${dv.name} · ${apps.count { it.vendor == dv.name && it.state == AppState.ENABLED }} active vendor apps"
+                        else "Vendor: not recognised (${Build.BRAND}); Google, AOSP and partner apps still apply",
+                        style = MaterialTheme.typography.bodySmall,
+                    )
                     val supported = sdk in 30..37
                     Text(
                         if (supported) "Supported (Android 11 to 17)" else "Newer than Android 17: untested, test runs are strongly advised",
