@@ -156,23 +156,6 @@ fun DebloatScreen(vm: MainViewModel) {
             LazyColumn(Modifier.fillMaxSize()) {
                 item {
                     Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                        Text(
-                            stringResource(R.string.vendor_filter, deviceVendor ?: "—"),
-                            style = MaterialTheme.typography.labelLarge,
-                        )
-                        VendorChips(vendorCounts, vendor, deviceVendor) { vendor = it }
-                        vendor?.let { v ->
-                            VendorQuickSelect(
-                                vendor = v,
-                                apps = inTabs.filter { it.vendor == v && it.state == AppState.ENABLED && isSelectable(it, expert) },
-                                selection = selection,
-                                onSelect = { newSelection, levels ->
-                                    vm.setDebloatSelection(newSelection)
-                                    // Show exactly the apps the button is about.
-                                    setScope(levels ?: allTiers)
-                                },
-                            )
-                        }
                         if (!isAll && single == null) {
                             InputChip(
                                 selected = true,
@@ -190,7 +173,7 @@ fun DebloatScreen(vm: MainViewModel) {
                                 Text(
                                     single?.let { levelInfo(it) }
                                         ?: stringResource(R.string.all_tiers_description),
-                                    style = MaterialTheme.typography.bodyMedium,
+                                    style = MaterialTheme.typography.bodySmall,
                                 )
                                 // Respects the vendor filter, like the list below.
                                 val active = apps.filter {
@@ -209,9 +192,30 @@ fun DebloatScreen(vm: MainViewModel) {
                             placeholder = { Text(stringResource(R.string.search_packages)) },
                             singleLine = true, modifier = Modifier.fillMaxWidth(),
                         )
+                        io.github.j0p3s.debloater.ui.components.ExpandableSection(
+                            stringResource(R.string.filter_options) + (vendor?.let { " · $it" } ?: ""),
+                        ) {
+                        Text(
+                            stringResource(R.string.vendor_filter, deviceVendor ?: "—"),
+                            style = MaterialTheme.typography.labelLarge,
+                        )
+                        VendorChips(vendorCounts, vendor, deviceVendor) { vendor = it }
+                        vendor?.let { v ->
+                            VendorQuickSelect(
+                                vendor = v,
+                                apps = inTabs.filter { it.vendor == v && it.state == AppState.ENABLED && isSelectable(it, expert) },
+                                selection = selection,
+                                onSelect = { newSelection, levels ->
+                                    vm.setDebloatSelection(newSelection)
+                                    // Show exactly the apps the button is about.
+                                    setScope(levels ?: allTiers)
+                                },
+                            )
+                        }
                         FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                             FilterChip(showChanged, { showChanged = !showChanged }, label = { Text(stringResource(R.string.show_changed)) })
                             SortMenu(sort, vm.prefs::setSort)
+                        }
                         }
                         FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                             Text(stringResource(R.string.apps_size, visible.size, formatSize(visible.sumOf { it.totalBytes })), style = MaterialTheme.typography.labelMedium)

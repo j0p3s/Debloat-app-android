@@ -117,8 +117,9 @@ fun AppRow(
     Row(
         Modifier
             .fillMaxWidth()
+            .background(if (selected) MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.45f) else Color.Transparent)
             .clickable(onClick = onClick)
-            .padding(horizontal = 12.dp, vertical = 8.dp),
+            .padding(horizontal = 8.dp, vertical = 6.dp),
         verticalAlignment = Alignment.Top,
     ) {
         if (selectable) {
@@ -143,14 +144,14 @@ fun AppRow(
             ) {
                 LevelPill(app.level)
                 if (app.state != AppState.ENABLED) StatePill(app.state)
-                Pill(if (app.isSystem) stringResource(R.string.system) else stringResource(R.string.user), MaterialTheme.colorScheme.outline)
+                Pill(if (app.isSystem) stringResource(R.string.system) else stringResource(R.string.user), MaterialTheme.colorScheme.onSurfaceVariant)
                 if (app.vendor != io.github.j0p3s.debloater.data.VendorCatalog.OTHER) Pill(app.vendor, MaterialTheme.colorScheme.tertiary)
-                if (app.totalBytes > 0) Pill(sizeLabel(app), MaterialTheme.colorScheme.outline)
+                if (app.totalBytes > 0) Pill(sizeLabel(app), MaterialTheme.colorScheme.onSurfaceVariant)
             }
             if (showDescription) {
                 val desc = app.protectedReason?.let { stringResource(R.string.protected_reason, it) } ?: app.entry?.description
                 if (!desc.isNullOrBlank()) {
-                    Text(desc, style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(top = 4.dp), maxLines = 3, overflow = TextOverflow.Ellipsis)
+                    Text(desc, style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(top = 4.dp), maxLines = 2, overflow = TextOverflow.Ellipsis)
                 }
                 app.entry?.warning?.let { WarningText(it) }
                 if (!app.entry?.neededBy.isNullOrEmpty()) WarningText(stringResource(R.string.dependency_count, app.entry!!.neededBy.size))
@@ -177,7 +178,7 @@ fun WarningText(text: String) {
 @Composable
 fun BackTopBar(title: String, onBack: () -> Unit, actions: @Composable () -> Unit = {}) {
     TopAppBar(
-        title = { Text(title) },
+        title = { Text(title, style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold) },
         navigationIcon = {
             IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.back)) }
         },
@@ -192,7 +193,7 @@ fun sizeLabel(app: AppInfo): String =
 
 /** Used/total bar with free space, for the phone's internal storage. */
 @Composable
-fun StorageBar(storage: StorageInfo, modifier: Modifier = Modifier) {
+fun StorageBar(storage: StorageInfo, modifier: Modifier = Modifier, showFree: Boolean = true) {
     Column(modifier, verticalArrangement = Arrangement.spacedBy(4.dp)) {
         LinearProgressIndicator(
             progress = { storage.usedFraction },
@@ -208,7 +209,7 @@ fun StorageBar(storage: StorageInfo, modifier: Modifier = Modifier) {
                 stringResource(R.string.storage_used, formatSize(storage.usedBytes), formatSize(storage.totalBytes)),
                 style = MaterialTheme.typography.bodySmall, modifier = Modifier.weight(1f),
             )
-            Text(stringResource(R.string.storage_free, formatSize(storage.freeBytes)), style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.SemiBold)
+            if (showFree) Text(stringResource(R.string.storage_free, formatSize(storage.freeBytes)), style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.SemiBold)
         }
     }
 }

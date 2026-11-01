@@ -266,4 +266,6 @@
     <string name="hide_guide">Hide guide</string>
     <string name="updating_lists">Updating lists…</string>
     <string name="own_list_builtin">Bundled with the app; updated through APK releases. ADL and UAD update separately.</string>
+    <string name="filter_options">Filters &amp; sorting</string>
+    <string name="list_sources">List sources</string>
 </resources>

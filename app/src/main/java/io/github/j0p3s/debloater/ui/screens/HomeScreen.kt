@@ -1,5 +1,6 @@
 package io.github.j0p3s.debloater.ui.screens
 
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import android.content.Intent
 import android.os.Build
 import androidx.compose.foundation.clickable
@@ -40,9 +41,6 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -61,9 +59,6 @@ import io.github.j0p3s.debloater.ui.MainViewModel
 import io.github.j0p3s.debloater.ui.Screen
 import io.github.j0p3s.debloater.ui.components.StorageBar
 import io.github.j0p3s.debloater.ui.components.formatSize
-import io.github.j0p3s.debloater.ui.theme.ErrorColor
-import io.github.j0p3s.debloater.ui.theme.OkColor
-import io.github.j0p3s.debloater.ui.theme.WarnColor
 import io.github.j0p3s.debloater.ui.theme.levelColor
 
 private val ANDROID_NAMES = mapOf(30 to "11", 31 to "12", 32 to "12L", 33 to "13", 34 to "14", 35 to "15", 36 to "16", 37 to "17")
@@ -95,16 +90,24 @@ fun HomeScreen(vm: MainViewModel) {
             Modifier.padding(pad).fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            // ---- Shizuku
+            val sdk = Build.VERSION.SDK_INT
             val ready = status == ShizukuStatus.READY
-            Card(colors = CardDefaults.cardColors(containerColor = if (ready) MaterialTheme.colorScheme.secondaryContainer else MaterialTheme.colorScheme.errorContainer)) {
-                Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Column(verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                Text("${Build.MANUFACTURER.replaceFirstChar { it.uppercase() }} ${Build.MODEL}",
+                    style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.android_user, ANDROID_NAMES[sdk] ?: Build.VERSION.RELEASE, sdk, vm.repo.userId),
+                    style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            }
+
+            Card(colors = CardDefaults.cardColors(containerColor = if (ready) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.errorContainer)) {
+                Column(Modifier.fillMaxWidth().padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(if (ready) Icons.Default.CheckCircle else Icons.Default.Error, null, tint = if (ready) OkColor else ErrorColor)
+                        Icon(if (ready) Icons.Default.CheckCircle else Icons.Default.Error, null,
+                            Modifier.size(20.dp), tint = if (ready) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error)
                         Spacer(Modifier.width(8.dp))
-                        Text(stringResource(R.string.shizuku_status, statusText(status)), style = MaterialTheme.typography.titleMedium)
+                        Text(stringResource(R.string.shizuku_status, statusText(status)), Modifier.weight(1f), style = MaterialTheme.typography.labelLarge)
                     }
-                    Text(statusHelp(status, uid), style = MaterialTheme.typography.bodyMedium)
+                    if (!ready) Text(statusHelp(status, uid), style = MaterialTheme.typography.bodySmall)
                     when (status) {
                         ShizukuStatus.PERMISSION_REQUIRED, ShizukuStatus.PERMISSION_DENIED ->
                             Button(onClick = { ShizukuManager.requestPermission() }) { Text(stringResource(R.string.permission)) }
@@ -120,116 +123,111 @@ fun HomeScreen(vm: MainViewModel) {
                 }
             }
 
-            NavTile(Icons.Default.CleaningServices, stringResource(R.string.debloat), stringResource(R.string.nav_debloat_help)) { vm.navigate(Screen.DEBLOAT) }
-            GettingStartedCard()
-            NavTile(Icons.Default.Apps, stringResource(R.string.app_manager), stringResource(R.string.nav_manager_help)) { vm.navigate(Screen.APP_MANAGER) }
-            NavTile(Icons.Default.Backup, stringResource(R.string.backups_restore), stringResource(R.string.nav_backup_help, sessions.size)) { vm.navigate(Screen.BACKUPS) }
-            NavTile(Icons.Default.FactCheck, stringResource(R.string.adl_check), stringResource(R.string.nav_adl_help)) { vm.navigate(Screen.ADL_CHECK) }
-
-            // ---- Device
-            Card {
-                Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                    Text(stringResource(R.string.device), style = MaterialTheme.typography.titleMedium)
-                    val sdk = Build.VERSION.SDK_INT
-                    Text("${Build.MANUFACTURER.replaceFirstChar { it.uppercase() }} ${Build.MODEL}")
-                    Text(stringResource(R.string.android_user, ANDROID_NAMES[sdk] ?: Build.VERSION.RELEASE, sdk, vm.repo.userId))
-                    val dv = vm.repo.deviceVendor
-                    Text(
-                        if (dv != null) stringResource(R.string.vendor_active, dv.name, apps.count { it.vendor == dv.name && it.state == AppState.ENABLED })
-                        else stringResource(R.string.vendor_unknown, Build.BRAND),
-                        style = MaterialTheme.typography.bodySmall,
-                    )
-                    val supported = sdk in 30..37
-                    Text(
-                        if (supported) stringResource(R.string.android_supported) else stringResource(R.string.android_untested),
-                        color = if (supported) OkColor else ErrorColor,
-                        style = MaterialTheme.typography.bodySmall,
-                    )
-                }
-            }
-
-            // ---- Storage
+            // Device and storage lead the dashboard, as in the earlier layout.
             storage?.let { st ->
                 Card {
-                    Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                        Text(stringResource(R.string.storage), style = MaterialTheme.typography.titleMedium)
-                        StorageBar(st)
-                        val freed = sessions.sumOf { it.freedBytes }
-                        Row {
-                            Text(stringResource(R.string.space_freed), Modifier.weight(1f), style = MaterialTheme.typography.bodySmall)
-                            Text(formatSize(freed), color = OkColor, fontWeight = FontWeight.SemiBold, style = MaterialTheme.typography.bodySmall)
+                    Column(Modifier.fillMaxWidth().padding(14.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(stringResource(R.string.storage), Modifier.weight(1f), style = MaterialTheme.typography.titleSmall)
+                            Text(stringResource(R.string.storage_free, formatSize(st.freeBytes)),
+                                style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.primary)
                         }
-                        Row {
-                            Text(stringResource(R.string.backups_used), Modifier.weight(1f), style = MaterialTheme.typography.bodySmall)
-                            Text(formatSize(backupsBytes), style = MaterialTheme.typography.bodySmall)
-                        }
-                        if (apps.isNotEmpty()) {
-                            val userApps = apps.filter { !it.isSystem && it.state != AppState.UNINSTALLED }
-                            Row {
-                                Text(stringResource(R.string.user_count, userApps.size), Modifier.weight(1f), style = MaterialTheme.typography.bodySmall)
-                                Text(formatSize(userApps.sumOf { it.totalBytes }), style = MaterialTheme.typography.bodySmall)
-                            }
-                            val sys = apps.filter { it.isSystem && it.state != AppState.UNINSTALLED }
-                            Row {
-                                Text(stringResource(R.string.system_count, sys.size), Modifier.weight(1f), style = MaterialTheme.typography.bodySmall)
-                                Text(formatSize(sys.sumOf { it.totalBytes }), style = MaterialTheme.typography.bodySmall)
-                            }
+                        StorageBar(st, showFree = false)
+                        FlowRow(horizontalArrangement = Arrangement.spacedBy(20.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Metric(stringResource(R.string.space_freed), formatSize(sessions.sumOf { it.freedBytes }))
+                            Metric(stringResource(R.string.backups_used), formatSize(backupsBytes))
                         }
                         if (!usageAccess) {
-                            Text(
-                                stringResource(R.string.usage_help),
-                                style = MaterialTheme.typography.bodySmall, color = WarnColor,
-                            )
+                            Text(stringResource(R.string.usage_help), style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant)
                             FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                                if (status == ShizukuStatus.READY) OutlinedButton(onClick = vm::grantUsageAccessWithShizuku) { Text(stringResource(R.string.grant_shizuku)) }
-                                TextButton(onClick = {
-                                    runCatching { ctx.startActivity(Intent(android.provider.Settings.ACTION_USAGE_ACCESS_SETTINGS)) }
-                                }) { Text(stringResource(R.string.open_settings)) }
+                                if (ready) TextButton(onClick = vm::grantUsageAccessWithShizuku) { Text(stringResource(R.string.grant_shizuku)) }
+                                TextButton(onClick = { runCatching { ctx.startActivity(Intent(android.provider.Settings.ACTION_USAGE_ACCESS_SETTINGS)) } }) {
+                                    Text(stringResource(R.string.open_settings))
+                                }
                             }
                         }
                     }
                 }
             }
 
-            // ---- Stats
+            // One compact group replaces the stack of large, repeated navigation cards.
+            Card {
+                Column {
+                    NavTile(Icons.Default.CleaningServices, stringResource(R.string.debloat), stringResource(R.string.nav_debloat_help), primary = true) { vm.navigate(Screen.DEBLOAT) }
+                    androidx.compose.material3.HorizontalDivider(Modifier.padding(horizontal = 14.dp), color = MaterialTheme.colorScheme.outlineVariant)
+                    NavTile(Icons.Default.Apps, stringResource(R.string.app_manager), stringResource(R.string.nav_manager_help)) { vm.navigate(Screen.APP_MANAGER) }
+                    NavTile(Icons.Default.Backup, stringResource(R.string.backups_restore), stringResource(R.string.nav_backup_help, sessions.size)) { vm.navigate(Screen.BACKUPS) }
+                    NavTile(Icons.Default.FactCheck, stringResource(R.string.adl_check), stringResource(R.string.nav_adl_help)) { vm.navigate(Screen.ADL_CHECK) }
+                }
+            }
+
             if (apps.isNotEmpty()) {
                 Card {
-                    Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                        Text(stringResource(R.string.on_device), style = MaterialTheme.typography.titleMedium)
+                    Column(Modifier.fillMaxWidth().padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text(stringResource(R.string.on_device), style = MaterialTheme.typography.titleSmall)
                         val dark = isSystemInDarkTheme()
                         listOf(SafetyLevel.RECOMMENDED, SafetyLevel.SAFE, SafetyLevel.EXTREME).forEach { level ->
                             val ofLevel = apps.filter { it.level == level }
-                            val activeApps = ofLevel.filter { it.state == AppState.ENABLED }
-                            Row {
-                                Text(stringResource(level.titleRes), color = levelColor(level, dark), fontWeight = FontWeight.SemiBold, modifier = Modifier.weight(1f))
-                                Text(stringResource(R.string.tier_stats, activeApps.size, formatSize(activeApps.sumOf { it.totalBytes }), ofLevel.size - activeApps.size))
+                            val active = ofLevel.filter { it.state == AppState.ENABLED }
+                            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                                Text(stringResource(level.titleRes), style = MaterialTheme.typography.labelLarge,
+                                    color = levelColor(level, dark), fontWeight = FontWeight.SemiBold)
+                                Text(stringResource(R.string.tier_stats, active.size, formatSize(active.sumOf { it.totalBytes }), ofLevel.size - active.size),
+                                    style = MaterialTheme.typography.bodySmall)
                             }
                         }
-                        Text(
-                            stringResource(R.string.device_stats, apps.size, apps.count { !it.isSystem }, apps.count { it.state == AppState.DISABLED }, apps.count { it.state == AppState.UNINSTALLED }),
-                            style = MaterialTheme.typography.bodySmall,
-                        )
+                        Text(stringResource(R.string.device_stats, apps.size, apps.count { !it.isSystem }, apps.count { it.state == AppState.DISABLED }, apps.count { it.state == AppState.UNINSTALLED }),
+                            style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     }
                 }
             }
+            Card {
+                io.github.j0p3s.debloater.ui.components.ExpandableSection(stringResource(R.string.device)) {
+                    Text(statusHelp(status, uid), style = MaterialTheme.typography.bodySmall)
+                    val dv = vm.repo.deviceVendor
+                    Text(if (dv != null) stringResource(R.string.vendor_active, dv.name, apps.count { it.vendor == dv.name && it.state == AppState.ENABLED })
+                        else stringResource(R.string.vendor_unknown, Build.BRAND), style = MaterialTheme.typography.bodySmall)
+                    Text(stringResource(if (sdk in 30..37) R.string.android_supported else R.string.android_untested),
+                        style = MaterialTheme.typography.bodySmall, color = if (sdk in 30..37) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error)
+                    val userApps = apps.filter { !it.isSystem && it.state != AppState.UNINSTALLED }
+                    val systemApps = apps.filter { it.isSystem && it.state != AppState.UNINSTALLED }
+                    Text(stringResource(R.string.user_count, userApps.size) + " · " + formatSize(userApps.sumOf { it.totalBytes }), style = MaterialTheme.typography.bodySmall)
+                    Text(stringResource(R.string.system_count, systemApps.size) + " · " + formatSize(systemApps.sumOf { it.totalBytes }), style = MaterialTheme.typography.bodySmall)
+                }
+            }
+            if (sdk !in 30..37) Text(stringResource(R.string.android_untested), color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
+            GettingStartedCard()
         }
     }
 }
 
 @Composable
-private fun NavTile(icon: ImageVector, title: String, subtitle: String, onClick: () -> Unit) {
-    Card(Modifier.fillMaxWidth().clickable(onClick = onClick)) {
-        Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
-            Icon(icon, null, Modifier.size(32.dp), tint = MaterialTheme.colorScheme.primary)
-            Spacer(Modifier.width(16.dp))
-            Column {
-                Text(title, style = MaterialTheme.typography.titleMedium)
-                Text(subtitle, style = MaterialTheme.typography.bodySmall)
-            }
-        }
+private fun Metric(label: String, value: String) {
+    Column {
+        Text(value, style = MaterialTheme.typography.titleMedium, fontWeight = FontWeight.SemiBold)
+        Text(label, style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
 
+@Composable
+private fun NavTile(icon: ImageVector, title: String, subtitle: String, primary: Boolean = false, onClick: () -> Unit) {
+    Row(Modifier.fillMaxWidth().clickable(onClick = onClick).padding(horizontal = 14.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically) {
+        androidx.compose.material3.Surface(shape = MaterialTheme.shapes.medium,
+            color = if (primary) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondaryContainer) {
+            Icon(icon, null, Modifier.padding(10.dp).size(22.dp),
+                tint = if (primary) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSecondaryContainer)
+        }
+        Spacer(Modifier.width(12.dp))
+        Column(Modifier.weight(1f)) {
+            Text(title, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
+            Text(subtitle, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+        }
+        Icon(Icons.AutoMirrored.Filled.ArrowForward, null, Modifier.size(20.dp), tint = MaterialTheme.colorScheme.outline)
+    }
+}
 @Composable
 private fun statusText(s: ShizukuStatus) = when (s) {
     ShizukuStatus.NOT_INSTALLED -> stringResource(R.string.shizuku_missing)
@@ -260,17 +258,8 @@ private fun open(ctx: android.content.Context, uri: String, fallback: String?) {
 
 @Composable
 private fun GettingStartedCard() {
-    var expanded by rememberSaveable { mutableStateOf(false) }
-    Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)) {
-        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text(stringResource(R.string.start_title), style = MaterialTheme.typography.titleMedium)
-            TextButton(onClick = { expanded = !expanded }) {
-                Text(stringResource(if (expanded) R.string.hide_guide else R.string.show_guide))
-            }
-            if (expanded) {
-                Text(stringResource(R.string.start_steps), style = MaterialTheme.typography.bodyMedium)
-                Text(stringResource(R.string.test_limits), style = MaterialTheme.typography.bodySmall)
-            }
-        }
+    io.github.j0p3s.debloater.ui.components.ExpandableSection(stringResource(R.string.show_guide)) {
+        Text(stringResource(R.string.start_steps), style = MaterialTheme.typography.bodySmall)
+        Text(stringResource(R.string.test_limits), style = MaterialTheme.typography.bodySmall)
     }
 }

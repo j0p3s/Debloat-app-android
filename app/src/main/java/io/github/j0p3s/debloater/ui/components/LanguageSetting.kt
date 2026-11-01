@@ -2,6 +2,12 @@ package io.github.j0p3s.debloater.ui.components
 
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.clickable
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Translate
+import androidx.compose.material.icons.filled.ExpandMore
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
@@ -38,12 +44,14 @@ fun LanguageSetting() {
         "de" to "Deutsch",
     )
     Card {
-        TextButton(onClick = { expanded = true }, modifier = Modifier.fillMaxWidth()) {
-            Column(Modifier.fillMaxWidth().padding(8.dp)) {
-                Text(stringResource(R.string.language_title))
-                Text(languages[selected] ?: stringResource(R.string.language_system))
-            }
-        }
+        ListItem(
+            headlineContent = { Text(stringResource(R.string.language_title)) },
+            supportingContent = { Text(languages[selected] ?: stringResource(R.string.language_system)) },
+            leadingContent = { Icon(Icons.Default.Translate, null, tint = MaterialTheme.colorScheme.primary) },
+            trailingContent = { Icon(Icons.Default.ExpandMore, null) },
+            modifier = Modifier.fillMaxWidth().clickable(role = Role.Button) { expanded = true },
+            colors = androidx.compose.material3.ListItemDefaults.colors(containerColor = MaterialTheme.colorScheme.surfaceContainerHighest),
+        )
     }
     if (expanded) {
         AlertDialog(
@@ -65,6 +73,7 @@ fun LanguageSetting() {
                             ),
                         )
                     }
+                    Text(stringResource(R.string.source_language), style = MaterialTheme.typography.bodySmall, modifier = Modifier.padding(12.dp))
                 }
             },
             confirmButton = { TextButton(onClick = { expanded = false }) { Text(stringResource(R.string.close)) } },

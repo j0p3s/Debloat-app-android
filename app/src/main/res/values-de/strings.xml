@@ -264,4 +264,6 @@
     <string name="hide_guide">Anleitung ausblenden</string>
     <string name="updating_lists">Listen werden aktualisiert…</string>
     <string name="own_list_builtin">In der App enthalten; wird mit APK-Versionen aktualisiert. ADL und UAD werden separat aktualisiert.</string>
+    <string name="filter_options">Filter und Sortierung</string>
+    <string name="list_sources">Listenquellen</string>
 </resources>
