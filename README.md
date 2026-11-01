@@ -120,10 +120,25 @@ For a first attempt, prefer **Disable** for any tier. It keeps the app and its d
 python3 tools/check_translations.py           # coverage and format arguments for every language
 ./gradlew testDebugUnitTest assembleDebug     # app/build/outputs/apk/debug/app-debug.apk
 ./gradlew lintDebug
-./gradlew assembleRelease                     # minified, signed with the debug key for sideloading
+./gradlew assembleRelease                     # requires the permanent release signing credentials
 ```
 
 GitHub Actions builds both APKs on every push (see the `debloater-apks` artifact).
+
+Release APKs use one permanent key stored in the repository's `ANDROID_KEYSTORE_BASE64` and
+`ANDROID_KEYSTORE_PASSWORD` Actions secrets. CI checks the APK certificate against
+`config/release-certificate.sha256` before uploading it. Never regenerate this key: future updates
+must use the same signer. Keep the private keystore and password backed up outside GitHub too;
+neither belongs in Git or in release assets. For local release builds, set `ANDROID_KEYSTORE_PATH`
+to the backed-up PKCS12 keystore and `ANDROID_KEYSTORE_PASSWORD` to its password (alias `debloater`).
+Missing credentials fail the release build rather than falling back to a temporary debug key.
+
+Pull requests build and test only the debug APK, without receiving the release key. Debug APKs use
+the separate `io.github.j0p3s.debloater.debug` application ID, so they can coexist with the release app.
+
+Versions through 1.7.0 were signed with temporary CI debug keys that were not retained. Moving from
+those APKs to the permanent signer requires one final uninstall/reinstall; export backups first.
+Subsequent releases signed with the permanent key can update in place and retain app data.
 
 See [localization guidance](docs/LOCALIZATION.md) for adding translations and checking language changes.
 
