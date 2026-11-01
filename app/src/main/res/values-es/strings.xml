@@ -263,4 +263,7 @@
     <string name="show_guide">Ver guía de inicio</string>
     <string name="hide_guide">Ocultar guía</string>
     <string name="updating_lists">Actualizando listas…</string>
+    <string name="own_list_builtin">Incluida en la app; se actualiza con las versiones del APK. ADL y UAD se actualizan por separado.</string>
+    <string name="filter_options">Filtros y orden</string>
+    <string name="list_sources">Fuentes de listas</string>
 </resources>

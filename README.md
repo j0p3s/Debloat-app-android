@@ -9,8 +9,10 @@ An Android app that debloats **any Android version from Android 11 to Android 17
   Choose another language in **Settings → Language**, or in Android's per-app language settings on
   Android 13+. Your choice is remembered on Android 11 and 12 too. Source app descriptions, warnings
   and technical logs can remain in English; the interface and confirmation guidance are translated.
-- **Getting started**: the home screen puts the main actions first and explains the workflow.
-  Debloat opens on **Recommended**. Selection actions wrap for longer translations and large fonts,
+- **Compact dashboard**: device and storage information lead the home screen, followed by grouped
+  navigation and tier statistics. The getting-started guide and secondary settings expand on demand.
+  Light and dark themes use an emerald palette; selected apps have a tinted background.
+  Debloat opens on **Recommended**, with expandable filters and sorting. Selection actions wrap for longer translations and large fonts,
   with **Test first** as the primary action. A test checks access and backups; it cannot predict every
   effect on phone features.
 - **Debloat lists** with about 5,400 packages, merged from three sources (the most cautious rating wins when
@@ -49,8 +51,11 @@ An Android app that debloats **any Android version from Android 11 to Android 17
   Debloat List and System App Remover data (about 3 MB) straight from their GitHub repositories, after asking
   first. The new files are loaded and checked before they replace the current lists; a source that fails keeps
   its previous version, and *Use built-in* goes back to the lists inside the APK. Optional weekly automatic
-  check. Debloater's own list is only updated when its repository is public and has a higher `version`. The
-  internet permission is used for nothing else.
+  check. Debloater's own list ships with APK releases; it does not require access to this private repository.
+  Settings links to the UAD file and all five ADL files. GitHub file-page links are converted to raw JSON
+  downloads, with a GitHub Contents API fallback if the raw host fails. Errors identify the failing URL;
+  failed optional suggestion downloads keep their previous copies. The internet permission is used for
+  nothing else.
 - **Test run**: simulates the whole process step by step without changing anything. It checks Shizuku access,
   that the shell can see each package, that every APK can be read and backed up, and that there is enough free
   space. It shows every command that *would* run and reports whether any errors would happen. After a passed

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -31,6 +32,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -48,6 +50,7 @@ import kotlinx.coroutines.withContext
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun SettingsScreen(vm: MainViewModel) {
+    val uriHandler = LocalUriHandler.current
     val expert by vm.prefs.expertMode.collectAsStateWithLifecycle()
     val keepData by vm.prefs.keepData.collectAsStateWithLifecycle()
     var askExpert by remember { mutableStateOf(false) }
@@ -72,7 +75,6 @@ fun SettingsScreen(vm: MainViewModel) {
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             io.github.j0p3s.debloater.ui.components.LanguageSetting()
-            Text(stringResource(R.string.source_language), style = MaterialTheme.typography.bodySmall)
             SettingRow(
                 stringResource(R.string.expert_mode),
                 stringResource(R.string.expert_help),
@@ -84,7 +86,7 @@ fun SettingsScreen(vm: MainViewModel) {
                 !keepData,
             ) { vm.prefs.setKeepData(!it) }
             Card {
-                Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Column(Modifier.fillMaxWidth().padding(14.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     Text(stringResource(R.string.backups), style = MaterialTheme.typography.titleMedium)
                     Text(
                         stringResource(R.string.backup_settings_help),
@@ -93,8 +95,19 @@ fun SettingsScreen(vm: MainViewModel) {
                 }
             }
             Card {
-                Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                Column(Modifier.fillMaxWidth().padding(14.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     Text(stringResource(R.string.debloat_lists), style = MaterialTheme.typography.titleMedium)
+                    io.github.j0p3s.debloater.ui.components.ExpandableSection(stringResource(R.string.list_sources)) {
+                    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        TextButton(onClick = { uriHandler.openUri(ListUpdater.UAD_URL) }) { Text("UAD-NG") }
+                        TextButton(onClick = { uriHandler.openUri("https://github.com/MuntashirAkon/android-debloat-list") }) { Text("Android Debloat List") }
+                    }
+                    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        DebloatDatabase.ADL_FILES.forEach { name ->
+                            TextButton(onClick = { uriHandler.openUri("${ListUpdater.ADL_BASE}/$name.json") }) { Text("$name.json") }
+                        }
+                    }
+                    }
                     Text(stats?.let { stringResource(R.string.list_stats, *it.toTypedArray()) } ?: stringResource(R.string.loading), style = MaterialTheme.typography.bodySmall)
                     Text(
                         vm.listUpdater.lastUpdated()?.let { stringResource(R.string.lists_downloaded, dateFmt.format(java.util.Date(it))) }
@@ -150,7 +163,7 @@ fun SettingsScreen(vm: MainViewModel) {
                 }
             }
             Card {
-                Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Column(Modifier.fillMaxWidth().padding(14.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     Text(stringResource(R.string.about), style = MaterialTheme.typography.titleMedium)
                     Text("Debloater ${BuildConfig.VERSION_NAME}", style = MaterialTheme.typography.bodySmall)
                     Text(stringResource(R.string.cautious_rating), style = MaterialTheme.typography.bodySmall)
@@ -192,7 +205,7 @@ fun SettingsScreen(vm: MainViewModel) {
 @Composable
 private fun SettingRow(title: String, subtitle: String, checked: Boolean, onChange: (Boolean) -> Unit) {
     Card {
-        Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
+        Row(Modifier.fillMaxWidth().padding(horizontal = 14.dp, vertical = 10.dp), verticalAlignment = Alignment.CenterVertically) {
             Column(Modifier.weight(1f).padding(end = 12.dp)) {
                 Text(title, style = MaterialTheme.typography.titleMedium)
                 Text(subtitle, style = MaterialTheme.typography.bodySmall)
