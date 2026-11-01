@@ -6,6 +6,10 @@ plugins {
     id("org.jetbrains.kotlin.plugin.compose")
 }
 
+val releaseKeyPath = providers.environmentVariable("ANDROID_KEYSTORE_PATH").orNull
+val releaseKeyPassword = providers.environmentVariable("ANDROID_KEYSTORE_PASSWORD").orNull
+val releaseSigningAvailable = !releaseKeyPath.isNullOrBlank() && !releaseKeyPassword.isNullOrBlank()
+
 android {
     namespace = "io.github.j0p3s.debloater"
     compileSdk = 36
@@ -20,16 +24,31 @@ android {
         versionName = "1.7.0"
     }
 
+    signingConfigs {
+        if (releaseSigningAvailable) {
+            create("release") {
+                storeFile = file(releaseKeyPath!!)
+                storePassword = releaseKeyPassword
+                keyAlias = "debloater"
+                keyPassword = releaseKeyPassword
+                storeType = "PKCS12"
+            }
+        }
+    }
+
     buildTypes {
+        debug {
+            // Development APKs must not replace the permanently signed release app.
+            applicationIdSuffix = ".debug"
+            versionNameSuffix = "-debug"
+        }
         release {
             // R8 shrinks the APK a lot (Compose icons). proguard-rules.pro keeps the Shizuku
             // UserService, because Shizuku starts it by class name.
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            // Signed with the debug key so the APK can be sideloaded directly.
-            // Use your own signing config before publishing anywhere.
-            signingConfig = signingConfigs.getByName("debug")
+            signingConfig = signingConfigs.findByName("release")
         }
     }
 
@@ -51,6 +70,14 @@ android {
 
     packaging {
         resources.excludes += "/META-INF/{AL2.0,LGPL2.1}"
+    }
+}
+
+tasks.matching { it.name == "preReleaseBuild" }.configureEach {
+    doFirst {
+        check(releaseSigningAvailable) {
+            "Release signing is required. Set ANDROID_KEYSTORE_PATH and ANDROID_KEYSTORE_PASSWORD; never generate a replacement key."
+        }
     }
 }
 

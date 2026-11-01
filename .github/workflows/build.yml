@@ -24,8 +24,48 @@ jobs:
       - name: Unit tests
         run: ./gradlew testDebugUnitTest
 
-      - name: Build APKs
-        run: ./gradlew assembleDebug assembleRelease
+      - name: Build debug APK
+        run: ./gradlew assembleDebug
+
+      - name: Check release refuses missing signing credentials
+        run: |
+          if ./gradlew assembleRelease > "$RUNNER_TEMP/unsigned-build-check.txt" 2>&1; then
+            echo 'Release build unexpectedly succeeded without signing credentials'
+            exit 1
+          fi
+          grep -q 'Release signing is required' "$RUNNER_TEMP/unsigned-build-check.txt"
+
+      - name: Restore permanent release keystore
+        if: github.event_name != 'pull_request'
+        env:
+          KEYSTORE_BASE64: ${{ secrets.ANDROID_KEYSTORE_BASE64 }}
+          KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        run: |
+          test -n "$KEYSTORE_BASE64" || { echo 'Missing permanent release keystore secret'; exit 1; }
+          test -n "$KEYSTORE_PASSWORD" || { echo 'Missing release keystore password secret'; exit 1; }
+          umask 077
+          printf '%s' "$KEYSTORE_BASE64" | base64 --decode > "$RUNNER_TEMP/debloater-release.p12"
+
+      - name: Build signed release APK
+        if: github.event_name != 'pull_request'
+        env:
+          ANDROID_KEYSTORE_PATH: ${{ runner.temp }}/debloater-release.p12
+          ANDROID_KEYSTORE_PASSWORD: ${{ secrets.ANDROID_KEYSTORE_PASSWORD }}
+        run: ./gradlew assembleRelease
+
+      - name: Verify permanent release signer
+        if: github.event_name != 'pull_request'
+        run: |
+          apksigner=$(find "$ANDROID_HOME/build-tools" -name apksigner | sort -V | tail -n 1)
+          "$apksigner" verify --verbose --print-certs app/build/outputs/apk/release/app-release.apk > "$RUNNER_TEMP/apk-signature.txt"
+          expected=$(tr -d '[:space:]' < config/release-certificate.sha256)
+          actual=$(sed -n 's/^Signer #1 certificate SHA-256 digest: //p' "$RUNNER_TEMP/apk-signature.txt")
+          test "$actual" = "$expected" || { echo 'Release signing certificate changed; refusing to upload APK'; exit 1; }
+          echo "Release certificate SHA-256: $actual"
+
+      - name: Remove temporary keystore
+        if: always() && github.event_name != 'pull_request'
+        run: rm -f "$RUNNER_TEMP/debloater-release.p12"
 
       - uses: actions/upload-artifact@v4
         with:

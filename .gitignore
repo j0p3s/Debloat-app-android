@@ -10,4 +10,7 @@ build/
 .cxx
 *.keystore
 *.jks
+*.p12
+*.pfx
+signing.properties
 /dist/
