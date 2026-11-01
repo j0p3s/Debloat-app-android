@@ -9,8 +9,10 @@ An Android app that debloats **any Android version from Android 11 to Android 17
   Choose another language in **Settings → Language**, or in Android's per-app language settings on
   Android 13+. Your choice is remembered on Android 11 and 12 too. Source app descriptions, warnings
   and technical logs can remain in English; the interface and confirmation guidance are translated.
-- **Getting started**: the home screen puts the main actions first and explains the workflow.
-  Debloat opens on **Recommended**. Selection actions wrap for longer translations and large fonts,
+- **Compact dashboard**: device and storage information lead the home screen, followed by grouped
+  navigation and tier statistics. The getting-started guide and secondary settings expand on demand.
+  Light and dark themes use an emerald palette; selected apps have a tinted background.
+  Debloat opens on **Recommended**, with expandable filters and sorting. Selection actions wrap for longer translations and large fonts,
   with **Test first** as the primary action. A test checks access and backups; it cannot predict every
   effect on phone features.
 - **Debloat lists** with about 5,400 packages, merged from three sources (the most cautious rating wins when
