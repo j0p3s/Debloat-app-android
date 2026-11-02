@@ -27,6 +27,9 @@ jobs:
       - name: Build debug APK
         run: ./gradlew assembleDebug
 
+      - name: Android lint
+        run: ./gradlew lintDebug
+
       - name: Check release refuses missing signing credentials
         run: |
           if ./gradlew assembleRelease > "$RUNNER_TEMP/unsigned-build-check.txt" 2>&1; then

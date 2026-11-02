@@ -158,6 +158,8 @@ fun HomeScreen(vm: MainViewModel) {
                     NavTile(Icons.Default.CleaningServices, stringResource(R.string.debloat), stringResource(R.string.nav_debloat_help), primary = true) { vm.navigate(Screen.DEBLOAT) }
                     androidx.compose.material3.HorizontalDivider(Modifier.padding(horizontal = 14.dp), color = MaterialTheme.colorScheme.outlineVariant)
                     NavTile(Icons.Default.Apps, stringResource(R.string.app_manager), stringResource(R.string.nav_manager_help)) { vm.navigate(Screen.APP_MANAGER) }
+                    NavTile(Icons.Default.CleaningServices, stringResource(R.string.cache_user), stringResource(R.string.cache_user_help)) { vm.navigate(Screen.USER_CACHE) }
+                    NavTile(Icons.Default.CleaningServices, stringResource(R.string.cache_system), stringResource(R.string.cache_system_help)) { vm.navigate(Screen.SYSTEM_CACHE) }
                     NavTile(Icons.Default.Backup, stringResource(R.string.backups_restore), stringResource(R.string.nav_backup_help, sessions.size)) { vm.navigate(Screen.BACKUPS) }
                     NavTile(Icons.Default.FactCheck, stringResource(R.string.adl_check), stringResource(R.string.nav_adl_help)) { vm.navigate(Screen.ADL_CHECK) }
                 }

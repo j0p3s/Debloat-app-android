@@ -1,5 +1,7 @@
 # Debloater (Shizuku)
 
+**Current release: [1.9.0](https://github.com/j0p3s/Debloat-app-android/releases/tag/v1.9.0)** · [Download APK](https://github.com/j0p3s/Debloat-app-android/releases/download/v1.9.0/Debloater-v1.9.0.apk) · [Release notes](docs/RELEASE-1.9.0.md)
+
 An Android app that debloats **any Android version from Android 11 to Android 17** without root, using
 [Shizuku](https://shizuku.rikka.app/). It also works as a normal app manager, so you can remove any user app.
 
@@ -91,6 +93,27 @@ An Android app that debloats **any Android version from Android 11 to Android 17
   Shizuku, your current launcher and keyboard, …) can never be modified, even in expert mode.
 - Logs of every run and test are saved and can be shared.
 
+## Cache cleaner
+
+Open **User cache** or **System cache** from the main dashboard and tap **Scan all app caches**.
+Usage access is required for measurements; enable it through Shizuku or Android Settings, then scan again.
+The scanner shows measured user-app, system-app and combined cache totals for the current Android user.
+Shared UID caches are grouped and counted once per volume; unavailable measurements are excluded from totals.
+Protected OS/recovery caches, other Android users and the read-only system partition are outside the scan.
+
+Sort by largest/smallest cache or app name A–Z/Z–A, search app/package names, or show only measured caches above zero.
+Select shown results or individual groups, then **Clear selected caches** and review the confirmation.
+Filtering does not deselect hidden selections; the confirmation lists every targeted app.
+
+Clearing requires Shizuku and a successful `pm help` capability check for `clear --cache-only`.
+Every command keeps the `--cache-only` flag and current user scope. Unsupported Android versions are blocked,
+and ROM permission failures appear in the cache log. App data and accounts remain intact.
+Cache deletion is permanent and cannot be restored from debloat backups. Sizes are rescanned afterwards;
+running apps can rebuild cache immediately, so actual freed space may differ from the measured total.
+
+Release 1.9.0 retains the permanent signer and app ID from 1.8.0, supporting in-place updates.
+On-device cache behavior remains untested.
+
 ## Requirements
 
 - Android 11 (API 30) up to Android 17 (API 37). Newer versions run but show an "untested" warning.
@@ -102,7 +125,7 @@ An Android app that debloats **any Android version from Android 11 to Android 17
 2. Open **Debloat**. Start with a few apps you do not use in **Recommended**.
 3. Tap **Test first** to check the process without changing anything. Read each app's warnings too.
 4. If the test passes, tap **Continue…** and choose **Disable** or **Remove**.
-5. Use **Backups & restore** to undo anything.
+5. Use **Backups & restore** to undo package changes. Deleted app data and cache cannot be restored.
 
 For a first attempt, prefer **Disable** for any tier. It keeps the app and its data and is easy to undo.
 
