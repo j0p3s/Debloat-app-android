@@ -1,6 +1,6 @@
 # Debloater (Shizuku)
 
-**Current release: [1.9.0](https://github.com/j0p3s/Debloat-app-android/releases/tag/v1.9.0)** · [Download APK](https://github.com/j0p3s/Debloat-app-android/releases/download/v1.9.0/Debloater-v1.9.0.apk) · [Release notes](docs/RELEASE-1.9.0.md)
+**Current release: [1.10.0](https://github.com/j0p3s/Debloat-app-android/releases/tag/v1.10.0)** · [Download APK](https://github.com/j0p3s/Debloat-app-android/releases/download/v1.10.0/Debloater-v1.10.0.apk) · [Release notes](docs/RELEASE-1.10.0.md) · [1.9.0 notes](docs/RELEASE-1.9.0.md)
 
 An Android app that debloats **any Android version from Android 11 to Android 17** without root, using
 [Shizuku](https://shizuku.rikka.app/). It also works as a normal app manager, so you can remove any user app.
@@ -117,7 +117,6 @@ and ROM permission failures appear in the cache log. App data and accounts remai
 Cache deletion is permanent and cannot be restored from debloat backups. Sizes are rescanned afterwards;
 running apps can rebuild cache immediately, so actual freed space may differ from the measured total.
 
-Release 1.9.0 retains the permanent signer and app ID from 1.8.0, supporting in-place updates.
 On-device cache behavior remains untested.
 
 ## Requirements
@@ -127,11 +126,13 @@ On-device cache behavior remains untested.
 
 ## Usage
 
-1. Install and start Shizuku, then open Debloater and grant the Shizuku permission.
-2. Open **Debloat**. Start with a few apps you do not use in **Recommended**.
-3. Tap **Test first** to check the process without changing anything. Read each app's warnings too.
-4. If the test passes, tap **Continue…** and choose **Disable** or **Remove**.
-5. Use **Backups & restore** to undo package changes. Deleted app data and cache cannot be restored.
+1. Install and start Shizuku, then open Debloater and grant the Shizuku permission. The welcome guide and
+   the setup steps on the home screen walk you through it.
+2. New to debloating? Tap **Clean up my phone**: it selects only Recommended apps; tap **Test**, then **Disable**.
+3. For more control open **Debloat**. Start with a few apps you do not use in **Recommended**.
+4. Tap **Test first** to check the process without changing anything. Read each app's warnings too.
+5. If the test passes, tap **Continue…** and choose **Disable** or **Remove**.
+6. Use **Backups & restore** to undo package changes. Deleted app data and cache cannot be restored.
 
 For a first attempt, prefer **Disable** for any tier. It keeps the app and its data and is easy to undo.
 
@@ -153,6 +154,11 @@ python3 tools/check_translations.py           # coverage and format arguments fo
 ```
 
 GitHub Actions builds both APKs on every push (see the `debloater-apks` artifact).
+
+To publish a release, bump `versionCode`/`versionName` in `app/build.gradle.kts`, add
+`docs/RELEASE-<version>.md`, merge, and push a tag `v<version>` on that commit. CI checks that the tag
+matches `versionName`, builds and verifies the signed APK, and publishes a GitHub release with
+`Debloater-v<version>.apk` and the release notes as its text.
 
 Release APKs use one permanent key stored in the repository's `ANDROID_KEYSTORE_BASE64` and
 `ANDROID_KEYSTORE_PASSWORD` Actions secrets. CI checks the APK certificate against
