@@ -42,6 +42,16 @@ def read_strings(path):
     return strings
 
 
+def resource_folder(locale):
+    """Android resource qualifiers: zh-CN lives in values-zh-rCN, Indonesian in the legacy values-in."""
+    if locale in ("id", "in"):
+        return "in"
+    if "-" in locale:
+        language, region = locale.split("-", 1)
+        return f"{language}-r{region}"
+    return locale
+
+
 def check():
     base = read_strings(RES / "values/strings.xml")
     locales = [node.attrib[ANDROID + "name"] for node in
@@ -52,7 +62,7 @@ def check():
     for locale in locales:
         if locale == "en":
             continue
-        translated = read_strings(RES / f"values-{locale}/strings.xml")
+        translated = read_strings(RES / f"values-{resource_folder(locale)}/strings.xml")
         for key in sorted(base.keys() - translated.keys()):
             errors.append(f"{locale}: missing {key}")
         for key in sorted(translated.keys() - base.keys()):

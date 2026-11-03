@@ -19,7 +19,9 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.HelpOutline
 import androidx.compose.material.icons.filled.Apps
+import androidx.compose.material.icons.filled.AutoFixHigh
 import androidx.compose.material.icons.filled.Backup
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.CleaningServices
@@ -80,6 +82,9 @@ fun HomeScreen(vm: MainViewModel) {
             TopAppBar(
                 title = { Text("Debloater") },
                 actions = {
+                    IconButton(onClick = { vm.navigate(Screen.HELP) }) {
+                        Icon(Icons.AutoMirrored.Filled.HelpOutline, stringResource(R.string.guide_help_title))
+                    }
                     IconButton(onClick = { vm.refreshShizuku(); vm.refreshApps() }) { Icon(Icons.Default.Refresh, stringResource(R.string.refresh)) }
                     IconButton(onClick = { vm.navigate(Screen.SETTINGS) }) { Icon(Icons.Default.Settings, stringResource(R.string.settings)) }
                 },
@@ -99,7 +104,9 @@ fun HomeScreen(vm: MainViewModel) {
                     style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
             }
 
-            Card(colors = CardDefaults.cardColors(containerColor = if (ready) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.errorContainer)) {
+            // Until Shizuku works, show the numbered setup steps instead of a short status line.
+            if (!ready) io.github.j0p3s.debloater.ui.components.ShizukuSetupCard(status, uid, onRefresh = { vm.refreshShizuku() })
+            if (ready) Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)) {
                 Column(Modifier.fillMaxWidth().padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(if (ready) Icons.Default.CheckCircle else Icons.Default.Error, null,
@@ -155,7 +162,15 @@ fun HomeScreen(vm: MainViewModel) {
             // One compact group replaces the stack of large, repeated navigation cards.
             Card {
                 Column {
-                    NavTile(Icons.Default.CleaningServices, stringResource(R.string.debloat), stringResource(R.string.nav_debloat_help), primary = true) { vm.navigate(Screen.DEBLOAT) }
+                    val candidates = cleanupCandidates(apps)
+                    NavTile(
+                        Icons.Default.AutoFixHigh, stringResource(R.string.guide_cleanup_title),
+                        if (candidates.isEmpty()) stringResource(R.string.guide_cleanup_none)
+                        else stringResource(R.string.guide_cleanup_found, candidates.size, formatSize(candidates.sumOf { it.totalBytes })),
+                        primary = true,
+                    ) { vm.navigate(Screen.CLEANUP) }
+                    androidx.compose.material3.HorizontalDivider(Modifier.padding(horizontal = 14.dp), color = MaterialTheme.colorScheme.outlineVariant)
+                    NavTile(Icons.Default.CleaningServices, stringResource(R.string.debloat), stringResource(R.string.nav_debloat_help)) { vm.navigate(Screen.DEBLOAT) }
                     androidx.compose.material3.HorizontalDivider(Modifier.padding(horizontal = 14.dp), color = MaterialTheme.colorScheme.outlineVariant)
                     NavTile(Icons.Default.Apps, stringResource(R.string.app_manager), stringResource(R.string.nav_manager_help)) { vm.navigate(Screen.APP_MANAGER) }
                     NavTile(Icons.Default.CleaningServices, stringResource(R.string.cache_user), stringResource(R.string.cache_user_help)) { vm.navigate(Screen.USER_CACHE) }

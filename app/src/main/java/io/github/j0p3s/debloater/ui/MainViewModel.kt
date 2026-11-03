@@ -35,7 +35,7 @@ sealed interface ListUpdateState {
     data class Failed(val message: String) : ListUpdateState
 }
 
-enum class Screen { HOME, DEBLOAT, APP_MANAGER, OPERATION, BACKUPS, SETTINGS, ADL_CHECK, USER_CACHE, SYSTEM_CACHE }
+enum class Screen { HOME, DEBLOAT, APP_MANAGER, OPERATION, BACKUPS, SETTINGS, ADL_CHECK, USER_CACHE, SYSTEM_CACHE, CLEANUP, HELP }
 
 /** A request that needs the user's confirmation before it runs. */
 data class PendingOperation(
@@ -107,6 +107,11 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     val managerSelection: StateFlow<Set<String>> = _managerSelection.asStateFlow()
 
     fun setDebloatSelection(s: Set<String>) { _debloatSelection.value = s }
+
+    /** Guided clean-up selection; null until the screen is first opened (then everything is selected). */
+    private val _cleanupSelection = MutableStateFlow<Set<String>?>(null)
+    val cleanupSelection: StateFlow<Set<String>?> = _cleanupSelection.asStateFlow()
+    fun setCleanupSelection(s: Set<String>) { _cleanupSelection.value = s }
     fun setManagerSelection(s: Set<String>) { _managerSelection.value = s }
 
     init {
@@ -234,6 +239,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         lastRequest = LastRequest.Run(apps.map { it.packageName }, action, keepData)
         if (!dryRun) {
             _debloatSelection.value = emptySet()
+            _cleanupSelection.value = null
             _managerSelection.value = emptySet()
         }
         if (_backStack.value.last() != Screen.OPERATION) navigate(Screen.OPERATION)

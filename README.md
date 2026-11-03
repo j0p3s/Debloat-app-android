@@ -7,10 +7,16 @@ An Android app that debloats **any Android version from Android 11 to Android 17
 
 ## Features
 
-- **Languages**: English, Spanish, French and German. The app follows the device language by default.
+- **Languages**: English, Spanish, French, German, Portuguese, Italian, Russian, Simplified Chinese,
+  Hindi, Arabic (right-to-left) and Indonesian. The app follows the device language by default.
   Choose another language in **Settings → Language**, or in Android's per-app language settings on
   Android 13+. Your choice is remembered on Android 11 and 12 too. Source app descriptions, warnings
   and technical logs can remain in English; the interface and confirmation guidance are translated.
+- **Beginner guide**: on first launch a short welcome lets you pick a language, explains test → disable →
+  undo, and walks through connecting Shizuku. Until Shizuku works, the home screen shows the same numbered
+  setup steps with buttons for each one. **Clean up my phone** (first entry on the home screen) lists the
+  Recommended apps for this phone, preselected, with Test and Disable as the main actions. A **Help** page
+  (question-mark icon) answers common questions in plain language and can show the welcome again.
 - **Compact dashboard**: device and storage information lead the home screen, followed by grouped
   navigation and tier statistics. The getting-started guide and secondary settings expand on demand.
   Light and dark themes use an emerald palette; selected apps have a tinted background.
