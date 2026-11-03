@@ -34,7 +34,13 @@ import io.github.j0p3s.debloater.R
 @Composable
 fun LanguageSetting() {
     var expanded by rememberSaveable { mutableStateOf(false) }
-    val selected = AppCompatDelegate.getApplicationLocales()[0]?.language.orEmpty()
+    val selected = AppCompatDelegate.getApplicationLocales()[0]?.let { locale ->
+        when (locale.language) {
+            "zh" -> "zh-CN"
+            "in", "id" -> "id"
+            else -> locale.language
+        }
+    }.orEmpty()
     // Autonyms stay readable even if the current app language is unfamiliar.
     val languages = linkedMapOf(
         "" to stringResource(R.string.language_system),
@@ -42,6 +48,13 @@ fun LanguageSetting() {
         "es" to "Español",
         "fr" to "Français",
         "de" to "Deutsch",
+        "pt" to "Português",
+        "it" to "Italiano",
+        "ru" to "Русский",
+        "zh-CN" to "简体中文",
+        "hi" to "हिन्दी",
+        "ar" to "العربية",
+        "id" to "Bahasa Indonesia",
     )
     Card {
         ListItem(

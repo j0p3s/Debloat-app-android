@@ -1,7 +1,10 @@
 # Languages and usability
 
 The interface uses Android string resources, with English as the fallback and complete Spanish,
-French and German resource sets. Android selects the device language initially. Settings offers
+French, German, Portuguese, Italian, Russian, Simplified Chinese (`values-zh-rCN`), Hindi, Arabic and
+Indonesian (`values-in`, declared as both `id` and `in`) resource sets. The Portuguese, Italian, Russian,
+Chinese, Hindi, Arabic and Indonesian translations and the beginner-guide strings (`guide_*`) are
+machine-assisted and need native speaker review. Android selects the device language initially. Settings offers
 language autonyms so users can recover from choosing a language they cannot read.
 
 `AppCompatDelegate.setApplicationLocales` changes the language and recreates the activity.

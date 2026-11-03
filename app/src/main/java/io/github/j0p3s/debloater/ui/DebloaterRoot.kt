@@ -21,7 +21,14 @@ fun DebloaterRoot(vm: MainViewModel) {
     val stack by vm.backStack.collectAsStateWithLifecycle()
     val pending by vm.pending.collectAsStateWithLifecycle()
     val message by vm.message.collectAsStateWithLifecycle()
+    val onboardingDone by vm.prefs.onboardingDone.collectAsStateWithLifecycle()
     val ctx = LocalContext.current
+
+    // First launch (or "show the welcome guide again" from Help): language, how it works, Shizuku setup.
+    if (!onboardingDone) {
+        io.github.j0p3s.debloater.ui.screens.OnboardingScreen(vm)
+        return
+    }
 
     BackHandler {
         if (!vm.back()) (ctx as? Activity)?.finish()
@@ -44,6 +51,8 @@ fun DebloaterRoot(vm: MainViewModel) {
         Screen.BACKUPS -> BackupsScreen(vm)
         Screen.SETTINGS -> SettingsScreen(vm)
         Screen.ADL_CHECK -> io.github.j0p3s.debloater.ui.screens.AdlCheckScreen(vm)
+        Screen.CLEANUP -> io.github.j0p3s.debloater.ui.screens.CleanupScreen(vm)
+        Screen.HELP -> io.github.j0p3s.debloater.ui.screens.HelpScreen(vm)
     }
 
     pending?.let { p ->

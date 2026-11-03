@@ -33,6 +33,14 @@ class Prefs(context: Context) {
         sp.edit { putBoolean(KEY_AUTO_UPDATE, v) }; _autoUpdateLists.value = v
     }
 
+    private val _onboardingDone = MutableStateFlow(sp.getBoolean(KEY_ONBOARDING, false))
+    /** The first-launch welcome (language, how it works, Shizuku setup) has been shown. */
+    val onboardingDone: StateFlow<Boolean> = _onboardingDone.asStateFlow()
+
+    fun setOnboardingDone(v: Boolean) {
+        sp.edit { putBoolean(KEY_ONBOARDING, v) }; _onboardingDone.value = v
+    }
+
     fun setExpertMode(v: Boolean) {
         sp.edit { putBoolean(KEY_EXPERT, v) }; _expertMode.value = v
     }
@@ -46,5 +54,6 @@ class Prefs(context: Context) {
         const val KEY_KEEP_DATA = "keep_data"
         const val KEY_SORT = "sort"
         const val KEY_AUTO_UPDATE = "auto_update_lists"
+        const val KEY_ONBOARDING = "onboarding_done"
     }
 }
