@@ -156,9 +156,10 @@ python3 tools/check_translations.py           # coverage and format arguments fo
 GitHub Actions builds both APKs on every push (see the `debloater-apks` artifact).
 
 To publish a release, bump `versionCode`/`versionName` in `app/build.gradle.kts`, add
-`docs/RELEASE-<version>.md`, merge, and push a tag `v<version>` on that commit. CI checks that the tag
-matches `versionName`, builds and verifies the signed APK, and publishes a GitHub release with
-`Debloater-v<version>.apk` and the release notes as its text.
+`docs/RELEASE-<version>.md` and merge. Then either push a tag `v<version>` on that commit, or open
+**Actions → Build APK → Run workflow**, pick the branch and tick *Publish a GitHub release*. CI checks the
+version and release notes, builds and verifies the signed APK, creates the tag if needed, and publishes a
+GitHub release with `Debloater-v<version>.apk` and the release notes as its text.
 
 Release APKs use one permanent key stored in the repository's `ANDROID_KEYSTORE_BASE64` and
 `ANDROID_KEYSTORE_PASSWORD` Actions secrets. CI checks the APK certificate against
