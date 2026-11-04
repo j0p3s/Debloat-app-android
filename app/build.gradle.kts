@@ -20,8 +20,8 @@ android {
         // command set available up to Android 17 (API 37).
         minSdk = 30
         targetSdk = 36
-        versionCode = 12
-        versionName = "1.10.0"
+        versionCode = 13
+        versionName = "1.10.1"
     }
 
     signingConfigs {

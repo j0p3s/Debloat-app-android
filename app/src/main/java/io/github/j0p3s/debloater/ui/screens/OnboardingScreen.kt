@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -36,6 +37,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.j0p3s.debloater.R
@@ -56,18 +58,22 @@ fun OnboardingScreen(vm: MainViewModel) {
     Scaffold(
         bottomBar = {
             Row(
-                Modifier.fillMaxWidth().padding(16.dp),
+                Modifier.fillMaxWidth().navigationBarsPadding().padding(16.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
             ) {
-                if (page > 0) OutlinedButton(onClick = { page-- }) { Text(stringResource(R.string.guide_back)) }
-                else TextButton(onClick = finish) { Text(stringResource(R.string.guide_skip)) }
-                Spacer(Modifier.weight(1f))
+                if (page > 0) OutlinedButton(onClick = { page-- }, modifier = Modifier.weight(1f)) {
+                    Text(stringResource(R.string.guide_back), textAlign = TextAlign.Center)
+                } else TextButton(onClick = finish, modifier = Modifier.weight(1f)) {
+                    Text(stringResource(R.string.guide_skip), textAlign = TextAlign.Center)
+                }
                 if (page < pages - 1) {
-                    Button(onClick = { page++ }) { Text(stringResource(R.string.guide_next)) }
+                    Button(onClick = { page++ }, modifier = Modifier.weight(1f)) {
+                        Text(stringResource(R.string.guide_next), textAlign = TextAlign.Center)
+                    }
                 } else {
-                    Button(onClick = finish) {
-                        Text(stringResource(if (status == ShizukuStatus.READY) R.string.guide_finish else R.string.guide_later))
+                    Button(onClick = finish, modifier = Modifier.weight(1f)) {
+                        Text(stringResource(if (status == ShizukuStatus.READY) R.string.guide_finish else R.string.guide_later), textAlign = TextAlign.Center)
                     }
                 }
             }
