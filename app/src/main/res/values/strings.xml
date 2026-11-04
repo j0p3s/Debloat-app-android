@@ -380,4 +380,8 @@
     <string name="cache_app_type">Application type</string>
     <string name="cache_both">Both</string>
     <string name="cache_both_help">Choose caches from user apps and system apps in one list. App data and accounts are kept.</string>
+    <string name="cache_scan_selected">Scan selected app type</string>
+    <string name="cache_refreshing">Refreshing cleared apps</string>
+    <string name="cache_stopped">Stopped. Results may be partial. Completed clears are not undone; an in-flight clear may still finish.</string>
+    <string name="cache_partial">Partial measurements; unavailable sizes are excluded.</string>
 </resources>

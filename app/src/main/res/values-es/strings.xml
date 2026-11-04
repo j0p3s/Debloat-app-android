@@ -378,4 +378,8 @@
     <string name="cache_app_type">Tipo de aplicaciones</string>
     <string name="cache_both">Ambas</string>
     <string name="cache_both_help">Elige cachés de aplicaciones de usuario y del sistema en una sola lista. Los datos y las cuentas se conservan.</string>
+    <string name="cache_scan_selected">Analizar el tipo de apps elegido</string>
+    <string name="cache_refreshing">Actualizando las apps limpiadas</string>
+    <string name="cache_stopped">Detenido. Los resultados pueden ser parciales. Las limpiezas hechas no se deshacen; una en curso puede terminar.</string>
+    <string name="cache_partial">Mediciones parciales; se excluyen tamaños no disponibles.</string>
 </resources>

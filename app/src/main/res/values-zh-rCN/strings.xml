@@ -378,4 +378,8 @@
     <string name="cache_app_type">应用类型</string>
     <string name="cache_both">两者</string>
     <string name="cache_both_help">在同一列表中选择用户应用和系统应用的缓存。应用数据和账号会保留。</string>
+    <string name="cache_scan_selected">扫描所选应用类型</string>
+    <string name="cache_refreshing">正在更新已清理应用</string>
+    <string name="cache_stopped">已停止。结果可能不完整。已完成的清理无法撤销，进行中的清理可能仍会完成。</string>
+    <string name="cache_partial">部分测量；不包含无法获取的大小。</string>
 </resources>

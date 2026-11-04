@@ -35,6 +35,7 @@ class ShellService : IShellService.Stub {
     }
 
     override fun exec(command: String): Bundle = run(command, null)
+    override fun execCache(command: String): Bundle = run(command, null, 15L)
 
     override fun installApks(
         apks: Array<ParcelFileDescriptor>,
@@ -83,7 +84,7 @@ class ShellService : IShellService.Stub {
         }
     }
 
-    private fun run(command: String, stdin: InputStream?): Bundle {
+    private fun run(command: String, stdin: InputStream?, timeoutSeconds: Long = COMMAND_TIMEOUT_SECONDS): Bundle {
         return try {
             val process = ProcessBuilder("sh", "-c", command).start()
             val stdout = StringBuilder()
@@ -91,11 +92,11 @@ class ShellService : IShellService.Stub {
             val outReader = thread { stdout.append(process.inputStream.bufferedReader().readText()) }
             val errReader = thread { stderr.append(process.errorStream.bufferedReader().readText()) }
             process.outputStream.use { os -> stdin?.copyTo(os) }
-            val finished = process.waitFor(COMMAND_TIMEOUT_SECONDS, TimeUnit.SECONDS)
+            val finished = process.waitFor(timeoutSeconds, TimeUnit.SECONDS)
             if (!finished) {
                 process.destroyForcibly()
                 outReader.join(1000); errReader.join(1000)
-                return result(124, stdout.toString(), "Timed out after ${COMMAND_TIMEOUT_SECONDS}s\n$stderr")
+                return result(124, stdout.toString(), "Timed out after ${timeoutSeconds}s; outcome unknown\n$stderr")
             }
             outReader.join(); errReader.join()
             result(process.exitValue(), stdout.toString(), stderr.toString())

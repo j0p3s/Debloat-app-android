@@ -378,4 +378,8 @@
     <string name="cache_app_type">Type d’applications</string>
     <string name="cache_both">Les deux</string>
     <string name="cache_both_help">Choisissez les caches des applications utilisateur et système dans une seule liste. Les données et les comptes sont conservés.</string>
+    <string name="cache_scan_selected">Analyser le type choisi</string>
+    <string name="cache_refreshing">Actualisation des applications nettoyées</string>
+    <string name="cache_stopped">Arrêté. Résultats potentiellement partiels. Les caches déjà vidés ne sont pas restaurés ; un effacement en cours peut encore se terminer.</string>
+    <string name="cache_partial">Mesures partielles ; tailles indisponibles exclues.</string>
 </resources>

@@ -378,4 +378,8 @@
     <string name="cache_app_type">ऐप का प्रकार</string>
     <string name="cache_both">दोनों</string>
     <string name="cache_both_help">एक ही सूची में उपयोगकर्ता और सिस्टम ऐप का कैश चुनें। ऐप डेटा और खाते सुरक्षित रहते हैं।</string>
+    <string name="cache_scan_selected">चुने हुए ऐप प्रकार को स्कैन करें</string>
+    <string name="cache_refreshing">साफ किए गए ऐप अपडेट हो रहे हैं</string>
+    <string name="cache_stopped">रोका गया। परिणाम आंशिक हो सकते हैं। पूरी हुई सफाई वापस नहीं होती; जारी सफाई अभी पूरी हो सकती है।</string>
+    <string name="cache_partial">आंशिक माप; अनुपलब्ध आकार शामिल नहीं हैं।</string>
 </resources>

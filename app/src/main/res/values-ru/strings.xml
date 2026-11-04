@@ -378,4 +378,8 @@
     <string name="cache_app_type">Тип приложений</string>
     <string name="cache_both">Оба типа</string>
     <string name="cache_both_help">Выберите кэш пользовательских и системных приложений в одном списке. Данные и учётные записи сохраняются.</string>
+    <string name="cache_scan_selected">Сканировать выбранный тип</string>
+    <string name="cache_refreshing">Обновление очищенных приложений</string>
+    <string name="cache_stopped">Остановлено. Результаты могут быть неполными. Очистка не отменяется; текущая операция может ещё завершиться.</string>
+    <string name="cache_partial">Частичные измерения; неизвестные размеры не учитываются.</string>
 </resources>
