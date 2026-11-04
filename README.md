@@ -102,6 +102,10 @@ An Android app that debloats **any Android version from Android 11 to Android 17
 ## Cache cleaner
 
 Open **User cache** or **System cache** from the main dashboard and tap **Scan all app caches**.
+The **Application type** button in the scanner selects **User apps**, **System apps**, or **Both**.
+The measured total, unavailable-size count, application list and clear targets follow that choice.
+Switching categories reuses the current scan. Selections in the other category are retained but are
+excluded from clearing until that category (or Both) is chosen.
 Usage access is required for measurements; enable it through Shizuku or Android Settings, then scan again.
 The scanner shows measured user-app, system-app and combined cache totals for the current Android user.
 Shared UID caches are grouped and counted once per volume; unavailable measurements are excluded from totals.

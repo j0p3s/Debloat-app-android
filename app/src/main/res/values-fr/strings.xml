@@ -375,4 +375,7 @@
     <string name="guide_step_done">Fait</string>
     <string name="guide_welcome_text">Supprimez les applis que vous n\'avez jamais demandées : publicités, pistage et bloatware. En toute sécurité, avec des sauvegardes automatiques, et sans root.</string>
     <string name="guide_welcome_title">Bienvenue dans Debloater</string>
+    <string name="cache_app_type">Type d’applications</string>
+    <string name="cache_both">Les deux</string>
+    <string name="cache_both_help">Choisissez les caches des applications utilisateur et système dans une seule liste. Les données et les comptes sont conservés.</string>
 </resources>

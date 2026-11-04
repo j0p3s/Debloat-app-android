@@ -375,4 +375,7 @@
     <string name="guide_step_done">Hecho</string>
     <string name="guide_welcome_text">Quita las apps que nunca pediste: publicidad, rastreo y bloatware. Con seguridad, con copias automáticas y sin root.</string>
     <string name="guide_welcome_title">Te damos la bienvenida a Debloater</string>
+    <string name="cache_app_type">Tipo de aplicaciones</string>
+    <string name="cache_both">Ambas</string>
+    <string name="cache_both_help">Elige cachés de aplicaciones de usuario y del sistema en una sola lista. Los datos y las cuentas se conservan.</string>
 </resources>

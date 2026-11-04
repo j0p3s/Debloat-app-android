@@ -375,4 +375,7 @@
     <string name="guide_step_done">हो गया</string>
     <string name="guide_welcome_text">वे ऐप हटाएँ जो आपने कभी नहीं माँगे: विज्ञापन, ट्रैकिंग और बेकार ऐप। सुरक्षित तरीक़े से, अपने-आप बैकअप के साथ, और बिना root।</string>
     <string name="guide_welcome_title">Debloater में आपका स्वागत है</string>
+    <string name="cache_app_type">ऐप का प्रकार</string>
+    <string name="cache_both">दोनों</string>
+    <string name="cache_both_help">एक ही सूची में उपयोगकर्ता और सिस्टम ऐप का कैश चुनें। ऐप डेटा और खाते सुरक्षित रहते हैं।</string>
 </resources>

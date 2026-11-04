@@ -375,4 +375,7 @@
     <string name="guide_step_done">Feito</string>
     <string name="guide_welcome_text">Remova as apps que nunca pediu: publicidade, rastreio e bloatware. Em segurança, com cópias automáticas e sem root.</string>
     <string name="guide_welcome_title">Bem-vindo ao Debloater</string>
+    <string name="cache_app_type">Tipo de aplicações</string>
+    <string name="cache_both">Ambas</string>
+    <string name="cache_both_help">Escolha caches de aplicações do utilizador e do sistema numa só lista. Os dados e as contas são mantidos.</string>
 </resources>

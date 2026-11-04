@@ -8,7 +8,10 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.runtime.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
@@ -18,6 +21,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.j0p3s.debloater.R
 import io.github.j0p3s.debloater.data.CacheSort
+import io.github.j0p3s.debloater.data.CacheScope
+import io.github.j0p3s.debloater.data.CachePolicy
 import io.github.j0p3s.debloater.shizuku.ShizukuStatus
 import io.github.j0p3s.debloater.ui.MainViewModel
 import io.github.j0p3s.debloater.ui.components.BackTopBar
@@ -33,27 +38,50 @@ fun CacheScreen(vm: MainViewModel, system: Boolean) {
     val status by vm.shizukuStatus.collectAsStateWithLifecycle()
     val operation by vm.operation.collectAsStateWithLifecycle()
     val free = !cache.busy && operation?.finished != false
-    val visible = cache.visible(system)
-    val chosen = cache.groups.filter { it.isSystem == system && it.key in cache.selected }
+    var categoryName by rememberSaveable(system) { mutableStateOf(if(system) CacheScope.SYSTEM.name else CacheScope.USER.name) }
+    val category = CacheScope.valueOf(categoryName)
+    val categoryGroups = CachePolicy.inScope(cache.groups, category)
+    val visible = cache.visible(category)
+    val chosen = CachePolicy.selectedInScope(cache.groups, cache.selected, category)
     val clipboard = LocalClipboardManager.current
 
-    Scaffold(topBar = { BackTopBar(stringResource(if(system) R.string.cache_system else R.string.cache_user), onBack = { vm.back() }) }) { padding ->
+    Scaffold(topBar = { BackTopBar(stringResource(R.string.cache_scanner), onBack = { vm.back() }) }) { padding ->
         LazyColumn(Modifier.padding(padding).fillMaxSize(), contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             item {
-                Text(stringResource(if(system) R.string.cache_system_help else R.string.cache_user_help))
+                Text(stringResource(when(category) {
+                    CacheScope.USER -> R.string.cache_user_help
+                    CacheScope.SYSTEM -> R.string.cache_system_help
+                    CacheScope.BOTH -> R.string.cache_both_help
+                }))
                 Text(stringResource(R.string.cache_scope), style = MaterialTheme.typography.bodySmall)
             }
             item {
                 Card(Modifier.fillMaxWidth()) {
                     Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
                         Text(stringResource(R.string.cache_scanner), style = MaterialTheme.typography.titleMedium)
+                        Text(stringResource(R.string.cache_app_type), style = MaterialTheme.typography.labelMedium)
+                        var categoryMenu by remember { mutableStateOf(false) }
+                        Box {
+                            OutlinedButton(onClick = { categoryMenu = true }, enabled = free, modifier = Modifier.fillMaxWidth()) {
+                                Text(stringResource(category.titleRes), modifier = Modifier.weight(1f))
+                                Icon(Icons.Default.ArrowDropDown, contentDescription = null)
+                            }
+                            DropdownMenu(expanded = categoryMenu, onDismissRequest = { categoryMenu = false }) {
+                                CacheScope.entries.forEach { option ->
+                                    DropdownMenuItem(
+                                        text = { Text(stringResource(option.titleRes)) },
+                                        onClick = { categoryName = option.name; categoryMenu = false },
+                                    )
+                                }
+                            }
+                        }
                         cache.scannedAt?.let { time ->
-                            Text(stringResource(R.string.cache_total, formatSize(cache.groups.sumOf { it.bytes ?: 0 })))
-                            Text(stringResource(R.string.cache_totals,
+                            Text(stringResource(R.string.cache_total, formatSize(categoryGroups.sumOf { it.bytes ?: 0 })))
+                            if(category == CacheScope.BOTH) Text(stringResource(R.string.cache_totals,
                                 formatSize(cache.groups.filter { !it.isSystem }.sumOf { it.bytes ?: 0 }),
                                 formatSize(cache.groups.filter { it.isSystem }.sumOf { it.bytes ?: 0 })))
                             Text(stringResource(R.string.cache_timestamp, DateFormat.getDateTimeInstance().format(Date(time))), style = MaterialTheme.typography.bodySmall)
-                            Text(stringResource(R.string.cache_unknown_count, cache.groups.count { it.bytes == null }), style = MaterialTheme.typography.bodySmall)
+                            Text(stringResource(R.string.cache_unknown_count, categoryGroups.count { it.bytes == null }), style = MaterialTheme.typography.bodySmall)
                         } ?: Text(stringResource(R.string.cache_not_scanned))
                         Button(onClick = cache::scan, enabled = free) { Text(stringResource(R.string.cache_scan)) }
                         if(!vm.repo.hasUsageAccess()) {
@@ -87,12 +115,12 @@ fun CacheScreen(vm: MainViewModel, system: Boolean) {
                     Text(stringResource(R.string.cache_nonzero), modifier = Modifier.padding(top = 12.dp))
                 }
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                    TextButton(onClick = { cache.selectShown(system) }, enabled = free) { Text(stringResource(R.string.cache_select_shown)) }
-                    TextButton(onClick = { cache.deselect(system) }, enabled = free) { Text(stringResource(R.string.cache_deselect)) }
+                    TextButton(onClick = { cache.selectShown(category) }, enabled = free) { Text(stringResource(R.string.cache_select_shown)) }
+                    TextButton(onClick = { cache.deselect(category) }, enabled = free) { Text(stringResource(R.string.cache_deselect)) }
                 }
                 Text(stringResource(R.string.cache_selection, chosen.size, formatSize(chosen.sumOf { it.bytes ?: 0 })))
                 Text(stringResource(R.string.cache_hidden_selection), style = MaterialTheme.typography.bodySmall)
-                Button(onClick = { cache.requestClear(system) }, enabled = free && chosen.isNotEmpty() && status == ShizukuStatus.READY && cache.supported != false) { Text(stringResource(R.string.cache_clear)) }
+                Button(onClick = { cache.requestClear(category) }, enabled = free && chosen.isNotEmpty() && status == ShizukuStatus.READY && cache.supported != false) { Text(stringResource(R.string.cache_clear)) }
             }
             if(visible.isEmpty() && cache.scannedAt != null) item { Text(stringResource(R.string.cache_empty)) }
             items(visible, key = { it.key }) { group ->

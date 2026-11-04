@@ -35,15 +35,15 @@ class CacheController(
     var notice by mutableStateOf<UiMessage?>(null); private set
     val log = mutableStateListOf<String>()
 
-    fun visible(system: Boolean): List<CacheGroup> = CachePolicy.sorted(groups.filter { group ->
-        group.isSystem == system && (!nonzeroOnly || (group.bytes ?: 0) > 0) &&
+    fun visible(category: CacheScope): List<CacheGroup> = CachePolicy.sorted(CachePolicy.inScope(groups, category).filter { group ->
+        (!nonzeroOnly || (group.bytes ?: 0) > 0) &&
             (group.label.contains(query, true) || group.packages.any { it.contains(query, true) })
     }, sort)
     fun toggle(key: String) { if(!busy) selected = if(key in selected) selected - key else selected + key }
-    fun selectShown(system: Boolean) { if(!busy) selected = selected + visible(system).map { it.key } }
-    fun deselect(system: Boolean) { if(!busy) selected = selected - groups.filter { it.isSystem == system }.map { it.key }.toSet() }
-    fun requestClear(system: Boolean) {
-        if(!busy && canRun()) pending = groups.filter { it.isSystem == system && it.key in selected }.takeIf { it.isNotEmpty() }
+    fun selectShown(category: CacheScope) { if(!busy) selected = selected + visible(category).map { it.key } }
+    fun deselect(category: CacheScope) { if(!busy) selected = selected - CachePolicy.inScope(groups, category).map { it.key }.toSet() }
+    fun requestClear(category: CacheScope) {
+        if(!busy && canRun()) pending = CachePolicy.selectedInScope(groups, selected, category).takeIf { it.isNotEmpty() }
     }
 
     private suspend fun readGroups() {

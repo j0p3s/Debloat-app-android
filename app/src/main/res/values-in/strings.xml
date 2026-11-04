@@ -375,4 +375,7 @@
     <string name="guide_step_done">Selesai</string>
     <string name="guide_welcome_text">Hapus aplikasi yang tidak pernah Anda minta: iklan, pelacakan, dan bloatware. Dengan aman, dengan cadangan otomatis, dan tanpa root.</string>
     <string name="guide_welcome_title">Selamat datang di Debloater</string>
+    <string name="cache_app_type">Jenis aplikasi</string>
+    <string name="cache_both">Keduanya</string>
+    <string name="cache_both_help">Pilih cache aplikasi pengguna dan sistem dalam satu daftar. Data aplikasi dan akun tetap disimpan.</string>
 </resources>

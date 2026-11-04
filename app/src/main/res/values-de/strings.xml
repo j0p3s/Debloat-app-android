@@ -375,4 +375,7 @@
     <string name="guide_step_done">Erledigt</string>
     <string name="guide_welcome_text">Entfernen Sie Apps, um die Sie nie gebeten haben: Werbung, Tracking und Bloatware. Sicher, mit automatischen Sicherungen und ohne Root.</string>
     <string name="guide_welcome_title">Willkommen bei Debloater</string>
+    <string name="cache_app_type">App-Typ</string>
+    <string name="cache_both">Beide</string>
+    <string name="cache_both_help">Caches von Benutzer-Apps und System-Apps in einer Liste auswählen. App-Daten und Konten bleiben erhalten.</string>
 </resources>

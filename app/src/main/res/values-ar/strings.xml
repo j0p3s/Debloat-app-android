@@ -375,4 +375,7 @@
     <string name="guide_step_done">تم</string>
     <string name="guide_welcome_text">احذف التطبيقات التي لم تطلبها: الإعلانات والتتبع والتطبيقات غير الضرورية. بأمان، مع نسخ احتياطية تلقائية، ودون روت.</string>
     <string name="guide_welcome_title">مرحبًا بك في Debloater</string>
+    <string name="cache_app_type">نوع التطبيقات</string>
+    <string name="cache_both">كلاهما</string>
+    <string name="cache_both_help">اختر ذاكرة التخزين المؤقت لتطبيقات المستخدم والنظام في قائمة واحدة. يتم الاحتفاظ ببيانات التطبيقات والحسابات.</string>
 </resources>
