@@ -378,4 +378,8 @@
     <string name="cache_app_type">App-Typ</string>
     <string name="cache_both">Beide</string>
     <string name="cache_both_help">Caches von Benutzer-Apps und System-Apps in einer Liste auswählen. App-Daten und Konten bleiben erhalten.</string>
+    <string name="cache_scan_selected">Gewählten App-Typ scannen</string>
+    <string name="cache_refreshing">Geleerte Apps aktualisieren</string>
+    <string name="cache_stopped">Gestoppt. Ergebnisse können unvollständig sein. Bereits geleerte Caches bleiben gelöscht; laufendes Leeren kann noch enden.</string>
+    <string name="cache_partial">Teilweise Messung; unbekannte Größen sind ausgeschlossen.</string>
 </resources>

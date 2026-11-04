@@ -54,7 +54,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     val repo = PackageRepository(app)
     val backups = BackupManager(app)
     val engine = OperationEngine(repo, backups)
-    val cache = CacheController(app, repo, viewModelScope, { !engine.isRunning }, { refreshApps() })
+    val cache = CacheController(app, repo, viewModelScope, { !engine.isRunning }, ::refreshAfterCache)
     val prefs = Prefs(app)
     /** Current debloat list (re-read after an in-app update). */
     val database: DebloatDatabase get() = DebloatDatabase.get(getApplication())
@@ -209,6 +209,17 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
             _apps.value = list
             _loading.value = false
             withContext(Dispatchers.IO) { runCatching { backups.writeBaselineIfMissing(list) } }
+        }
+    }
+
+    private fun refreshAfterCache(packages: Set<String>) {
+        // Avoid another full-device StorageStats pass after the targeted cache refresh.
+        // App Manager falls back to APK-only size until its next explicit refresh.
+        _apps.value = _apps.value.map { app ->
+            if(app.packageName in packages) app.copy(sizeExact = false, appBytes = app.apkSize, dataBytes = 0, cacheBytes = 0) else app
+        }
+        viewModelScope.launch {
+            _storage.value = withContext(Dispatchers.IO) { runCatching { repo.storageInfo() }.getOrNull() }
         }
     }
 

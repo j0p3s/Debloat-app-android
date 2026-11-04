@@ -15,6 +15,8 @@ interface IShellService {
 
     /** Runs a command with `sh -c`. */
     Bundle exec(String command) = 2;
+    /** Cache operations use a shorter subprocess wait; never changes the command itself. */
+    Bundle execCache(String command) = 5;
 
     /**
      * Installs one or more APK splits through a pm install session.

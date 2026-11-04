@@ -75,6 +75,7 @@ fun CacheScreen(vm: MainViewModel, system: Boolean) {
                                 }
                             }
                         }
+                        if(cache.partial) Text(stringResource(R.string.cache_partial))
                         cache.scannedAt?.let { time ->
                             Text(stringResource(R.string.cache_total, formatSize(categoryGroups.sumOf { it.bytes ?: 0 })))
                             if(category == CacheScope.BOTH) Text(stringResource(R.string.cache_totals,
@@ -83,7 +84,7 @@ fun CacheScreen(vm: MainViewModel, system: Boolean) {
                             Text(stringResource(R.string.cache_timestamp, DateFormat.getDateTimeInstance().format(Date(time))), style = MaterialTheme.typography.bodySmall)
                             Text(stringResource(R.string.cache_unknown_count, categoryGroups.count { it.bytes == null }), style = MaterialTheme.typography.bodySmall)
                         } ?: Text(stringResource(R.string.cache_not_scanned))
-                        Button(onClick = cache::scan, enabled = free) { Text(stringResource(R.string.cache_scan)) }
+                        Button(onClick = { cache.scan(category) }, enabled = free) { Text(stringResource(R.string.cache_scan_selected)) }
                         if(!vm.repo.hasUsageAccess()) {
                             Text(stringResource(R.string.cache_usage_help), style = MaterialTheme.typography.bodySmall)
                             FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -95,8 +96,11 @@ fun CacheScreen(vm: MainViewModel, system: Boolean) {
                 }
             }
             if(cache.busy) item {
-                LinearProgressIndicator(Modifier.fillMaxWidth())
+                Text(stringResource(cache.phase))
+                LinearProgressIndicator(progress = { if(cache.progress.second > 0) cache.progress.first.toFloat() / cache.progress.second else 0f }, modifier = Modifier.fillMaxWidth())
                 Text(stringResource(R.string.cache_progress, cache.progress.first, cache.progress.second))
+                Text(cache.currentApp, style = MaterialTheme.typography.bodySmall)
+                OutlinedButton(onClick = cache::cancel, enabled = !cache.stopRequested) { Text(stringResource(R.string.cancel)) }
             }
             cache.notice?.let { message -> item { Text(stringResource(message.resource, *message.args.toTypedArray())) } }
             if(status != ShizukuStatus.READY) item { Text(stringResource(R.string.cache_needs_shizuku)) }

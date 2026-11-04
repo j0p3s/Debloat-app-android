@@ -378,4 +378,8 @@
     <string name="cache_app_type">نوع التطبيقات</string>
     <string name="cache_both">كلاهما</string>
     <string name="cache_both_help">اختر ذاكرة التخزين المؤقت لتطبيقات المستخدم والنظام في قائمة واحدة. يتم الاحتفاظ ببيانات التطبيقات والحسابات.</string>
+    <string name="cache_scan_selected">فحص نوع التطبيقات المحدد</string>
+    <string name="cache_refreshing">تحديث التطبيقات التي تم تنظيفها</string>
+    <string name="cache_stopped">تم الإيقاف. قد تكون النتائج جزئية. لا يتم التراجع عن التنظيف المكتمل وقد تكتمل العملية الجارية.</string>
+    <string name="cache_partial">قياسات جزئية؛ الأحجام غير المتاحة مستبعدة.</string>
 </resources>

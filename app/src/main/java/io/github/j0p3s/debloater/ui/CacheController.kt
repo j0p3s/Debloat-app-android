@@ -12,6 +12,11 @@ import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.TimeoutCancellationException
 import kotlinx.coroutines.withContext
 
 /** Owned by MainViewModel so selections, scan results and work survive rotation. */
@@ -20,12 +25,13 @@ class CacheController(
     private val repo: PackageRepository,
     private val scope: CoroutineScope,
     private val canRun: () -> Boolean,
-    private val afterClear: () -> Unit,
+    private val afterClear: (Set<String>) -> Unit,
 ) {
     var groups by mutableStateOf(emptyList<CacheGroup>()); private set
     var selected by mutableStateOf(emptySet<String>()); private set
     var busy by mutableStateOf(false); private set
     var progress by mutableStateOf(0 to 0); private set
+    var partial by mutableStateOf(false); private set
     var scannedAt by mutableStateOf<Long?>(null); private set
     var sort by mutableStateOf(CacheSort.LARGEST)
     var query by mutableStateOf("")
@@ -34,6 +40,16 @@ class CacheController(
     var pending by mutableStateOf<List<CacheGroup>?>(null)
     var notice by mutableStateOf<UiMessage?>(null); private set
     val log = mutableStateListOf<String>()
+    private val reader = BoundedCacheReader()
+    private var job: Job? = null
+    var stopRequested by mutableStateOf(false); private set
+    var phase by mutableStateOf(R.string.cache_scanner); private set
+    var currentApp by mutableStateOf(""); private set
+
+    fun cancel() {
+        stopRequested = true
+        if (phase != R.string.cache_clear) job?.cancel()
+    }
 
     fun visible(category: CacheScope): List<CacheGroup> = CachePolicy.sorted(CachePolicy.inScope(groups, category).filter { group ->
         (!nonzeroOnly || (group.bytes ?: 0) > 0) &&
@@ -46,52 +62,71 @@ class CacheController(
         if(!busy && canRun()) pending = CachePolicy.selectedInScope(groups, selected, category).takeIf { it.isNotEmpty() }
     }
 
-    private suspend fun readGroups() {
+    private suspend fun readGroups(category: CacheScope = CacheScope.BOTH, keys: Set<String>? = null) {
         check(repo.hasUsageAccess()) { app.getString(R.string.cache_usage_help) }
         val pm = app.packageManager
         val stats = app.getSystemService(StorageStatsManager::class.java)
-        val applications = withContext(Dispatchers.IO) {
+        val inventory = withContext(Dispatchers.IO) {
             @Suppress("DEPRECATION")
             pm.getInstalledApplications(0).filter { it.flags and ApplicationInfo.FLAG_INSTALLED != 0 }
-                .groupBy { it.uid to it.storageUuid }.values.toList()
-        }
-        val result = mutableListOf<CacheGroup>()
-        for((index, members) in applications.withIndex()) {
-            progress = index + 1 to applications.size
-            result += withContext(Dispatchers.IO) {
-                val first = members.first()
-                val packages = members.map { it.packageName }.sorted()
-                val label = members.map { runCatching { it.loadLabel(pm).toString() }.getOrDefault(it.packageName) }.sorted().joinToString(" / ")
-                val system = members.any { it.flags and (ApplicationInfo.FLAG_SYSTEM or ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) != 0 }
-                try {
-                    // Query once for each UID and volume; shared UID caches must not inflate totals.
-                    val bytes = stats.queryStatsForUid(first.storageUuid, first.uid).cacheBytes.coerceAtLeast(0)
-                    CacheGroup(first.uid, first.storageUuid, packages, label, system, bytes)
-                } catch(e: Exception) {
-                    if(e is CancellationException) throw e
-                    CacheGroup(first.uid, first.storageUuid, packages, label, system, null, e.message ?: e.javaClass.simpleName)
+                .groupBy { it.uid to it.storageUuid }.values.map { members ->
+                    val first = members.first()
+                    val system = members.any { it.flags and (ApplicationInfo.FLAG_SYSTEM or ApplicationInfo.FLAG_UPDATED_SYSTEM_APP) != 0 }
+                    val descriptor = CacheGroup(first.uid, first.storageUuid, members.map { it.packageName }.sorted(),
+                        members.map { runCatching { it.loadLabel(pm).toString() }.getOrDefault(it.packageName) }.sorted().joinToString(" / "), system, null)
+                    descriptor
                 }
-            }
         }
-        groups = result
-        selected = selected.intersect(result.map { it.key }.toSet())
+        val applications = inventory.filter { category.includes(it) && (keys == null || it.key in keys) }
+        val refreshed = applications.map { it.key }.toSet()
+        // Old numbers for this operation are invalid until each new measurement arrives.
+        val previous = groups.associateBy { it.key }
+        groups = inventory.map { descriptor ->
+            if(descriptor.key in refreshed) descriptor else previous[descriptor.key] ?: descriptor
+        }
         scannedAt = System.currentTimeMillis()
+        partial = true
+        progress = 0 to applications.size
+        for(batch in applications.chunked(2)) {
+            if(stopRequested) break
+            currentApp = batch.joinToString(" / ") { it.label }
+            val results = coroutineScope {
+                batch.map { descriptor -> async {
+                    try {
+                        descriptor.copy(bytes = reader.read {
+                            stats.queryStatsForUid(descriptor.volume, descriptor.uid).cacheBytes.coerceAtLeast(0)
+                        })
+                    } catch(e: Exception) {
+                        if(e is CancellationException && e !is TimeoutCancellationException) throw e
+                        descriptor.copy(error = e.message ?: e.javaClass.simpleName)
+                    }
+                } }.awaitAll()
+            }
+            val updates = results.associateBy { it.key }
+            groups = groups.map { updates[it.key] ?: it }
+            progress = progress.first + results.size to applications.size
+        }
+        selected = selected.intersect(groups.map { it.key }.toSet())
+        scannedAt = System.currentTimeMillis()
+        partial = stopRequested
     }
 
-    fun scan() {
+    fun scan(category: CacheScope) {
         if(busy || !canRun()) return
         busy = true
         notice = null
-        scope.launch {
+        stopRequested = false
+        phase = R.string.cache_scanner
+        job = scope.launch {
             try {
                 supported = if(ShizukuManager.status.value == ShizukuStatus.READY)
-                    CachePolicy.supportsCacheOnly(ShizukuManager.exec("pm help")) else null
-                readGroups()
-                notice = UiMessage(R.string.cache_scan_done, listOf(groups.count { it.bytes == null }))
+                    CachePolicy.supportsCacheOnly(ShizukuManager.execCache("pm help")) else null
+                readGroups(category)
+                notice = UiMessage(R.string.cache_scan_done, listOf(CachePolicy.inScope(groups, category).count { it.bytes == null }))
             } catch(e: Exception) {
-                if(e is CancellationException) throw e
+                if(e is CancellationException) { notice = UiMessage(R.string.cache_stopped); return@launch }
                 notice = UiMessage(R.string.cache_error, listOf(e.message.orEmpty()))
-            } finally { busy = false; progress = 0 to 0 }
+            } finally { busy = false; currentApp = "" }
         }
     }
 
@@ -101,47 +136,57 @@ class CacheController(
         if(busy || !canRun() || ShizukuManager.status.value != ShizukuStatus.READY) return
         busy = true
         notice = null
-        scope.launch {
-            var changed = false
+        stopRequested = false
+        phase = R.string.cache_clear
+        job = scope.launch {
+            val changedPackages = mutableSetOf<String>()
             try {
                 // No fallback to plain pm clear, global trim-caches or raw directory deletion.
-                supported = CachePolicy.supportsCacheOnly(ShizukuManager.exec("pm help"))
+                supported = CachePolicy.supportsCacheOnly(ShizukuManager.execCache("pm help"))
                 if(supported != true) {
                     notice = UiMessage(R.string.cache_unsupported)
                     return@launch
                 }
                 var successes = 0
                 var failures = 0
-                val packages = targets.flatMap { it.packages }.distinct()
+                val packages = targets.filter { it.bytes != 0L }.flatMap { it.packages }.distinct()
+                progress = 0 to packages.size
                 for((index, pkg) in packages.withIndex()) {
+                    if(stopRequested) break
+                    currentApp = pkg
                     progress = index + 1 to packages.size
                     val command = CachePolicy.clearCommand(repo.userId, pkg)
-                    val result = ShizukuManager.exec(command)
+                    // Invalidate first: cancellation or timeout must not leave stale successful-looking sizes.
+                    groups = groups.map { if(pkg in it.packages) it.copy(bytes = null, error = null) else it }
+                    scannedAt = null
+                    changedPackages += pkg
+                    val result = ShizukuManager.execCache(command)
                     val success = CachePolicy.succeeded(result)
                     if(success) successes++ else failures++
-                    changed = changed || success
                     log += "${if(success) "OK" else "FAIL"}  $command\n${result.output}"
+                    if(result.exitCode == 124) { stopRequested = true; break }
                 }
                 selected = selected - targets.map { it.key }.toSet()
                 // Never leave pre-clean measurements on screen as if they were current.
-                groups = emptyList()
                 scannedAt = null
+                if(stopRequested) { notice = UiMessage(R.string.cache_stopped); return@launch }
+                phase = R.string.cache_refreshing
                 try {
-                    readGroups()
+                    readGroups(keys = targets.filter { it.bytes != 0L }.map { it.key }.toSet())
                     notice = UiMessage(R.string.cache_clear_done, listOf(successes, failures))
                 } catch(e: Exception) {
-                    if(e is CancellationException) throw e
+                    if(e is CancellationException) { notice = UiMessage(R.string.cache_stopped); return@launch }
                     notice = UiMessage(R.string.cache_rescan_failed, listOf(successes, failures, e.message.orEmpty()))
                 }
             } catch(e: Exception) {
-                if(e is CancellationException) throw e
+                if(e is CancellationException) { notice = UiMessage(R.string.cache_stopped); return@launch }
                 groups = emptyList()
                 scannedAt = null
                 notice = UiMessage(R.string.cache_error, listOf(e.message.orEmpty()))
             } finally {
                 busy = false
-                progress = 0 to 0
-                if(changed) afterClear()
+                currentApp = ""
+                if(changedPackages.isNotEmpty()) afterClear(changedPackages)
             }
         }
     }
