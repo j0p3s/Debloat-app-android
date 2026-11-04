@@ -1,5 +1,16 @@
 # Changelog
 
+## 1.10.3 — 2026-11-04
+
+- Measure only the selected cache category using two bounded workers and progressive partial results.
+- Add cancellable measurements with eight-second caller waits and bounded outstanding Binder calls.
+- Use a 15-second subprocess wait for cache-only Shizuku commands; stop on unknown timeout outcomes.
+- Show scan/clear/refresh phases, current app and completed counts; allow stopping the operation.
+- Skip known-empty caches and refresh targeted groups only after clearing.
+- Remove the hidden full-device App Manager size reload after clearing; affected sizes fall back to APK-only until refreshed.
+- Keep unmeasured app categories visible as unknown, rather than treating them as empty.
+- Add timeout/cancellation tests and translate the new controls into all supported languages.
+
 ## 1.10.2 â€” 2026-11-04
 
 - Added an **Application type** selector to the cache scanner: **User apps**, **System apps**, or **Both**.
@@ -22,4 +33,4 @@
 - Added the welcome guide, Shizuku setup steps, **Clean up my phone**, and Help.
 - Retained the cache tools, debloat lists, backups and permanent release signer.
 
-Detailed notes: [1.10.2](docs/RELEASE-1.10.2.md), [1.10.1](docs/RELEASE-1.10.1.md), [1.10.0](docs/RELEASE-1.10.0.md).
+Detailed notes: [1.10.3](docs/RELEASE-1.10.3.md), [1.10.2](docs/RELEASE-1.10.2.md), [1.10.1](docs/RELEASE-1.10.1.md), [1.10.0](docs/RELEASE-1.10.0.md).

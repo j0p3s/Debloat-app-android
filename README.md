@@ -1,6 +1,6 @@
 # Debloater (Shizuku)
 
-**Current release: [1.10.2](https://github.com/j0p3s/Debloat-app-android/releases/tag/v1.10.2)** · [Download APK](https://github.com/j0p3s/Debloat-app-android/releases/download/v1.10.2/Debloater-v1.10.2.apk) · [Release notes](docs/RELEASE-1.10.2.md) · [Changelog](CHANGELOG.md)
+**Current release: [1.10.3](https://github.com/j0p3s/Debloat-app-android/releases/tag/v1.10.3)** · [Download APK](https://github.com/j0p3s/Debloat-app-android/releases/download/v1.10.3/Debloater-v1.10.3.apk) · [Release notes](docs/RELEASE-1.10.3.md) · [Changelog](CHANGELOG.md)
 
 An Android app that debloats **any Android version from Android 11 to Android 17** without root, using
 [Shizuku](https://shizuku.rikka.app/). It also works as a normal app manager, so you can remove any user app.
@@ -101,10 +101,10 @@ An Android app that debloats **any Android version from Android 11 to Android 17
 
 ## Cache cleaner
 
-Open **User cache** or **System cache** from the main dashboard and tap **Scan all app caches**.
+Open **User cache** or **System cache** from the main dashboard and choose **Application type**, then tap **Scan selected app type**.
 The **Application type** button in the scanner selects **User apps**, **System apps**, or **Both**.
 The measured total, unavailable-size count, application list and clear targets follow that choice.
-Switching categories reuses the current scan. Selections in the other category are retained but are
+Scanning measures only the selected category with two bounded workers. Switching categories reuses available results; unmeasured apps remain listed with unknown sizes. Selections in the other category are retained but are
 excluded from clearing until that category (or Both) is chosen.
 Usage access is required for measurements; enable it through Shizuku or Android Settings, then scan again.
 The scanner shows measured user-app, system-app and combined cache totals for the current Android user.
@@ -118,10 +118,19 @@ Filtering does not deselect hidden selections; the confirmation lists every targ
 Clearing requires Shizuku and a successful `pm help` capability check for `clear --cache-only`.
 Every command keeps the `--cache-only` flag and current user scope. Unsupported Android versions are blocked,
 and ROM permission failures appear in the cache log. App data and accounts remain intact.
-Cache deletion is permanent and cannot be restored from debloat backups. Sizes are rescanned afterwards;
+Cache deletion is permanent and cannot be restored from debloat backups. Only targeted non-empty/unknown cache groups are refreshed afterwards;
 running apps can rebuild cache immediately, so actual freed space may differ from the measured total.
 
-On-device cache behavior remains untested.
+Measurements appear progressively, with a completed/total count and the current app. Cancel returns partial results.
+Each storage-stat caller waits up to eight seconds; an unresponsive Binder call keeps its worker slot until it returns,
+so retries cannot accumulate unlimited background requests. Unknown sizes are excluded from totals.
+Cache-only Shizuku subprocesses wait up to 15 seconds, rather than the general 180-second command limit.
+A timeout stops the batch and reports an unknown outcome; Android may still finish an already-requested clear.
+Cancel during clearing stops subsequent commands after the current one. Already-completed clears are not undone.
+Known-empty caches are skipped. App Manager sizes affected by clearing fall back to APK-only until refreshed,
+without automatically measuring every app again.
+
+On-device performance and cache behavior remain untested; no numeric speed improvement is claimed.
 
 ## Requirements
 

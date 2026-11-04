@@ -66,7 +66,7 @@ class CacheController(
         check(repo.hasUsageAccess()) { app.getString(R.string.cache_usage_help) }
         val pm = app.packageManager
         val stats = app.getSystemService(StorageStatsManager::class.java)
-        val applications = withContext(Dispatchers.IO) {
+        val inventory = withContext(Dispatchers.IO) {
             @Suppress("DEPRECATION")
             pm.getInstalledApplications(0).filter { it.flags and ApplicationInfo.FLAG_INSTALLED != 0 }
                 .groupBy { it.uid to it.storageUuid }.values.map { members ->
@@ -75,11 +75,15 @@ class CacheController(
                     val descriptor = CacheGroup(first.uid, first.storageUuid, members.map { it.packageName }.sorted(),
                         members.map { runCatching { it.loadLabel(pm).toString() }.getOrDefault(it.packageName) }.sorted().joinToString(" / "), system, null)
                     descriptor
-                }.filter { category.includes(it) && (keys == null || it.key in keys) }
+                }
         }
+        val applications = inventory.filter { category.includes(it) && (keys == null || it.key in keys) }
         val refreshed = applications.map { it.key }.toSet()
         // Old numbers for this operation are invalid until each new measurement arrives.
-        groups = groups.filterNot { it.key in refreshed || (keys == null && category.includes(it)) } + applications
+        val previous = groups.associateBy { it.key }
+        groups = inventory.map { descriptor ->
+            if(descriptor.key in refreshed) descriptor else previous[descriptor.key] ?: descriptor
+        }
         scannedAt = System.currentTimeMillis()
         partial = true
         progress = 0 to applications.size
