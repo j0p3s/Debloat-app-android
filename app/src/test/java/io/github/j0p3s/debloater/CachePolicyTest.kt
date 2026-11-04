@@ -3,6 +3,7 @@ package io.github.j0p3s.debloater
 import io.github.j0p3s.debloater.data.CacheGroup
 import io.github.j0p3s.debloater.data.CachePolicy
 import io.github.j0p3s.debloater.data.CacheSort
+import io.github.j0p3s.debloater.data.CacheScope
 import io.github.j0p3s.debloater.shizuku.ShellResult
 import org.junit.Assert.*
 import org.junit.Test
@@ -48,4 +49,30 @@ class CachePolicyTest {
         assertEquals(listOf("cherry", "banana", "Apple"), CachePolicy.sorted(rows, CacheSort.NAME_DESC).map { it.label })
         assertEquals(listOf("Apple", "banana", "cherry"), CachePolicy.sorted(rows, CacheSort.LARGEST).map { it.label })
     }
+
+    @Test fun categoryTotalsIncludeOnlyTheRequestedAppTypes() {
+        val user = row("user", 100)
+        val system = row("system", 250).copy(isSystem = true)
+        val unknownSystem = row("unknown", null).copy(isSystem = true)
+        val all = listOf(user, system, unknownSystem)
+        assertEquals(listOf(user), CachePolicy.inScope(all, CacheScope.USER))
+        assertEquals(listOf(system, unknownSystem), CachePolicy.inScope(all, CacheScope.SYSTEM))
+        assertEquals(all, CachePolicy.inScope(all, CacheScope.BOTH))
+        assertEquals(100L, CachePolicy.inScope(all, CacheScope.USER).sumOf { it.bytes ?: 0 })
+        assertEquals(250L, CachePolicy.inScope(all, CacheScope.SYSTEM).sumOf { it.bytes ?: 0 })
+        assertEquals(350L, CachePolicy.inScope(all, CacheScope.BOTH).sumOf { it.bytes ?: 0 })
+    }
+
+    @Test fun switchingToUserAppsCannotClearSelectedSystemApps() {
+        val user = row("user", 100)
+        val system = row("system", 250).copy(isSystem = true)
+        val all = listOf(user, system)
+        val selected = all.map { it.key }.toSet()
+        assertEquals(listOf(user), CachePolicy.selectedInScope(all, selected, CacheScope.USER))
+        assertEquals(listOf(system), CachePolicy.selectedInScope(all, selected, CacheScope.SYSTEM))
+        assertEquals(all, CachePolicy.selectedInScope(all, selected, CacheScope.BOTH))
+        assertTrue(CachePolicy.selectedInScope(all, setOf(system.key), CacheScope.USER).isEmpty())
+        assertTrue(CachePolicy.selectedInScope(all, emptySet(), CacheScope.BOTH).isEmpty())
+    }
+
 }

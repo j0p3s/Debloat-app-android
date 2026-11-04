@@ -377,4 +377,7 @@
     <string name="guide_step_done">Done</string>
     <string name="guide_welcome_text">Remove the apps you never asked for: ads, tracking and bloatware. Safely, with automatic backups, and without root.</string>
     <string name="guide_welcome_title">Welcome to Debloater</string>
+    <string name="cache_app_type">Application type</string>
+    <string name="cache_both">Both</string>
+    <string name="cache_both_help">Choose caches from user apps and system apps in one list. App data and accounts are kept.</string>
 </resources>

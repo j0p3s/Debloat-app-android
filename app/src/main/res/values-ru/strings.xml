@@ -375,4 +375,7 @@
     <string name="guide_step_done">Готово</string>
     <string name="guide_welcome_text">Удалите приложения, о которых вы не просили: рекламу, слежку и мусор. Безопасно, с автоматическими копиями и без root.</string>
     <string name="guide_welcome_title">Добро пожаловать в Debloater</string>
+    <string name="cache_app_type">Тип приложений</string>
+    <string name="cache_both">Оба типа</string>
+    <string name="cache_both_help">Выберите кэш пользовательских и системных приложений в одном списке. Данные и учётные записи сохраняются.</string>
 </resources>

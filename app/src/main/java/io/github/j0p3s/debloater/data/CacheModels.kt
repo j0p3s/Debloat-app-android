@@ -23,7 +23,23 @@ enum class CacheSort(@param:StringRes @get:StringRes val titleRes: Int) {
     NAME_ASC(R.string.sort_name_asc), NAME_DESC(R.string.sort_name_desc),
 }
 
+enum class CacheScope(@param:StringRes @get:StringRes val titleRes: Int) {
+    USER(R.string.user_apps), SYSTEM(R.string.system_apps), BOTH(R.string.cache_both);
+
+    fun includes(group: CacheGroup): Boolean = when (this) {
+        USER -> !group.isSystem
+        SYSTEM -> group.isSystem
+        BOTH -> true
+    }
+}
+
 object CachePolicy {
+    fun inScope(groups: List<CacheGroup>, scope: CacheScope): List<CacheGroup> = groups.filter(scope::includes)
+
+    /** Clearing uses the same category as the list, including when selections exist in other categories. */
+    fun selectedInScope(groups: List<CacheGroup>, keys: Set<String>, scope: CacheScope): List<CacheGroup> =
+        inScope(groups, scope).filter { it.key in keys }
+
     /** Only the clear command's help line may establish support. Never try a destructive probe. */
     fun supportsCacheOnly(help: ShellResult): Boolean = help.isSuccess &&
         help.output.lineSequence().any { Regex("^\\s*clear\\s+.*--cache-only(?:\\]|\\s|$)").containsMatchIn(it) }

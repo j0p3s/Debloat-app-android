@@ -375,4 +375,7 @@
     <string name="guide_step_done">已完成</string>
     <string name="guide_welcome_text">移除你从未要求的应用：广告、跟踪和预装垃圾。安全、自动备份，且无需 root。</string>
     <string name="guide_welcome_title">欢迎使用 Debloater</string>
+    <string name="cache_app_type">应用类型</string>
+    <string name="cache_both">两者</string>
+    <string name="cache_both_help">在同一列表中选择用户应用和系统应用的缓存。应用数据和账号会保留。</string>
 </resources>
