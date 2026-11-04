@@ -25,7 +25,7 @@ class CacheController(
     private val repo: PackageRepository,
     private val scope: CoroutineScope,
     private val canRun: () -> Boolean,
-    private val afterClear: () -> Unit,
+    private val afterClear: (Set<String>) -> Unit,
 ) {
     var groups by mutableStateOf(emptyList<CacheGroup>()); private set
     var selected by mutableStateOf(emptySet<String>()); private set
@@ -135,7 +135,7 @@ class CacheController(
         stopRequested = false
         phase = R.string.cache_clear
         job = scope.launch {
-            var changed = false
+            val changedPackages = mutableSetOf<String>()
             try {
                 // No fallback to plain pm clear, global trim-caches or raw directory deletion.
                 supported = CachePolicy.supportsCacheOnly(ShizukuManager.execCache("pm help"))
@@ -155,11 +155,10 @@ class CacheController(
                     // Invalidate first: cancellation or timeout must not leave stale successful-looking sizes.
                     groups = groups.map { if(pkg in it.packages) it.copy(bytes = null, error = null) else it }
                     scannedAt = null
-                    changed = true
+                    changedPackages += pkg
                     val result = ShizukuManager.execCache(command)
                     val success = CachePolicy.succeeded(result)
                     if(success) successes++ else failures++
-                    changed = changed || success
                     log += "${if(success) "OK" else "FAIL"}  $command\n${result.output}"
                     if(result.exitCode == 124) { stopRequested = true; break }
                 }
@@ -183,7 +182,7 @@ class CacheController(
             } finally {
                 busy = false
                 currentApp = ""
-                if(changed) afterClear()
+                if(changedPackages.isNotEmpty()) afterClear(changedPackages)
             }
         }
     }
