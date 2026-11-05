@@ -14,3 +14,7 @@ build/
 *.pfx
 signing.properties
 /dist/
+
+# Session handoff notes (local only)
+/HANDOFF.md
+/handoff.md
