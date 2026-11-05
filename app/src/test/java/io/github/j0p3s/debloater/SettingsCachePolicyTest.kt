@@ -5,6 +5,20 @@ import org.junit.Assert.*
 import org.junit.Test
 
 class SettingsCachePolicyTest {
+    @Test fun disabledNonClickableCacheControlIsIdentifiedForSkipping() {
+        val control = button("Clear cache", enabled = false).copy(clickable = false)
+        val screen = page(header(), control)
+        assertEquals(1, Policy.clearButton(screen, target, labels))
+        assertFalse(Policy.controlEnabled(screen.nodes, 1))
+    }
+    @Test fun enabledTextInsideDisabledCacheButtonMustNotBeClicked() {
+        val screen = page(header(), button("", enabled = false).copy(clickable = false),
+            Policy.Node(text = "Clear cache", parent = 1))
+        val index = Policy.clearButton(screen, target, labels)
+        assertEquals(1, index)
+        assertFalse(Policy.controlEnabled(screen.nodes, 2))
+        assertFalse(Policy.controlEnabled(screen.nodes, index!!))
+    }
     @Test fun actualNubiaStorageRowSupportsAndAndAmpersandVariants() {
         val target = Policy.Target("com.supercell.clashofclans", "Clash of Clans", true)
         val labels = Policy.fallbackLabels("en")
