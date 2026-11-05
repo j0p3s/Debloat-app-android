@@ -5,6 +5,21 @@ import org.junit.Assert.*
 import org.junit.Test
 
 class SettingsCachePolicyTest {
+    @Test fun portugueseOemScreensNavigateToStorageThenSelectCacheOnly() {
+        val target = Policy.Target("com.supercell.clashofclans", "Clash of Clans", true)
+        val labels = Policy.Labels(setOf("Armazenamento e cache"), setOf("Limpar cache"),
+            setOf("Limpar armazenamento"), setOf("Info da app", "Armazenamento e cache"))
+        val details = page(Policy.Node(text = "Info da app"), Policy.Node(text = "Clash of Clans"),
+            Policy.Node(clickable = true), Policy.Node(text = "Armazenamen\nto e cache", parent = 2))
+        assertEquals(2, Policy.storageRow(details, target, labels))
+        assertNull(Policy.clearButton(details, target, labels))
+        val storage = page(Policy.Node(text = "Armazenamento e cache"), Policy.Node(text = "Clash of Clans"),
+            button("Limpar armazenamento", "oem_data"), button("Limpar cache", "oem_cache"))
+        assertEquals(3, Policy.clearButton(storage, target, labels))
+        assertNull(Policy.clearButton(storage, target.copy(label = "Other"), labels))
+        assertNull(Policy.clearButton(storage, target.copy(uniqueLabel = false), labels))
+        assertNull(Policy.clearButton(storage.copy(nodes = storage.nodes.drop(1)), target, labels))
+    }
     @Test fun missingControlContinuesOnlyIfNoCacheClickWasSentAndSettingsRemainsOpen() {
         assertEquals(io.github.j0p3s.debloater.cache.SettingsCacheResult.UNAVAILABLE, Policy.timedOutResult(false, true))
         assertEquals(io.github.j0p3s.debloater.cache.SettingsCacheResult.UNKNOWN, Policy.timedOutResult(true, true))
@@ -49,7 +64,7 @@ class SettingsCachePolicyTest {
     @Test fun labelMustMatchExactlyAndBeFromSettingsResources() {
         assertNull(Policy.clearButton(page(header(), button("Clear cache and data")), target, labels))
         assertNull(Policy.clearButton(page(header(), button("Clear cache")), target, labels.copy(clearCache = emptySet())))
-        assertNull(Policy.clearButton(page(header(), button("Clear cache", "unknown_action")), target, labels))
+        assertEquals(1, Policy.clearButton(page(header(), button("Clear cache", "unknown_action")), target, labels))
     }
     @Test fun localizedContentDescriptionAndClickableAncestorAreSupported() {
         val parent = button("", "action2")

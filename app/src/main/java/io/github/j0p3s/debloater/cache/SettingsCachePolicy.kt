@@ -16,7 +16,7 @@ object SettingsCachePolicy {
         val enabled: Boolean = true, val visible: Boolean = true,
     )
     data class Page(val packageName: String, val nodes: List<Node>, val complete: Boolean = true)
-    data class Labels(val storage: Set<String>, val clearCache: Set<String>, val destructive: Set<String>)
+    data class Labels(val storage: Set<String>, val clearCache: Set<String>, val destructive: Set<String>, val pageTitles: Set<String> = emptySet())
 
     fun normalize(value: String): String = value.replace(Regex("[\\u200e\\u200f\\u202a-\\u202e\\u2066-\\u2069]"), "")
         .replace('\u00a0', ' ').trim().replace(Regex("\\s+"), " ").lowercase(Locale.ROOT)
@@ -26,18 +26,24 @@ object SettingsCachePolicy {
     private val clearIds = setOf("button2", "action2", "clear_cache", "clear_cache_button", "clear_cache_btn")
     private fun settingsId(node: Node, names: Set<String>) = names.any { node.id == "$SETTINGS_PACKAGE:id/$it" }
     private fun matches(node: Node, labels: Set<String>): Boolean = labels.any { label ->
-        normalize(label).isNotEmpty() && (normalize(node.text) == normalize(label) || normalize(node.description) == normalize(label))
+        normalize(label).isNotEmpty() && (normalize(node.text).replace(" ", "") == normalize(label).replace(" ", "") ||
+            normalize(node.description).replace(" ", "") == normalize(label).replace(" ", ""))
     }
 
-    fun isTarget(page: Page, target: Target): Boolean {
+    fun isTarget(page: Page, target: Target, labels: Labels? = null): Boolean {
         if (!page.complete || page.packageName != SETTINGS_PACKAGE) return false
         // No automatic dialog confirmations, including ambiguous OEM "Clear data" sheets.
         if (page.nodes.any { it.visible && it.id in setOf("android:id/alertTitle", "android:id/parentPanel") }) return false
         val packages = page.nodes.filter { it.visible && settingsId(it, packageIds) }
         if (packages.isNotEmpty()) return packages.all { it.text == target.packageName }
-        return target.uniqueLabel && page.nodes.any {
+        val header = target.uniqueLabel && page.nodes.any {
             it.visible && settingsId(it, headerIds) && normalize(it.text) == normalize(target.label)
         }
+        if(header) return true
+        // OEM Settings may omit header IDs. Require both a known Settings page title
+        // and the exact, unique installed app label before permitting any action.
+        return target.uniqueLabel && labels != null && page.nodes.any { it.visible && matches(it, labels.pageTitles) } &&
+            page.nodes.any { it.visible && normalize(it.text) == normalize(target.label) }
     }
 
     private fun clickParent(nodes: List<Node>, index: Int, accept: (Node) -> Boolean): Int? {
@@ -53,18 +59,21 @@ object SettingsCachePolicy {
     }
 
     fun clearButton(page: Page, target: Target, labels: Labels): Int? {
-        if (!isTarget(page, target)) return null
+        if (!isTarget(page, target, labels)) return null
         val candidates = page.nodes.indices.filter { i ->
             val node = page.nodes[i]
             node.visible && matches(node, labels.clearCache) && !matches(node, labels.destructive)
         }.mapNotNull { i ->
-            clickParent(page.nodes, i) { settingsId(it, clearIds) && !matches(it, labels.destructive) }
+            clickParent(page.nodes, i) { candidate ->
+                // A directly labelled clickable cache control is safe even with an OEM ID.
+                (settingsId(candidate, clearIds) || matches(candidate, labels.clearCache)) && !matches(candidate, labels.destructive)
+            }
         }.distinct()
         return candidates.singleOrNull()
     }
 
     fun storageRow(page: Page, target: Target, labels: Labels): Int? {
-        if (!isTarget(page, target)) return null
+        if (!isTarget(page, target, labels)) return null
         return page.nodes.indices.filter { i ->
             val node = page.nodes[i]
             node.visible && node.id in setOf("android:id/title", "$SETTINGS_PACKAGE:id/title", "") && matches(node, labels.storage)
