@@ -445,4 +445,5 @@
     <string name="debug_saved">Relatório criado: %1$s</string>
     <string name="debug_failed">Não foi possível guardar o relatório: %1$s</string>
     <string name="debug_working">A recolher registos…</string>
+    <string name="cache_shell_ignored">O Android provavelmente ignorou o comando de cache enviado pelo Shizuku: o tamanho da cache não mudou nada. Em alguns telemóveis, o utilizador shell não pode limpar caches. Use o método Definições. (Se a app estava aberta, também pode ter voltado a encher a cache.)</string>
 </resources>

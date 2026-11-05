@@ -445,4 +445,5 @@
     <string name="debug_saved">Report creato: %1$s</string>
     <string name="debug_failed">Impossibile salvare il report: %1$s</string>
     <string name="debug_working">Raccolta dei log…</string>
+    <string name="cache_shell_ignored">Probabilmente Android ha ignorato il comando cache inviato tramite Shizuku: la dimensione della cache non è cambiata affatto. Su alcuni telefoni l’utente shell non può svuotare le cache. Usa il metodo Impostazioni. (Se l’app era aperta, potrebbe anche aver riempito di nuovo la cache.)</string>
 </resources>

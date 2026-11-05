@@ -445,4 +445,5 @@
     <string name="debug_saved">Laporan dibuat: %1$s</string>
     <string name="debug_failed">Tidak dapat menyimpan laporan: %1$s</string>
     <string name="debug_working">Mengumpulkan log…</string>
+    <string name="cache_shell_ignored">Android kemungkinan mengabaikan perintah cache yang dikirim melalui Shizuku: ukuran cache sama sekali tidak berubah. Di beberapa ponsel pengguna shell tidak boleh menghapus cache. Gunakan metode Setelan. (Jika aplikasi sedang terbuka, aplikasi itu juga mungkin mengisi ulang cache-nya.)</string>
 </resources>

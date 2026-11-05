@@ -445,4 +445,5 @@
     <string name="debug_saved">已创建报告：%1$s</string>
     <string name="debug_failed">无法保存报告：%1$s</string>
     <string name="debug_working">正在收集日志…</string>
+    <string name="cache_shell_ignored">Android 可能忽略了通过 Shizuku 发送的缓存命令：缓存大小完全没有变化。在部分手机上，shell 用户无权清除缓存。请改用“设置”方式。（如果该应用当时处于打开状态，也可能是它重新写入了缓存。）</string>
 </resources>

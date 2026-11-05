@@ -445,4 +445,5 @@
     <string name="debug_saved">रिपोर्ट बनाई गई: %1$s</string>
     <string name="debug_failed">रिपोर्ट सेव नहीं हो सकी: %1$s</string>
     <string name="debug_working">लॉग इकट्ठा किए जा रहे हैं…</string>
+    <string name="cache_shell_ignored">Android ने शायद Shizuku से भेजी गई कैश कमांड को अनदेखा कर दिया: कैश का आकार बिल्कुल नहीं बदला। कुछ फ़ोन पर shell उपयोगकर्ता कैश साफ़ नहीं कर सकता। इसकी जगह सेटिंग्स तरीका इस्तेमाल करें। (अगर ऐप खुला था, तो हो सकता है उसने कैश फिर से भर दिया हो।)</string>
 </resources>

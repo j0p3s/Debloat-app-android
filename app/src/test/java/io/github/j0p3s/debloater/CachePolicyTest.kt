@@ -10,6 +10,15 @@ import org.junit.Test
 import java.util.UUID
 
 class CachePolicyTest {
+    @Test fun unchangedSizeAfterTimeoutIsReportedAsLikelyIgnored() {
+        // RedMagic OS 11, Clash of Clans force-stopped: identical to the byte 75 s later.
+        assertTrue(CachePolicy.likelyIgnored(2_222_620_672, 2_222_620_672))
+        assertFalse(CachePolicy.likelyIgnored(2_222_620_672, 2_221_027_328))
+        assertFalse(CachePolicy.likelyIgnored(2_222_620_672, null))
+        assertFalse(CachePolicy.likelyIgnored(null, 5))
+        assertFalse(CachePolicy.likelyIgnored(0, 0))
+    }
+
     @Test fun timedOutClearCountsOnlyWhenTheCacheReallyShrank() {
         assertTrue(CachePolicy.clearedAfterTimeout(2_200_000_000, 0))
         assertTrue(CachePolicy.clearedAfterTimeout(2_200_000_000, 40_000_000))

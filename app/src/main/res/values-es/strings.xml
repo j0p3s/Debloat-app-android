@@ -445,4 +445,5 @@
     <string name="debug_saved">Informe creado: %1$s</string>
     <string name="debug_failed">No se pudo guardar el informe: %1$s</string>
     <string name="debug_working">Recopilando registros…</string>
+    <string name="cache_shell_ignored">Probablemente Android ignoró el comando de caché enviado mediante Shizuku: el tamaño de la caché no cambió nada. En algunos teléfonos el usuario shell no puede borrar cachés. Usa el método de Ajustes. (Si la app estaba abierta, también pudo volver a llenar su caché.)</string>
 </resources>

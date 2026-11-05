@@ -193,6 +193,7 @@ class CacheController(
         phase = R.string.cache_clear
         job = scope.launch {
             val changedPackages = mutableSetOf<String>()
+            var stopNotice: UiMessage? = null
             try {
                 // No fallback to plain pm clear, global trim-caches or raw directory deletion.
                 if(clearMethod == CacheClearMethod.SHIZUKU) {
@@ -251,7 +252,15 @@ class CacheController(
                             success = CachePolicy.clearedAfterTimeout(group.bytes, remaining)
                             log += if(success) "OK $pkg: Android finished clearing after the command timeout (cache was ${group.bytes} bytes, now $remaining bytes)."
                                 else "UNKNOWN $pkg: cache still ${remaining?.let { "$it bytes" } ?: "unreadable"} ${CachePolicy.TIMEOUT_GRACE_MS / 1000} s after the timeout; batch stopped."
-                            if(!success) { failures++; stopRequested = true; break }
+                            if(!success) {
+                                failures++
+                                stopRequested = true
+                                if(CachePolicy.likelyIgnored(group.bytes, remaining)) {
+                                    stopNotice = UiMessage(R.string.cache_shell_ignored)
+                                    log += "IGNORED? $pkg: cache size did not change by a single byte, so Android probably ignored the shell request on this phone. Use the Settings method. (If the app was open, it may also have refilled its cache.)"
+                                }
+                                break
+                            }
                         }
                         logSizeAfter(pkg, targets.first { pkg in it.packages })
                         if(success) successes++ else failures++
@@ -271,7 +280,7 @@ class CacheController(
                 selected = selected - targets.map { it.key }.toSet()
                 // Never leave pre-clean measurements on screen as if they were current.
                 scannedAt = null
-                if(stopRequested) { notice = UiMessage(R.string.cache_stopped); return@launch }
+                if(stopRequested) { notice = stopNotice ?: UiMessage(R.string.cache_stopped); return@launch }
                 phase = R.string.cache_refreshing
                 if(clearMethod == CacheClearMethod.SETTINGS) returnFromSettings()
                 try {

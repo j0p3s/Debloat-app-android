@@ -445,4 +445,5 @@
     <string name="debug_saved">تم إنشاء التقرير: %1$s</string>
     <string name="debug_failed">تعذّر حفظ التقرير: %1$s</string>
     <string name="debug_working">جارٍ جمع السجلات…</string>
+    <string name="cache_shell_ignored">على الأرجح تجاهل Android أمر ذاكرة التخزين المؤقت المرسل عبر Shizuku: لم يتغير حجمها إطلاقًا. في بعض الهواتف لا يُسمح لمستخدم shell بمسح ذاكرة التخزين المؤقت. استخدم طريقة الإعدادات بدلاً من ذلك. (إذا كان التطبيق مفتوحًا، فربما أعاد ملء ذاكرة التخزين المؤقت أيضًا.)</string>
 </resources>

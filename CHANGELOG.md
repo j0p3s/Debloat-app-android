@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.12.4 — 2026-11-05
+
+- Shizuku cache clearing: when the command times out and the cache size has not changed by a single byte, say that Android probably ignored the request and suggest the Settings method, instead of only "stopped". Seen on RedMagic OS 11 (Android 16), where the Settings method works.
+
+
 ## 1.12.3 — 2026-11-05
 
 - Cache cleaner debug log: record each app's cache size before and right after clearing, for both the Shizuku and the Settings method. Diagnostic only; success is decided exactly as in 1.12.2, because an open app can refill its cache at once.

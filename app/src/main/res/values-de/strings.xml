@@ -445,4 +445,5 @@
     <string name="debug_saved">Bericht erstellt: %1$s</string>
     <string name="debug_failed">Bericht konnte nicht gespeichert werden: %1$s</string>
     <string name="debug_working">Protokolle werden gesammelt…</string>
+    <string name="cache_shell_ignored">Android hat den über Shizuku gesendeten Cache-Befehl wahrscheinlich ignoriert: Die Cache-Größe hat sich gar nicht geändert. Auf manchen Telefonen darf der Shell-Benutzer keine Caches leeren. Verwenden Sie die Einstellungen-Methode. (War die App geöffnet, kann sie ihren Cache auch wieder gefüllt haben.)</string>
 </resources>

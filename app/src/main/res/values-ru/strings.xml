@@ -445,4 +445,5 @@
     <string name="debug_saved">Отчёт создан: %1$s</string>
     <string name="debug_failed">Не удалось сохранить отчёт: %1$s</string>
     <string name="debug_working">Сбор журналов…</string>
+    <string name="cache_shell_ignored">Скорее всего, Android проигнорировал команду очистки кеша через Shizuku: размер кеша совсем не изменился. На некоторых телефонах пользователь shell не может очищать кеш. Используйте способ через Настройки. (Если приложение было открыто, оно также могло снова заполнить кеш.)</string>
 </resources>

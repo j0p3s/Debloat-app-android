@@ -46,6 +46,9 @@ object CachePolicy {
      * Counts as cleared: nothing left, at most 5 % of the old size, or a residue of at most 1 MiB.
      */
     const val RESIDUE_BYTES = 1L shl 20
+    /** Exactly the same non-zero size after a timed-out shell clear: Android most likely ignored the request. */
+    fun likelyIgnored(before: Long?, now: Long?): Boolean = before != null && before > 0 && now == before
+
     fun clearedAfterTimeout(before: Long?, now: Long?): Boolean =
         now != null && (now == 0L || now <= RESIDUE_BYTES || (before != null && before > 0 && now <= before / 20))
 
