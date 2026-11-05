@@ -2,6 +2,9 @@
 
 ## 1.11.4 — 2026-11-05
 
+- Fix OEM App info → Storage and cache → Clear cache recognition with verified target identity, including id-less headers and wrapped labels.
+- Add Settings-language fallbacks and two-screen safety tests across all 11 supported app languages.
+
 - Skip unavailable Accessibility cache controls before any cache click, rather than terminating the entire batch.
 - Recognize additional Settings Storage row IDs and allow fragment transitions to settle.
 - Keep stopping for uncertain post-click outcomes, lock and leaving Settings.
