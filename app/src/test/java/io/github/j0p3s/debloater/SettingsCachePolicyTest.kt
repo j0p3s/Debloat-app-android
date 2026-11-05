@@ -5,6 +5,12 @@ import org.junit.Assert.*
 import org.junit.Test
 
 class SettingsCachePolicyTest {
+    @Test fun pressExtendsDeadlineForLargeCachesButNeverShortensIt() {
+        assertEquals(1_000L + Policy.CLEAR_TIMEOUT_MS, Policy.deadlineAfterPress(1_000L, 20_000L))
+        assertEquals(500_000L, Policy.deadlineAfterPress(1_000L, 500_000L))
+        assertTrue(Policy.CLEAR_TIMEOUT_MS > Policy.FIND_TIMEOUT_MS)
+    }
+
     @Test fun disabledNonClickableCacheControlIsIdentifiedForSkipping() {
         val control = button("Clear cache", enabled = false).copy(clickable = false)
         val screen = page(header(), control)

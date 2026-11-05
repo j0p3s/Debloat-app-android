@@ -6,6 +6,11 @@ enum class SettingsCacheResult { CONFIRMED, SKIPPED, UNAVAILABLE, UNKNOWN }
 
 /** Conservative, testable selectors. Unknown ROM layouts are skipped, never guessed. */
 object SettingsCachePolicy {
+    /** Opening App info, Storage and locating the cache control. */
+    const val FIND_TIMEOUT_MS = 20_000L
+    /** After the single press: Settings disables the button only once Android finished deleting. */
+    const val CLEAR_TIMEOUT_MS = 120_000L
+    fun deadlineAfterPress(now: Long, current: Long): Long = maxOf(current, now + CLEAR_TIMEOUT_MS)
     fun timedOutResult(cachePressed: Boolean, settingsWindow: Boolean): SettingsCacheResult =
         if(!cachePressed && settingsWindow) SettingsCacheResult.UNAVAILABLE else SettingsCacheResult.UNKNOWN
     const val SETTINGS_PACKAGE = "com.android.settings"

@@ -9,6 +9,7 @@ import android.content.res.Resources
 import android.graphics.PixelFormat
 import android.net.Uri
 import android.os.PowerManager
+import android.os.SystemClock
 import android.provider.Settings
 import android.view.Gravity
 import android.view.WindowManager
@@ -162,10 +163,13 @@ class SettingsCacheService : AccessibilityService() {
             var clickedAnyCache = false
             var lastPageWasSettings = false
             var transitionPolls = 0
-            return withTimeoutOrNull(20_000) {
+            // Finding the button is bounded tightly; after one press, Android may need much longer
+            // to delete a multi-GB cache before Settings disables the button (e.g. large games).
+            var deadline = SystemClock.elapsedRealtime() + SettingsCachePolicy.FIND_TIMEOUT_MS
+            return withTimeoutOrNull(SettingsCachePolicy.FIND_TIMEOUT_MS + SettingsCachePolicy.CLEAR_TIMEOUT_MS) {
                 // Let the explicit package URI replace the previously visible Settings page.
                 delay(600)
-                while (true) {
+                while (SystemClock.elapsedRealtime() < deadline) {
                     currentCoroutineContext().ensureActive()
                     if (instance !== this@SettingsCacheService ||
                         getSystemService(KeyguardManager::class.java).isKeyguardLocked ||
@@ -201,6 +205,8 @@ class SettingsCacheService : AccessibilityService() {
                                         clicked = snapshot.nodes[clear].performAction(AccessibilityNodeInfo.ACTION_CLICK)
                                         clickedAnyCache = clicked
                                         if (!clicked) return@withTimeoutOrNull SettingsCacheResult.UNKNOWN
+                                        deadline = SettingsCachePolicy.deadlineAfterPress(SystemClock.elapsedRealtime(), deadline)
+                                        diagnostic("Pressed Clear cache; waiting up to ${SettingsCachePolicy.CLEAR_TIMEOUT_MS / 1000} s for Settings to finish")
                                     }
                                 } else if (!navigated && !clicked) {
                                     val storage = SettingsCachePolicy.storageRow(page, target, labels)
@@ -220,7 +226,7 @@ class SettingsCacheService : AccessibilityService() {
                     } finally { snapshot.close() }
                     delay(300)
                 }
-                @Suppress("UNREACHABLE_CODE") SettingsCacheResult.UNKNOWN
+                null
             } ?: SettingsCachePolicy.timedOutResult(clickedAnyCache, lastPageWasSettings)
         } catch (error: CancellationException) {
             throw error

@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.11.8 — 2026-11-05
+
+- Settings assistant: after pressing Clear cache, wait up to 2 minutes for Android to finish deleting instead of timing out within the 20-second search window. Large caches (e.g. 2+ GB game caches) previously timed out before Settings disabled the button.
+- Log the press and wait in the cache log.
+
+
 ## 1.11.7 — 2026-11-05
 
 - Recognize disabled cache controls even when they are non-clickable.

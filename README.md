@@ -1,6 +1,6 @@
 # Debloater (Shizuku)
 
-**Current release: [1.11.7](https://github.com/j0p3s/Debloat-app-android/releases/tag/v1.11.7)** · [Download APK](https://github.com/j0p3s/Debloat-app-android/releases/download/v1.11.7/Debloater-v1.11.7.apk) · [Release notes](docs/RELEASE-1.11.7.md) · [Changelog](CHANGELOG.md)
+**Current release: [1.11.8](https://github.com/j0p3s/Debloat-app-android/releases/tag/v1.11.8)** · [Download APK](https://github.com/j0p3s/Debloat-app-android/releases/download/v1.11.8/Debloater-v1.11.8.apk) · [Release notes](docs/RELEASE-1.11.8.md) · [Changelog](CHANGELOG.md)
 
 An Android app that debloats **any Android version from Android 11 to Android 17** without root, using
 [Shizuku](https://shizuku.rikka.app/). It also works as a normal app manager, so you can remove any user app.
@@ -250,6 +250,8 @@ From 1.11.5, Permissions offers **Set up access with Shizuku** after an explicit
 In 1.11.6, cache navigation recognizes both English “Storage and cache” and “Storage & cache”. The floating Cancel bar is placed at the bottom to keep Settings titles visible. Cache logs include identity/selector/exception diagnostics. Shizuku pipe-read exceptions are contained rather than crashing its service. Read-only Settings inspection was performed on a Nubia Android 16 phone; full cleaning with the updated APK still needs device verification.
 
 From 1.11.7, a disabled Clear cache control is identified even if Android marks it non-clickable. The assistant checks the control and its ancestors, logs a skip and continues without clicking.
+
+From 1.11.8, after pressing Clear cache the assistant waits up to 2 minutes for Settings to finish deleting large caches (for example multi-GB game caches) instead of timing out after 20 seconds.
 
 
 [![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/j0p3s)
