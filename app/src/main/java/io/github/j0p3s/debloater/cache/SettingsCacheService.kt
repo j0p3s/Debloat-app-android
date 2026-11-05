@@ -2,7 +2,6 @@ package io.github.j0p3s.debloater.cache
 
 import android.accessibilityservice.AccessibilityService
 import android.app.KeyguardManager
-import android.content.ComponentName
 import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.res.Configuration
@@ -37,8 +36,7 @@ class SettingsCacheService : AccessibilityService() {
         private val connected = MutableStateFlow(false)
         val available = connected.asStateFlow()
 
-        fun settingsIntent(context: android.content.Context): Intent = Intent(Settings.ACTION_ACCESSIBILITY_DETAILS_SETTINGS)
-            .putExtra(Intent.EXTRA_COMPONENT_NAME, ComponentName(context, SettingsCacheService::class.java))
+        fun settingsIntent(): Intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
 
         suspend fun clear(target: SettingsCachePolicy.Target): SettingsCacheResult =
             instance?.clearOne(target) ?: SettingsCacheResult.SKIPPED

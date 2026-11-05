@@ -49,7 +49,7 @@ class ShellService : IShellService.Stub {
             check(lines.isNotEmpty() && lines.all { it.startsWith("package:") && Regex("[A-Za-z0-9_.]+").matches(it.removePrefix("package:")) }) {
                 "Incomplete package inventory; refusing cleanup"
             }
-            lines.map { it.removePrefix("package:") }.toSet()
+            lines.map { it.removePrefix("package:") }.toSet().also { check("android" in it) { "Missing system package inventory" } }
         }
         val output = when(action) {
             "scan" -> store.scan().toString()

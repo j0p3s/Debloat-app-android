@@ -54,9 +54,9 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     val repo = PackageRepository(app)
     val backups = BackupManager(app)
     val engine = OperationEngine(repo, backups)
-    val cache = CacheController(app, repo, viewModelScope, ::canRunCache, ::refreshAfterCache)
-    val leftovers = LeftoverController(repo.userId, viewModelScope) { !engine.isRunning && !cache.busy }
-    private fun canRunCache() = !engine.isRunning && !leftovers.busy
+    val cache: CacheController = CacheController(app, repo, viewModelScope, ::canRunCache, ::refreshAfterCache)
+    val leftovers: LeftoverController = LeftoverController(repo.userId, viewModelScope) { !engine.isRunning && !cache.busy }
+    private fun canRunCache(): Boolean = !engine.isRunning && !leftovers.busy
     val prefs = Prefs(app)
     /** Current debloat list (re-read after an in-app update). */
     val database: DebloatDatabase get() = DebloatDatabase.get(getApplication())

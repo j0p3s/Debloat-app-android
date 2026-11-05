@@ -203,8 +203,7 @@ fun CacheScreen(vm: MainViewModel, system: Boolean) {
         text = { Text(stringResource(R.string.cache_settings_disclosure), Modifier.heightIn(max = 360.dp).verticalScroll(rememberScrollState())) },
         confirmButton = { TextButton(onClick = {
             showAccessDisclosure = false
-            runCatching { context.startActivity(SettingsCacheService.settingsIntent(context)) }
-                .recoverCatching { context.startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)) }
+            runCatching { context.startActivity(SettingsCacheService.settingsIntent()) }
         }) { Text(stringResource(R.string.open_settings)) } },
         dismissButton = { TextButton(onClick = { showAccessDisclosure = false }) { Text(stringResource(R.string.cancel)) } },
     )

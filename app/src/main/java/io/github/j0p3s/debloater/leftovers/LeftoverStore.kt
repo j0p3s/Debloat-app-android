@@ -6,6 +6,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.nio.file.Files
 import java.nio.file.LinkOption.NOFOLLOW_LINKS
+import java.nio.file.StandardCopyOption.ATOMIC_MOVE
 import java.util.UUID
 
 /** Runs inside the Shizuku process. No arbitrary paths, shell expansion or guessed app-name folders. */
@@ -59,6 +60,7 @@ class LeftoverStore(private val storage: File, private val knownPackages: () -> 
         check(owners.isNotEmpty()) { "Package inventory unavailable" }
         val candidates = JSONArray()
         val warnings = JSONArray()
+        fun warn(message: String) { if(warnings.length() < 100) warnings.put(message.take(500)) }
         for (area in areas) {
             try {
                 val entries = list(File(root, "Android/$area"))
@@ -70,13 +72,13 @@ class LeftoverStore(private val storage: File, private val knownPackages: () -> 
                         val folder = source(key)
                         if (!folder.isDirectory) continue
                         val size = bytes(folder)
-                        if (candidates.length() >= 200) { warnings.put("Result limit reached; clean reviewed items and rescan"); break }
+                        if (candidates.length() >= 200) { warn("Result limit reached; clean reviewed items and rescan"); break }
                         candidates.put(JSONObject().put("key", key).put("package", entry.name).put("bytes", size)
                             .put("path", folder.path).put("modified", folder.lastModified()))
-                    } catch (error: Exception) { warnings.put("$area/${entry.name}: ${error.message}") }
+                    } catch (error: Exception) { warn("$area/${entry.name}: ${error.message}") }
                     if (System.nanoTime() >= deadline) break
                 }
-            } catch (error: Exception) { warnings.put("Android/$area: ${error.message}") }
+            } catch (error: Exception) { warn("Android/$area: ${error.message}") }
         }
         return JSONObject().put("candidates", candidates).put("warnings", warnings)
     }
@@ -98,7 +100,7 @@ class LeftoverStore(private val storage: File, private val knownPackages: () -> 
         // Persist the original location before the atomic same-volume move; never delete on move failure.
         FileOutputStream(File(entry, "record.json")).use { output -> output.write(manifest.toString().toByteArray(Charsets.UTF_8)); output.fd.sync() }
         requireSafe(folder)
-        Files.move(folder.toPath(), File(entry, "payload").toPath())
+        Files.move(folder.toPath(), File(entry, "payload").toPath(), ATOMIC_MOVE)
         return id
     }
 
@@ -109,6 +111,7 @@ class LeftoverStore(private val storage: File, private val knownPackages: () -> 
         check(manifest.isFile && manifest.length() in 1..8192) { "Recovery record unavailable" }
         val record = JSONObject(manifest.readText())
         require(record.getString("id") == id) { "Recovery record mismatch" }
+        require(record.getLong("bytes") >= 0 && record.getLong("created") > 0) { "Invalid recovery metadata" }
         source(record.getString("key")) // Validate untrusted metadata too.
         return entry to record
     }
@@ -124,7 +127,9 @@ class LeftoverStore(private val storage: File, private val knownPackages: () -> 
             runCatching {
                 val (directory, record) = record(entry.name)
                 val payload = File(directory, "payload").also(::requireSafe)
-                if (exists(payload)) result.put(record.put("path", source(record.getString("key")).path))
+                if (payload.isDirectory) result.put(JSONObject().put("id", entry.name).put("key", record.getString("key"))
+                    .put("bytes", record.getLong("bytes")).put("created", record.getLong("created"))
+                    .put("path", source(record.getString("key")).path))
             }
         }
         return result
@@ -134,6 +139,7 @@ class LeftoverStore(private val storage: File, private val knownPackages: () -> 
         begin()
         val (entry, record) = record(id)
         val payload = File(entry, "payload").also(::requireSafe)
+        check(payload.isDirectory) { "Recovery folder unavailable" }
         val destination = source(record.getString("key"))
         check(!exists(destination)) { "Original folder already exists; restore never overwrites or merges files" }
         check(destination.parentFile?.isDirectory == true) { "Original storage area is unavailable" }
@@ -147,6 +153,7 @@ class LeftoverStore(private val storage: File, private val knownPackages: () -> 
         begin()
         val (entry, _) = record(id)
         val payload = File(entry, "payload").also(::requireSafe)
+        check(payload.isDirectory) { "Recovery folder unavailable" }
         bytes(payload) // Full no-symlink preflight before any permanent deletion.
         fun deleteTree(file: File, depth: Int = 0) {
             tick(); requireSafe(file)
