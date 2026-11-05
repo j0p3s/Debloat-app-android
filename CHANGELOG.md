@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.12.8 — 2026-11-05
+
+- Shizuku fallback dialog: apps marked with leftover cache that a confirmed clear could not remove start unticked and show the leftover note, matching "Select shown". They can still be ticked.
+
+
 ## 1.12.7 — 2026-11-05
 
 - Cache cleaner: "Select shown" skips apps marked with leftover cache that a previous clear could not remove. They can still be ticked individually.

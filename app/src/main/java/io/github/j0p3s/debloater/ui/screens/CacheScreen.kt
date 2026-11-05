@@ -206,7 +206,8 @@ fun CacheScreen(vm: MainViewModel, system: Boolean) {
         )
     }
     cache.fallback?.let { offer ->
-        var chosen by remember(offer) { mutableStateOf((offer.failed + offer.untried).map { it.key }.toSet()) }
+        // Apps whose cache a confirmed clear could not remove start unticked, like "Select shown".
+        var chosen by remember(offer) { mutableStateOf((offer.failed + offer.untried).filter { cache.residueFor(it) == null }.map { it.key }.toSet()) }
         AlertDialog(
             onDismissRequest = { cache.fallback = null },
             title = { Text(stringResource(R.string.cache_fallback_title, (offer.failed + offer.untried).size)) },
@@ -223,6 +224,10 @@ fun CacheScreen(vm: MainViewModel, system: Boolean) {
                                     Text(group.label)
                                     Text(listOfNotNull(group.packages.joinToString(", "), group.bytes?.let { formatSize(it) }).joinToString(" · "),
                                         style = MaterialTheme.typography.bodySmall)
+                                    cache.residueFor(group)?.let { residue ->
+                                        Text(stringResource(R.string.cache_residue, formatSize(residue.bytes)),
+                                            style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.tertiary)
+                                    }
                                 }
                             }
                         }
