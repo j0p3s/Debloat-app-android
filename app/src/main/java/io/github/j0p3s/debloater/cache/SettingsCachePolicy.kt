@@ -2,8 +2,12 @@ package io.github.j0p3s.debloater.cache
 
 import java.util.Locale
 
+enum class SettingsCacheResult { CONFIRMED, SKIPPED, UNAVAILABLE, UNKNOWN }
+
 /** Conservative, testable selectors. Unknown ROM layouts are skipped, never guessed. */
 object SettingsCachePolicy {
+    fun timedOutResult(cachePressed: Boolean, settingsWindow: Boolean): SettingsCacheResult =
+        if(!cachePressed && settingsWindow) SettingsCacheResult.UNAVAILABLE else SettingsCacheResult.UNKNOWN
     const val SETTINGS_PACKAGE = "com.android.settings"
     data class Target(val packageName: String, val label: String, val uniqueLabel: Boolean)
     data class Node(
@@ -63,7 +67,7 @@ object SettingsCachePolicy {
         if (!isTarget(page, target)) return null
         return page.nodes.indices.filter { i ->
             val node = page.nodes[i]
-            node.visible && node.id == "android:id/title" && matches(node, labels.storage)
+            node.visible && node.id in setOf("android:id/title", "$SETTINGS_PACKAGE:id/title", "") && matches(node, labels.storage)
         }.mapNotNull { i -> clickParent(page.nodes, i) { it.enabled } }.distinct().singleOrNull()
     }
 }

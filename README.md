@@ -1,6 +1,6 @@
 # Debloater (Shizuku)
 
-**Current release: [1.11.3](https://github.com/j0p3s/Debloat-app-android/releases/tag/v1.11.3)** · [Download APK](https://github.com/j0p3s/Debloat-app-android/releases/download/v1.11.3/Debloater-v1.11.3.apk) · [Release notes](docs/RELEASE-1.11.3.md) · [Changelog](CHANGELOG.md)
+**Current release: [1.11.4](https://github.com/j0p3s/Debloat-app-android/releases/tag/v1.11.4)** · [Download APK](https://github.com/j0p3s/Debloat-app-android/releases/download/v1.11.4/Debloater-v1.11.4.apk) · [Release notes](docs/RELEASE-1.11.4.md) · [Changelog](CHANGELOG.md)
 
 An Android app that debloats **any Android version from Android 11 to Android 17** without root, using
 [Shizuku](https://shizuku.rikka.app/). It also works as a normal app manager, so you can remove any user app.
@@ -240,3 +240,5 @@ During Accessibility cache clearing, the floating Cancel bar shows processed/tot
 Settings → App updates checks the official GitHub latest stable release on demand and downloads newer APKs through Android Download Manager. Progress and Cancel are available; downloads survive leaving Settings. Open the completed download notification or use a file manager to install with Android confirmation. No silent installation or background release polling. Update labels currently use English across locales.
 
 Update checks fall back to the official public latest-release page if the GitHub API check fails. Failed download state clears on retry; HTTP and Android download error details are shown. A direct GitHub link is available if both checks fail.
+
+The Accessibility cleaner skips unavailable cache controls when no cache button was pressed, logs the skip and continues. Uncertain results after a press, leaving Settings or locking the screen still stop the batch safely. Settings transitions receive a short grace period. GitHub releases must be publicly accessible for unauthenticated OTA checks; the official repository is now public.

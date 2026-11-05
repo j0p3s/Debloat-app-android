@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.11.4 — 2026-11-05
+
+- Skip unavailable Accessibility cache controls before any cache click, rather than terminating the entire batch.
+- Recognize additional Settings Storage row IDs and allow fragment transitions to settle.
+- Keep stopping for uncertain post-click outcomes, lock and leaving Settings.
+- Add regression tests for missing controls and custom Settings rows.
+- Confirm unauthenticated GitHub update access after the repository became public.
+
+
 ## 1.11.3 — 2026-11-05
 
 - Fix persistent updater errors from old failed downloads.
