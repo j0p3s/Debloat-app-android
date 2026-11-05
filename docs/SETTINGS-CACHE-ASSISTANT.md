@@ -30,3 +30,5 @@ From 1.11.5, Settings assistant is the default cache clearing method. Users can 
 From 1.11.5, Permissions offers **Set up access with Shizuku** after an explicit disclosure/confirmation. It grants Usage Access and tries enabling only the cache assistant while preserving other services. Runtime connection and access checks determine the results; manual setup remains available when blocked. Setup never starts cache cleaning.
 
 From 1.11.6 the floating bar is at the bottom. Copy the cache log after failures: it includes expected labels, unique-name status, window package, selector results and exceptions. English OEM “Storage and cache” is accepted alongside AOSP “Storage & cache”. Actual read-only row inspection was performed on Nubia Android 16; successful cleaning with the updated APK is not yet established.
+
+From 1.11.7, disabled cache controls are recognized even when non-clickable. The assistant checks ancestors too, logs the skip and advances without clicking. A disabled control is not treated as a missing control or a successful clear.
