@@ -184,13 +184,20 @@ class CacheController(
                     @Suppress("DEPRECATION")
                     val installed = pm.getInstalledApplications(0)
                         .filter { it.flags and ApplicationInfo.FLAG_INSTALLED != 0 }
-                    val labels = installed.associate { info -> info.packageName to info.loadLabel(pm).toString() }
-                    val counts = labels.values.groupingBy(SettingsCachePolicy::normalize).eachCount()
+                    val labels = installed.associate { info ->
+                        val display = info.loadLabel(pm).toString()
+                        val localized = runCatching {
+                            if(info.labelRes == 0) display else systemContext.createPackageContext(info.packageName, 0)
+                                .createConfigurationContext(systemContext.resources.configuration).resources.getString(info.labelRes)
+                        }.getOrDefault(display)
+                        info.packageName to setOf(display, localized)
+                    }
+                    val counts = labels.values.flatten().groupingBy(SettingsCachePolicy::normalize).eachCount()
                     installed.filter { info -> targets.any { it.uid == info.uid && info.packageName in it.packages } }
                         .associate { info ->
-                            val label = labels.getValue(info.packageName)
-                            info.packageName to SettingsCachePolicy.Target(info.packageName, label,
-                                counts[SettingsCachePolicy.normalize(label)] == 1)
+                            val names = labels.getValue(info.packageName)
+                            info.packageName to SettingsCachePolicy.Target(info.packageName, names.first(),
+                                names.all { counts[SettingsCachePolicy.normalize(it)] == 1 }, names)
                         }
                 } else emptyMap()
                 var successes = 0

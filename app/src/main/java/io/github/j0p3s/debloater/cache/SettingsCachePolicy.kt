@@ -9,7 +9,7 @@ object SettingsCachePolicy {
     fun timedOutResult(cachePressed: Boolean, settingsWindow: Boolean): SettingsCacheResult =
         if(!cachePressed && settingsWindow) SettingsCacheResult.UNAVAILABLE else SettingsCacheResult.UNKNOWN
     const val SETTINGS_PACKAGE = "com.android.settings"
-    data class Target(val packageName: String, val label: String, val uniqueLabel: Boolean)
+    data class Target(val packageName: String, val label: String, val uniqueLabel: Boolean, val labelAliases: Set<String> = emptySet())
     data class Node(
         val id: String = "", val text: String = "", val description: String = "",
         val parent: Int? = null, val clickable: Boolean = false,
@@ -54,14 +54,15 @@ object SettingsCachePolicy {
         if (page.nodes.any { it.visible && it.id in setOf("android:id/alertTitle", "android:id/parentPanel") }) return false
         val packages = page.nodes.filter { it.visible && settingsId(it, packageIds) }
         if (packages.isNotEmpty()) return packages.all { it.text == target.packageName }
+        val names = (target.labelAliases + target.label).map(::normalize).toSet()
         val header = target.uniqueLabel && page.nodes.any {
-            it.visible && settingsId(it, headerIds) && normalize(it.text) == normalize(target.label)
+            it.visible && settingsId(it, headerIds) && normalize(it.text) in names
         }
         if(header) return true
         // OEM Settings may omit header IDs. Require both a known Settings page title
         // and the exact, unique installed app label before permitting any action.
         return target.uniqueLabel && labels != null && page.nodes.any { it.visible && matches(it, labels.pageTitles) } &&
-            page.nodes.any { it.visible && normalize(it.text) == normalize(target.label) }
+            page.nodes.any { it.visible && normalize(it.text) in names }
     }
 
     private fun clickParent(nodes: List<Node>, index: Int, accept: (Node) -> Boolean): Int? {

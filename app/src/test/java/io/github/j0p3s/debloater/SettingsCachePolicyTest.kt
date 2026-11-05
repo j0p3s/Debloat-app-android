@@ -5,6 +5,12 @@ import org.junit.Assert.*
 import org.junit.Test
 
 class SettingsCachePolicyTest {
+    @Test fun verifiedResourceLabelAliasesSupportRegionalSystemAppNames() {
+        val localized = target.copy(label = "Gerenciador de rede", labelAliases = setOf("Gestor de redes"))
+        assertTrue(Policy.isTarget(page(header("Gestor de redes")), localized))
+        assertFalse(Policy.isTarget(page(header("Other")), localized))
+        assertFalse(Policy.isTarget(page(header("Gestor de redes")), localized.copy(uniqueLabel = false)))
+    }
     @Test fun allSupportedLanguagesFollowStorageThenCacheWithoutSelectingData() {
         for(language in listOf("en","pt","es","fr","de","it","ru","zh","hi","ar","id","in")) {
             val translated = Policy.fallbackLabels(language)
