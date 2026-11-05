@@ -1,15 +1,17 @@
 package io.github.j0p3s.debloater.data
 
+import androidx.annotation.StringRes
+import io.github.j0p3s.debloater.R
 import java.text.Collator
 
 /** Sort orders offered on every app list. */
-enum class AppSort(val title: String) {
-    NAME_ASC("Name A → Z"),
-    NAME_DESC("Name Z → A"),
-    SIZE_DESC("Largest first"),
-    SIZE_ASC("Smallest first"),
-    DATA_DESC("Most data first"),
-    DATA_ASC("Least data first");
+enum class AppSort(val title: String, @param:StringRes @get:StringRes val titleRes: Int) {
+    NAME_ASC("Name A → Z", R.string.sort_name_asc),
+    NAME_DESC("Name Z → A", R.string.sort_name_desc),
+    SIZE_DESC("Largest first", R.string.sort_size_desc),
+    SIZE_ASC("Smallest first", R.string.sort_size_asc),
+    DATA_DESC("Most data first", R.string.sort_data_desc),
+    DATA_ASC("Least data first", R.string.sort_data_asc);
 
     companion object {
         fun fromName(name: String?) = entries.firstOrNull { it.name == name } ?: NAME_ASC

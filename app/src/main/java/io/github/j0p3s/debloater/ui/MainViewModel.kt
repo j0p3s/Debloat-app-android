@@ -4,6 +4,7 @@ import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import io.github.j0p3s.debloater.R
 import io.github.j0p3s.debloater.backup.BackupEntry
 import io.github.j0p3s.debloater.backup.BackupManager
 import io.github.j0p3s.debloater.backup.BackupSession
@@ -34,7 +35,7 @@ sealed interface ListUpdateState {
     data class Failed(val message: String) : ListUpdateState
 }
 
-enum class Screen { HOME, DEBLOAT, APP_MANAGER, OPERATION, BACKUPS, SETTINGS, ADL_CHECK }
+enum class Screen { HOME, DEBLOAT, APP_MANAGER, OPERATION, BACKUPS, SETTINGS, ADL_CHECK, USER_CACHE, SYSTEM_CACHE, CLEANUP, HELP }
 
 /** A request that needs the user's confirmation before it runs. */
 data class PendingOperation(
@@ -53,6 +54,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     val repo = PackageRepository(app)
     val backups = BackupManager(app)
     val engine = OperationEngine(repo, backups)
+    val cache = CacheController(app, repo, viewModelScope, { !engine.isRunning }, ::refreshAfterCache)
     val prefs = Prefs(app)
     /** Current debloat list (re-read after an in-app update). */
     val database: DebloatDatabase get() = DebloatDatabase.get(getApplication())
@@ -80,8 +82,8 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     private val _pending = MutableStateFlow<PendingOperation?>(null)
     val pending: StateFlow<PendingOperation?> = _pending.asStateFlow()
 
-    private val _message = MutableStateFlow<String?>(null)
-    val message: StateFlow<String?> = _message.asStateFlow()
+    private val _message = MutableStateFlow<UiMessage?>(null)
+    val message: StateFlow<UiMessage?> = _message.asStateFlow()
 
     private var lastRequest: LastRequest? = null
 
@@ -105,6 +107,11 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     val managerSelection: StateFlow<Set<String>> = _managerSelection.asStateFlow()
 
     fun setDebloatSelection(s: Set<String>) { _debloatSelection.value = s }
+
+    /** Guided clean-up selection; null until the screen is first opened (then everything is selected). */
+    private val _cleanupSelection = MutableStateFlow<Set<String>?>(null)
+    val cleanupSelection: StateFlow<Set<String>?> = _cleanupSelection.asStateFlow()
+    fun setCleanupSelection(s: Set<String>) { _cleanupSelection.value = s }
     fun setManagerSelection(s: Set<String>) { _managerSelection.value = s }
 
     init {
@@ -132,7 +139,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
             _listUpdate.value = try {
                 val report = listUpdater.update { step -> _listUpdate.value = ListUpdateState.Running(step) }
                 refreshApps()
-                if (silent && report.anyUpdated) _message.value = "Debloat lists updated (${report.packages} packages)"
+                if (silent && report.anyUpdated) _message.value = UiMessage(R.string.message_lists_updated, listOf(report.packages))
                 ListUpdateState.Done(report)
             } catch (t: Throwable) {
                 ListUpdateState.Failed(t.message ?: t.toString())
@@ -146,7 +153,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
             withContext(Dispatchers.IO) { listUpdater.reset() }
             _listUpdate.value = ListUpdateState.Idle
             refreshApps()
-            _message.value = "Using the built-in lists again"
+            _message.value = UiMessage(R.string.message_lists_reset)
         }
     }
 
@@ -168,11 +175,13 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     // ------------------------------------------------------------ navigation
 
     fun navigate(screen: Screen) {
+        if (cache.busy) return
         _backStack.value = _backStack.value + screen
     }
 
     /** Returns false when there is nothing to go back to. */
     fun back(): Boolean {
+        if (cache.busy) return true
         val stack = _backStack.value
         if (stack.last() == Screen.OPERATION && engine.isRunning) return true
         if (stack.size <= 1) return false
@@ -203,6 +212,17 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         }
     }
 
+    private fun refreshAfterCache(packages: Set<String>) {
+        // Avoid another full-device StorageStats pass after the targeted cache refresh.
+        // App Manager falls back to APK-only size until its next explicit refresh.
+        _apps.value = _apps.value.map { app ->
+            if(app.packageName in packages) app.copy(sizeExact = false, appBytes = app.apkSize, dataBytes = 0, cacheBytes = 0) else app
+        }
+        viewModelScope.launch {
+            _storage.value = withContext(Dispatchers.IO) { runCatching { repo.storageInfo() }.getOrNull() }
+        }
+    }
+
     fun refreshSessions() {
         viewModelScope.launch(Dispatchers.IO) {
             _sessions.value = backups.listSessions()
@@ -226,10 +246,11 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     private fun start(apps: List<AppInfo>, action: Action, dryRun: Boolean, keepData: Boolean) {
-        if (engine.isRunning) return
+        if (engine.isRunning || cache.busy) return
         lastRequest = LastRequest.Run(apps.map { it.packageName }, action, keepData)
         if (!dryRun) {
             _debloatSelection.value = emptySet()
+            _cleanupSelection.value = null
             _managerSelection.value = emptySet()
         }
         if (_backStack.value.last() != Screen.OPERATION) navigate(Screen.OPERATION)
@@ -260,7 +281,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         val failed = engine.state.value?.failedPackages.orEmpty().toSet()
         val apps = _apps.value.filter { it.packageName in failed && it.state == io.github.j0p3s.debloater.data.AppState.ENABLED }
         if (apps.isEmpty()) {
-            _message.value = "Nothing left to disable"
+            _message.value = UiMessage(R.string.message_nothing_disable)
             return
         }
         back()
@@ -270,7 +291,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     fun restoreSession(session: BackupSession, entries: List<BackupEntry>, dryRun: Boolean) {
         val restorable = entries.filter { it.status == EntryStatus.DONE || it.status == EntryStatus.RESTORE_FAILED || it.status == EntryStatus.RESTORED }
         if (restorable.isEmpty()) {
-            _message.value = "Nothing to restore in this selection"
+            _message.value = UiMessage(R.string.message_nothing_restore)
             return
         }
         startRestore(restorable.map { RestoreItem(session.id, it) }, dryRun, "Restore ${restorable.size} app(s) from ${session.id}")
@@ -280,7 +301,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             val items = withContext(Dispatchers.IO) { engine.baselineRestoreItems(_apps.value) }
             if (items.isEmpty()) {
-                _message.value = "Everything already matches the original state"
+                _message.value = UiMessage(R.string.message_original_state)
                 return@launch
             }
             startRestore(items, dryRun, "Undo all changes (${items.size} app(s))")
@@ -288,7 +309,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     private fun startRestore(items: List<RestoreItem>, dryRun: Boolean, title: String) {
-        if (engine.isRunning) return
+        if (engine.isRunning || cache.busy) return
         lastRequest = LastRequest.Restore(items, title)
         if (_backStack.value.last() != Screen.OPERATION) navigate(Screen.OPERATION)
         viewModelScope.launch {
@@ -317,8 +338,8 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch(Dispatchers.IO) {
             _message.value = runCatching {
                 getApplication<Application>().contentResolver.openOutputStream(uri)!!.use { backups.exportZip(it) }
-                "Backups exported"
-            }.getOrElse { "Export failed: ${it.message}" }
+                UiMessage(R.string.message_exported)
+            }.getOrElse { UiMessage(R.string.message_export_failed, listOf(it.message.orEmpty())) }
         }
     }
 
@@ -326,8 +347,8 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch(Dispatchers.IO) {
             _message.value = runCatching {
                 val n = getApplication<Application>().contentResolver.openInputStream(uri)!!.use { backups.importZip(it) }
-                "Imported $n file(s)"
-            }.getOrElse { "Import failed: ${it.message}" }
+                UiMessage(R.string.message_imported, listOf(n))
+            }.getOrElse { UiMessage(R.string.message_import_failed, listOf(it.message.orEmpty())) }
             _sessions.value = backups.listSessions()
             _backupsBytes.value = backups.totalBytes()
         }

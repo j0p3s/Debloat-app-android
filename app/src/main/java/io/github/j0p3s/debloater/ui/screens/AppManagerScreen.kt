@@ -1,29 +1,29 @@
 package io.github.j0p3s.debloater.ui.screens
 
 import android.content.Intent
-import androidx.core.net.toUri
 import android.provider.Settings
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.BottomAppBar
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -45,28 +45,33 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import io.github.j0p3s.debloater.R
 import io.github.j0p3s.debloater.data.Action
 import io.github.j0p3s.debloater.data.AppInfo
 import io.github.j0p3s.debloater.data.AppState
 import io.github.j0p3s.debloater.data.SpaceEstimator
-import io.github.j0p3s.debloater.ops.OperationEngine
+import io.github.j0p3s.debloater.data.sortedBy
 import io.github.j0p3s.debloater.ui.MainViewModel
 import io.github.j0p3s.debloater.ui.components.AppIcon
 import io.github.j0p3s.debloater.ui.components.AppRow
 import io.github.j0p3s.debloater.ui.components.BackTopBar
-import io.github.j0p3s.debloater.ui.components.SortMenu
-import io.github.j0p3s.debloater.ui.components.VendorChips
-import io.github.j0p3s.debloater.data.sortedBy
 import io.github.j0p3s.debloater.ui.components.LevelPill
+import io.github.j0p3s.debloater.ui.components.SelectionBar
+import io.github.j0p3s.debloater.ui.components.SortMenu
 import io.github.j0p3s.debloater.ui.components.StatePill
+import io.github.j0p3s.debloater.ui.components.VendorChips
 import io.github.j0p3s.debloater.ui.components.WarningText
+import io.github.j0p3s.debloater.ui.components.formatSize
 
-private enum class TypeFilter(val title: String) { USER("User apps"), SYSTEM("System apps"), ALL("All") }
-private enum class StateFilter(val title: String) { ANY("Any state"), ENABLED("Enabled"), DISABLED("Disabled"), REMOVED("Removed") }
+private enum class TypeFilter(@param:androidx.annotation.StringRes @get:androidx.annotation.StringRes val titleRes: Int) { USER(R.string.user_apps), SYSTEM(R.string.system_apps), ALL(R.string.all) }
+private enum class StateFilter(@param:androidx.annotation.StringRes @get:androidx.annotation.StringRes val titleRes: Int) { ANY(R.string.any_state), ENABLED(R.string.enabled), DISABLED(R.string.disabled), REMOVED(R.string.removed) }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun AppManagerScreen(vm: MainViewModel) {
     val apps by vm.apps.collectAsStateWithLifecycle()
@@ -100,25 +105,19 @@ fun AppManagerScreen(vm: MainViewModel) {
     val selectedApps = apps.filter { it.packageName in selection }
 
     Scaffold(
-        topBar = { BackTopBar("App manager", onBack = { vm.back() }) },
+        topBar = { BackTopBar(stringResource(R.string.app_manager), onBack = { vm.back() }) },
         bottomBar = {
             if (selection.isNotEmpty()) {
-                BottomAppBar {
-                    Column(Modifier.padding(start = 12.dp).weight(1f)) {
-                        Text("${selection.size}", style = MaterialTheme.typography.labelLarge)
-                        Text(OperationEngine.fmtSize(selectedApps.sumOf { it.totalBytes }), style = MaterialTheme.typography.bodySmall)
-                    }
-                    OutlinedButton(onClick = { vm.request(selectedApps, Action.REMOVE, dryRun = true) }) { Text("Test") }
-                    if (selectedApps.any { it.state != AppState.ENABLED }) {
-                        TextButton(onClick = { vm.request(selectedApps.filter { it.state != AppState.ENABLED }, Action.RESTORE, dryRun = false) }) { Text("Restore") }
-                    }
-                    TextButton(onClick = { vm.request(selectedApps, Action.DISABLE, dryRun = false) }) { Text("Disable") }
-                    Button(
-                        onClick = { vm.request(selectedApps, Action.REMOVE, dryRun = false) },
-                        colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
-                        modifier = Modifier.padding(end = 8.dp),
-                    ) { Text("Remove") }
-                }
+                SelectionBar(
+                    count = selection.size,
+                    size = formatSize(selectedApps.sumOf { it.totalBytes }),
+                    onTest = { vm.request(selectedApps, Action.DISABLE, dryRun = true) },
+                    onDisable = { vm.request(selectedApps, Action.DISABLE, dryRun = false) },
+                    onRemove = { vm.request(selectedApps, Action.REMOVE, dryRun = false) },
+                    onRestore = if (selectedApps.any { it.state != AppState.ENABLED }) {
+                        { vm.request(selectedApps.filter { it.state != AppState.ENABLED }, Action.RESTORE, dryRun = false) }
+                    } else null,
+                )
             }
         },
     ) { pad ->
@@ -128,25 +127,28 @@ fun AppManagerScreen(vm: MainViewModel) {
                     OutlinedTextField(
                         value = query, onValueChange = { query = it },
                         leadingIcon = { Icon(Icons.Default.Search, null) },
-                        placeholder = { Text("Search apps") }, singleLine = true, modifier = Modifier.fillMaxWidth(),
+                        placeholder = { Text(stringResource(R.string.search_apps)) }, singleLine = true, modifier = Modifier.fillMaxWidth(),
                     )
                     Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                        TypeFilter.entries.forEach { FilterChip(type == it, { type = it }, label = { Text(it.title) }) }
+                        TypeFilter.entries.forEach { FilterChip(type == it, { type = it }, label = { Text(stringResource(it.titleRes)) }) }
                     }
                     Row(Modifier.horizontalScroll(rememberScrollState()), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
-                        StateFilter.entries.forEach { FilterChip(stateFilter == it, { stateFilter = it }, label = { Text(it.title) }) }
+                        StateFilter.entries.forEach { FilterChip(stateFilter == it, { stateFilter = it }, label = { Text(stringResource(it.titleRes)) }) }
                     }
                     VendorChips(vendorCounts, vendor, vm.repo.deviceVendor?.name) { vendor = it }
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text("${visible.size} apps · ${OperationEngine.fmtSize(visible.sumOf { it.totalBytes })}", style = MaterialTheme.typography.labelMedium, modifier = Modifier.weight(1f))
+                    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                        Text(stringResource(R.string.apps_size, visible.size, formatSize(visible.sumOf { it.totalBytes })), style = MaterialTheme.typography.labelMedium)
                         SortMenu(sort, vm.prefs::setSort)
-                        TextButton(onClick = { vm.setManagerSelection(selection + visible.filter { isSelectable(it, expert) }.map { it.packageName }) }) { Text("Select all") }
-                        TextButton(onClick = { vm.setManagerSelection(emptySet()) }) { Text("Clear") }
+                        TextButton(onClick = { vm.setManagerSelection(selection + visible.filter { isSelectable(it, expert) }.map { it.packageName }) }) { Text(stringResource(R.string.select_all)) }
+                        TextButton(onClick = { vm.setManagerSelection(emptySet()) }) { Text(stringResource(R.string.clear)) }
                     }
                 }
             }
             if (loading && apps.isEmpty()) {
                 item { Box(Modifier.fillMaxWidth().padding(32.dp), contentAlignment = Alignment.Center) { CircularProgressIndicator() } }
+            }
+            if (!loading && visible.isEmpty()) {
+                item { Text(stringResource(R.string.no_apps), Modifier.padding(24.dp)) }
             }
             items(visible, key = { it.packageName }) { app ->
                 val selectable = isSelectable(app, expert)
@@ -179,27 +181,27 @@ fun AppDetailsDialog(app: AppInfo, canModify: Boolean, vm: MainViewModel, onDism
             ) {
                 Text("${app.packageName} · ${app.vendor}", style = MaterialTheme.typography.bodySmall)
                 Row(horizontalArrangement = Arrangement.spacedBy(6.dp)) { LevelPill(app.level); StatePill(app.state) }
-                Text("Version ${app.versionName} (${app.versionCode})", style = MaterialTheme.typography.bodySmall)
-                Text("${if (app.isSystem) "System" else "User"} app · ${app.apkPaths.size} APK file(s)", style = MaterialTheme.typography.bodySmall)
+                Text(stringResource(R.string.app_version, app.versionName, app.versionCode), style = MaterialTheme.typography.bodySmall)
+                Text(stringResource(R.string.app_type_files, if (app.isSystem) stringResource(R.string.system) else stringResource(R.string.user), app.apkPaths.size), style = MaterialTheme.typography.bodySmall)
                 SizeTable(app)
                 app.entry?.let { e ->
                     if (e.description.isNotBlank()) Text(e.description, style = MaterialTheme.typography.bodySmall)
                     e.warning?.let { w -> WarningText(w) }
                     if (e.oftenCantUninstall) {
-                        WarningText("Often cannot be uninstalled on this ROM. Use Disable if Remove fails.")
+                        WarningText(stringResource(R.string.rom_warning))
                     }
                     if (e.neededBy.isNotEmpty()) {
-                        WarningText("Needed by: " + e.neededBy.joinToString { p -> installed[p]?.let { "${it.label} (installed)" } ?: p })
+                        WarningText(stringResource(R.string.needed_by, e.neededBy.joinToString { p -> installed[p]?.label ?: p }))
                     }
                     if (e.dependencies.isNotEmpty()) {
-                        Text("Depends on: " + e.dependencies.joinToString { p -> installed[p]?.label ?: p }, style = MaterialTheme.typography.bodySmall)
+                        Text(stringResource(R.string.depends_on, e.dependencies.joinToString { p -> installed[p]?.label ?: p }), style = MaterialTheme.typography.bodySmall)
                     }
                     e.details?.takeIf { it != e.description }?.let { d ->
-                        Text("Details", style = MaterialTheme.typography.labelLarge)
+                        Text(stringResource(R.string.details), style = MaterialTheme.typography.labelLarge)
                         Text(d, style = MaterialTheme.typography.bodySmall)
                     }
                     if (e.alternatives.isNotEmpty()) {
-                        Text("Open-source alternatives (Android Debloat List)", style = MaterialTheme.typography.labelLarge)
+                        Text(stringResource(R.string.alternatives), style = MaterialTheme.typography.labelLarge)
                         e.alternatives.forEach { alt ->
                             val url = alt.repo ?: "https://f-droid.org/packages/${alt.packageName}/"
                             Text(
@@ -212,7 +214,7 @@ fun AppDetailsDialog(app: AppInfo, canModify: Boolean, vm: MainViewModel, onDism
                         }
                     }
                     if (e.webLinks.isNotEmpty()) {
-                        Text("Links", style = MaterialTheme.typography.labelLarge)
+                        Text(stringResource(R.string.links), style = MaterialTheme.typography.labelLarge)
                         e.webLinks.take(6).forEach { url ->
                             Text(url, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary,
                                 maxLines = 1, overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
@@ -220,45 +222,45 @@ fun AppDetailsDialog(app: AppInfo, canModify: Boolean, vm: MainViewModel, onDism
                         }
                     }
                     Text(
-                        "Rated by: ${e.sources.joinToString()}" + (e.adlRemoval?.let { " · ADL: $it" } ?: ""),
+                        stringResource(R.string.rated_by, e.sources.joinToString()),
                         style = MaterialTheme.typography.labelSmall, color = MaterialTheme.colorScheme.outline,
                     )
                     if (e.inAdl) {
-                        TextButton(onClick = { openUrl(ctx, e.adlUrl) }) { Text("Open on adl.muntashir.dev") }
+                        TextButton(onClick = { openUrl(ctx, e.adlUrl) }) { Text(stringResource(R.string.open_adl)) }
                     }
                 }
-                app.protectedReason?.let { Text("Protected: $it", color = MaterialTheme.colorScheme.error, fontWeight = FontWeight.SemiBold) }
+                app.protectedReason?.let { Text(stringResource(R.string.protected_reason, it), color = MaterialTheme.colorScheme.error, fontWeight = FontWeight.SemiBold) }
                 if (!canModify && !app.isProtected) {
-                    Text("Locked. Turn on expert mode in Settings to modify this package.", color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
+                    Text(stringResource(R.string.locked_help), color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
                 }
                 Spacer(Modifier.width(4.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.horizontalScroll(rememberScrollState())) {
                     if (canModify && app.state == AppState.ENABLED) {
-                        OutlinedButton(onClick = { onDismiss(); vm.request(listOf(app), Action.REMOVE, true) }) { Text("Test") }
-                        OutlinedButton(onClick = { onDismiss(); vm.request(listOf(app), Action.DISABLE, false) }) { Text("Disable") }
+                        OutlinedButton(onClick = { onDismiss(); vm.request(listOf(app), Action.DISABLE, true) }) { Text(stringResource(R.string.test)) }
+                        OutlinedButton(onClick = { onDismiss(); vm.request(listOf(app), Action.DISABLE, false) }) { Text(stringResource(R.string.disable)) }
                         Button(
                             onClick = { onDismiss(); vm.request(listOf(app), Action.REMOVE, false) },
                             colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.error),
-                        ) { Text(if (app.isSystem) "Remove" else "Uninstall") }
+                        ) { Text(if (app.isSystem) stringResource(R.string.remove) else stringResource(R.string.uninstall)) }
                     }
                     if (app.state == AppState.DISABLED && canModify) {
-                        OutlinedButton(onClick = { onDismiss(); vm.request(listOf(app), Action.REMOVE, false) }) { Text("Remove") }
+                        OutlinedButton(onClick = { onDismiss(); vm.request(listOf(app), Action.REMOVE, false) }) { Text(stringResource(R.string.remove)) }
                     }
                     if (app.state != AppState.ENABLED) {
                         Button(onClick = { onDismiss(); vm.request(listOf(app), Action.RESTORE, false) }) {
-                            Text(if (app.state == AppState.DISABLED) "Enable" else "Restore")
+                            Text(if (app.state == AppState.DISABLED) stringResource(R.string.enable) else stringResource(R.string.restore))
                         }
                     }
                 }
             }
         },
-        confirmButton = { TextButton(onClick = onDismiss) { Text("Close") } },
+        confirmButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.close)) } },
         dismissButton = {
             TextButton(onClick = {
                 runCatching {
                     ctx.startActivity(Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, "package:${app.packageName}".toUri()))
                 }
-            }) { Text("System app info") }
+            }) { Text(stringResource(R.string.system_app_info)) }
         },
     )
 }
@@ -271,20 +273,20 @@ private fun SizeTable(app: AppInfo) {
             Text(label, Modifier.weight(1f), style = MaterialTheme.typography.bodySmall)
             Text(value, style = MaterialTheme.typography.bodySmall, fontWeight = if (bold) FontWeight.Bold else FontWeight.Normal)
         }
-        line("APK", OperationEngine.fmtSize(app.apkSize))
+        line("APK", formatSize(app.apkSize))
         if (app.sizeExact) {
-            line("App (APK, code, libraries)", OperationEngine.fmtSize(app.appBytes))
-            line("Data", OperationEngine.fmtSize(app.dataBytes - app.cacheBytes))
-            line("Cache", OperationEngine.fmtSize(app.cacheBytes))
-            line("Total", OperationEngine.fmtSize(app.totalBytes), bold = true)
+            line(stringResource(R.string.size_app), formatSize(app.appBytes))
+            line(stringResource(R.string.data), formatSize(app.dataBytes - app.cacheBytes))
+            line(stringResource(R.string.cache), formatSize(app.cacheBytes))
+            line(stringResource(R.string.total), formatSize(app.totalBytes), bold = true)
         } else {
-            Text("Data size unknown (grant Usage access on the home screen).", style = MaterialTheme.typography.bodySmall)
+            Text(stringResource(R.string.unknown_data), style = MaterialTheme.typography.bodySmall)
         }
         if (app.state != AppState.UNINSTALLED) {
             val freed = SpaceEstimator.estimate(app, Action.REMOVE, keepData = false)
-            line("Remove & delete data frees about", OperationEngine.fmtSize(freed), bold = true)
+            line(stringResource(R.string.remove_frees), formatSize(freed), bold = true)
             if (app.isSystem) {
-                Text("The APK of a system app stays on the read-only system partition.", style = MaterialTheme.typography.bodySmall)
+                Text(stringResource(R.string.system_apk_stays), style = MaterialTheme.typography.bodySmall)
             }
         }
     }

@@ -1,10 +1,28 @@
 # Debloater (Shizuku)
 
+**Current release: [1.10.3](https://github.com/j0p3s/Debloat-app-android/releases/tag/v1.10.3)** · [Download APK](https://github.com/j0p3s/Debloat-app-android/releases/download/v1.10.3/Debloater-v1.10.3.apk) · [Release notes](docs/RELEASE-1.10.3.md) · [Changelog](CHANGELOG.md)
+
 An Android app that debloats **any Android version from Android 11 to Android 17** without root, using
 [Shizuku](https://shizuku.rikka.app/). It also works as a normal app manager, so you can remove any user app.
 
 ## Features
 
+- **Languages**: English, Spanish, French, German, Portuguese, Italian, Russian, Simplified Chinese,
+  Hindi, Arabic (right-to-left) and Indonesian. The app follows the device language by default.
+  Choose another language in **Settings → Language**, or in Android's per-app language settings on
+  Android 13+. Your choice is remembered on Android 11 and 12 too. Source app descriptions, warnings
+  and technical logs can remain in English; the interface and confirmation guidance are translated.
+- **Beginner guide**: on first launch a short welcome lets you pick a language, explains test → disable →
+  undo, and walks through connecting Shizuku. Until Shizuku works, the home screen shows the same numbered
+  setup steps with buttons for each one. **Clean up my phone** (first entry on the home screen) lists the
+  Recommended apps for this phone, preselected, with Test and Disable as the main actions. A **Help** page
+  (question-mark icon) answers common questions in plain language and can show the welcome again.
+- **Compact dashboard**: device and storage information lead the home screen, followed by grouped
+  navigation and tier statistics. The getting-started guide and secondary settings expand on demand.
+  Light and dark themes use an emerald palette; selected apps have a tinted background.
+  Debloat opens on **Recommended**, with expandable filters and sorting. Selection actions wrap for longer translations and large fonts,
+  with **Test first** as the primary action. A test checks access and backups; it cannot predict every
+  effect on phone features.
 - **Debloat lists** with about 5,400 packages, merged from three sources (the most cautious rating wins when
   they disagree):
   - Debloater's own list (473 packages with short descriptions, warnings and per-Android-version rules),
@@ -41,8 +59,11 @@ An Android app that debloats **any Android version from Android 11 to Android 17
   Debloat List and System App Remover data (about 3 MB) straight from their GitHub repositories, after asking
   first. The new files are loaded and checked before they replace the current lists; a source that fails keeps
   its previous version, and *Use built-in* goes back to the lists inside the APK. Optional weekly automatic
-  check. Debloater's own list is only updated when its repository is public and has a higher `version`. The
-  internet permission is used for nothing else.
+  check. Debloater's own list ships with APK releases; it does not require access to this private repository.
+  Settings links to the UAD file and all five ADL files. GitHub file-page links are converted to raw JSON
+  downloads, with a GitHub Contents API fallback if the raw host fails. Errors identify the failing URL;
+  failed optional suggestion downloads keep their previous copies. The internet permission is used for
+  nothing else.
 - **Test run**: simulates the whole process step by step without changing anything. It checks Shizuku access,
   that the shell can see each package, that every APK can be read and backed up, and that there is enough free
   space. It shows every command that *would* run and reports whether any errors would happen. After a passed
@@ -78,6 +99,39 @@ An Android app that debloats **any Android version from Android 11 to Android 17
   Shizuku, your current launcher and keyboard, …) can never be modified, even in expert mode.
 - Logs of every run and test are saved and can be shared.
 
+## Cache cleaner
+
+Open **User cache** or **System cache** from the main dashboard and choose **Application type**, then tap **Scan selected app type**.
+The **Application type** button in the scanner selects **User apps**, **System apps**, or **Both**.
+The measured total, unavailable-size count, application list and clear targets follow that choice.
+Scanning measures only the selected category with two bounded workers. Switching categories reuses available results; unmeasured apps remain listed with unknown sizes. Selections in the other category are retained but are
+excluded from clearing until that category (or Both) is chosen.
+Usage access is required for measurements; enable it through Shizuku or Android Settings, then scan again.
+The scanner shows measured user-app, system-app and combined cache totals for the current Android user.
+Shared UID caches are grouped and counted once per volume; unavailable measurements are excluded from totals.
+Protected OS/recovery caches, other Android users and the read-only system partition are outside the scan.
+
+Sort by largest/smallest cache or app name A–Z/Z–A, search app/package names, or show only measured caches above zero.
+Select shown results or individual groups, then **Clear selected caches** and review the confirmation.
+Filtering does not deselect hidden selections; the confirmation lists every targeted app.
+
+Clearing requires Shizuku and a successful `pm help` capability check for `clear --cache-only`.
+Every command keeps the `--cache-only` flag and current user scope. Unsupported Android versions are blocked,
+and ROM permission failures appear in the cache log. App data and accounts remain intact.
+Cache deletion is permanent and cannot be restored from debloat backups. Only targeted non-empty/unknown cache groups are refreshed afterwards;
+running apps can rebuild cache immediately, so actual freed space may differ from the measured total.
+
+Measurements appear progressively, with a completed/total count and the current app. Cancel returns partial results.
+Each storage-stat caller waits up to eight seconds; an unresponsive Binder call keeps its worker slot until it returns,
+so retries cannot accumulate unlimited background requests. Unknown sizes are excluded from totals.
+Cache-only Shizuku subprocesses wait up to 15 seconds, rather than the general 180-second command limit.
+A timeout stops the batch and reports an unknown outcome; Android may still finish an already-requested clear.
+Cancel during clearing stops subsequent commands after the current one. Already-completed clears are not undone.
+Known-empty caches are skipped. App Manager sizes affected by clearing fall back to APK-only until refreshed,
+without automatically measuring every app again.
+
+On-device performance and cache behavior remain untested; no numeric speed improvement is claimed.
+
 ## Requirements
 
 - Android 11 (API 30) up to Android 17 (API 37). Newer versions run but show an "untested" warning.
@@ -85,13 +139,15 @@ An Android app that debloats **any Android version from Android 11 to Android 17
 
 ## Usage
 
-1. Install and start Shizuku, then open Debloater and grant the Shizuku permission.
-2. Open **Debloat**, pick a tab, select packages (or **Select all**).
-3. Tap **Test** to see the whole process without changing anything.
-4. If the test passes, tap **Continue…** and choose **Disable** or **Remove**.
-5. Use **Backups & restore** to undo anything.
+1. Install and start Shizuku, then open Debloater and grant the Shizuku permission. The welcome guide and
+   the setup steps on the home screen walk you through it.
+2. New to debloating? Tap **Clean up my phone**: it selects only Recommended apps; tap **Test**, then **Disable**.
+3. For more control open **Debloat**. Start with a few apps you do not use in **Recommended**.
+4. Tap **Test first** to check the process without changing anything. Read each app's warnings too.
+5. If the test passes, tap **Continue…** and choose **Disable** or **Remove**.
+6. Use **Backups & restore** to undo package changes. Deleted app data and cache cannot be restored.
 
-Prefer **Disable** for Extreme packages: it is the easiest change to undo.
+For a first attempt, prefer **Disable** for any tier. It keeps the app and its data and is easy to undo.
 
 ## Limitations
 
@@ -104,11 +160,36 @@ Prefer **Disable** for Extreme packages: it is the easiest change to undo.
 ## Building
 
 ```bash
+python3 tools/check_translations.py           # coverage and format arguments for every language
 ./gradlew testDebugUnitTest assembleDebug     # app/build/outputs/apk/debug/app-debug.apk
-./gradlew assembleRelease                     # minified, signed with the debug key for sideloading
+./gradlew lintDebug
+./gradlew assembleRelease                     # requires the permanent release signing credentials
 ```
 
 GitHub Actions builds both APKs on every push (see the `debloater-apks` artifact).
+
+To publish a release, bump `versionCode`/`versionName` in `app/build.gradle.kts`, add
+`docs/RELEASE-<version>.md` and merge. Then either push a tag `v<version>` on that commit, or open
+**Actions → Build APK → Run workflow**, pick the branch and tick *Publish a GitHub release*. CI checks the
+version and release notes, builds and verifies the signed APK, creates the tag if needed, and publishes a
+GitHub release with `Debloater-v<version>.apk` and the release notes as its text.
+
+Release APKs use one permanent key stored in the repository's `ANDROID_KEYSTORE_BASE64` and
+`ANDROID_KEYSTORE_PASSWORD` Actions secrets. CI checks the APK certificate against
+`config/release-certificate.sha256` before uploading it. Never regenerate this key: future updates
+must use the same signer. Keep the private keystore and password backed up outside GitHub too;
+neither belongs in Git or in release assets. For local release builds, set `ANDROID_KEYSTORE_PATH`
+to the backed-up PKCS12 keystore and `ANDROID_KEYSTORE_PASSWORD` to its password (alias `debloater`).
+Missing credentials fail the release build rather than falling back to a temporary debug key.
+
+Pull requests build and test only the debug APK, without receiving the release key. Debug APKs use
+the separate `io.github.j0p3s.debloater.debug` application ID, so they can coexist with the release app.
+
+Versions through 1.7.0 were signed with temporary CI debug keys that were not retained. Moving from
+those APKs to the permanent signer requires one final uninstall/reinstall; export backups first.
+Subsequent releases signed with the permanent key can update in place and retain app data.
+
+See [localization guidance](docs/LOCALIZATION.md) for adding translations and checking language changes.
 
 ## License
 

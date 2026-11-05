@@ -153,9 +153,13 @@ object ShizukuManager {
         }
     }
 
-    suspend fun exec(command: String): ShellResult = withContext(Dispatchers.IO) {
+    suspend fun exec(command: String): ShellResult = execInternal(command, false)
+    suspend fun execCache(command: String): ShellResult = execInternal(command, true)
+
+    private suspend fun execInternal(command: String, cache: Boolean): ShellResult = withContext(Dispatchers.IO) {
         try {
-            val b = getService().exec(command)
+            val s = getService()
+            val b = if (cache) s.execCache(command) else s.exec(command)
             ShellResult(
                 b.getInt(ShellService.KEY_EXIT, -1),
                 b.getString(ShellService.KEY_STDOUT).orEmpty(),

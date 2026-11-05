@@ -7,6 +7,8 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -39,27 +41,30 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import io.github.j0p3s.debloater.R
 import io.github.j0p3s.debloater.backup.BackupSession
 import io.github.j0p3s.debloater.backup.EntryStatus
-import io.github.j0p3s.debloater.ops.OperationEngine
 import io.github.j0p3s.debloater.ui.MainViewModel
 import io.github.j0p3s.debloater.ui.components.BackTopBar
 import io.github.j0p3s.debloater.ui.components.Pill
 import io.github.j0p3s.debloater.ui.components.StorageBar
+import io.github.j0p3s.debloater.ui.components.formatSize
 import io.github.j0p3s.debloater.ui.theme.ErrorColor
 import io.github.j0p3s.debloater.ui.theme.OkColor
 import io.github.j0p3s.debloater.ui.theme.WarnColor
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import java.io.File
 import java.text.DateFormat
 import java.util.Date
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun BackupsScreen(vm: MainViewModel) {
     val sessions by vm.sessions.collectAsStateWithLifecycle()
@@ -83,27 +88,26 @@ fun BackupsScreen(vm: MainViewModel) {
         uri?.let(vm::importBackups)
     }
 
-    Scaffold(topBar = { BackTopBar("Backups & restore", onBack = { vm.back() }) }) { pad ->
+    Scaffold(topBar = { BackTopBar(stringResource(R.string.backups_restore), onBack = { vm.back() }) }) { pad ->
         LazyColumn(Modifier.padding(pad).fillMaxSize(), contentPadding = androidx.compose.foundation.layout.PaddingValues(12.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             item {
                 Card {
                     Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                        Text("Automatic backups", style = MaterialTheme.typography.titleMedium)
+                        Text(stringResource(R.string.auto_backups), style = MaterialTheme.typography.titleMedium)
                         Text(
-                            "Before any app is disabled or removed, Debloater saves a restore point (the state of every app) and a verified copy of each APK. " +
-                                "If a backup cannot be made, the app is not touched.",
+                            stringResource(R.string.backup_intro),
                             style = MaterialTheme.typography.bodySmall,
                         )
-                        Text("${sessions.size} backup(s) using ${OperationEngine.fmtSize(totalSize)} · space freed so far ${OperationEngine.fmtSize(sessions.sumOf { it.freedBytes })}", style = MaterialTheme.typography.labelMedium)
+                        Text(stringResource(R.string.backup_stats, sessions.size, formatSize(totalSize), formatSize(sessions.sumOf { it.freedBytes })), style = MaterialTheme.typography.labelMedium)
                         storage?.let { StorageBar(it) }
                         Text(vm.backups.root.absolutePath, style = MaterialTheme.typography.labelSmall)
                         Text(
-                            "Backups are deleted if you uninstall Debloater. Export them to keep a copy.",
+                            stringResource(R.string.backup_export_help),
                             style = MaterialTheme.typography.bodySmall, color = WarnColor,
                         )
-                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            Button(onClick = { exporter.launch("debloater-backups-${System.currentTimeMillis() / 1000}.zip") }) { Text("Export zip") }
-                            OutlinedButton(onClick = { importer.launch(arrayOf("application/zip", "application/octet-stream")) }) { Text("Import zip") }
+                        FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Button(onClick = { exporter.launch("debloater-backups-${System.currentTimeMillis() / 1000}.zip") }) { Text(stringResource(R.string.export_zip)) }
+                            OutlinedButton(onClick = { importer.launch(arrayOf("application/zip", "application/octet-stream")) }) { Text(stringResource(R.string.import_zip)) }
                         }
                     }
                 }
@@ -111,24 +115,24 @@ fun BackupsScreen(vm: MainViewModel) {
             item {
                 Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)) {
                     Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                        Text("Undo all changes", style = MaterialTheme.typography.titleMedium)
+                        Text(stringResource(R.string.undo_all), style = MaterialTheme.typography.titleMedium)
                         Text(
-                            "Brings every app back to the state saved the first time Debloater ran. Removed system apps are reinstalled, disabled apps are enabled, and deleted user apps are reinstalled from their APK backup.",
+                            stringResource(R.string.undo_help),
                             style = MaterialTheme.typography.bodySmall,
                         )
-                        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            OutlinedButton(onClick = { vm.restoreBaseline(dryRun = true) }) { Text("Test") }
-                            Button(onClick = { vm.restoreBaseline(dryRun = false) }) { Text("Restore everything") }
+                        FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                            OutlinedButton(onClick = { vm.restoreBaseline(dryRun = true) }) { Text(stringResource(R.string.test)) }
+                            Button(onClick = { vm.restoreBaseline(dryRun = false) }) { Text(stringResource(R.string.restore_all)) }
                         }
                     }
                 }
             }
             if (sessions.isEmpty()) {
-                item { Text("No backups yet. One is created automatically the first time you disable or remove an app.", Modifier.padding(8.dp)) }
+                item { Text(stringResource(R.string.no_backups), Modifier.padding(8.dp)) }
             }
             items(sessions, key = { it.id }) { s -> SessionCard(s, vm, onDelete = { confirmDelete = s }) }
             if (logs.isNotEmpty()) {
-                item { Text("Logs", style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = 8.dp)) }
+                item { Text(stringResource(R.string.logs), style = MaterialTheme.typography.titleMedium, modifier = Modifier.padding(top = 8.dp)) }
                 items(logs.take(50), key = { it.absolutePath }) { f ->
                     Text(
                         "${f.nameWithoutExtension}  ·  ${DateFormat.getDateTimeInstance(DateFormat.SHORT, DateFormat.SHORT).format(Date(f.lastModified()))}",
@@ -143,16 +147,17 @@ fun BackupsScreen(vm: MainViewModel) {
     confirmDelete?.let { s ->
         AlertDialog(
             onDismissRequest = { confirmDelete = null },
-            title = { Text("Delete backup?") },
-            text = { Text("The restore point and APK copies of ${s.id} will be deleted. Apps that were removed in that session may not be restorable afterwards (removed system apps can still be restored from App manager).") },
-            confirmButton = { TextButton(onClick = { vm.deleteSession(s.id); confirmDelete = null }) { Text("Delete", color = ErrorColor) } },
-            dismissButton = { TextButton(onClick = { confirmDelete = null }) { Text("Cancel") } },
+            title = { Text(stringResource(R.string.delete_backup)) },
+            text = { Text(stringResource(R.string.delete_backup_help, s.id)) },
+            confirmButton = { TextButton(onClick = { vm.deleteSession(s.id); confirmDelete = null }) { Text(stringResource(R.string.delete), color = ErrorColor) } },
+            dismissButton = { TextButton(onClick = { confirmDelete = null }) { Text(stringResource(R.string.cancel)) } },
         )
     }
 
     openLog?.let { f -> LogDialog(f) { openLog = null } }
 }
 
+@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun SessionCard(s: BackupSession, vm: MainViewModel, onDelete: () -> Unit) {
     var expanded by remember { mutableStateOf(false) }
@@ -164,19 +169,19 @@ private fun SessionCard(s: BackupSession, vm: MainViewModel, onDelete: () -> Uni
         Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Row(Modifier.fillMaxWidth().clickable { expanded = !expanded }, verticalAlignment = Alignment.CenterVertically) {
                 Column(Modifier.weight(1f)) {
-                    Text(s.title, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
+                    Text(stringResource(R.string.session_title, stringResource(s.action.verbRes), s.entries.size), style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
                     Text(
                         DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT).format(Date(s.createdAt)) +
                             " · ${s.device.manufacturer} ${s.device.model}, API ${s.device.sdk}",
                         style = MaterialTheme.typography.bodySmall,
                     )
-                    Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.padding(top = 4.dp)) {
-                        Pill("$done changed", OkColor)
-                        if (s.freedBytes > 0) Pill("freed ${OperationEngine.fmtSize(s.freedBytes)}", OkColor)
-                        if (s.backupBytes > 0) Pill("backup ${OperationEngine.fmtSize(s.backupBytes)}", MaterialTheme.colorScheme.outline)
-                        if (restored > 0) Pill("$restored restored", MaterialTheme.colorScheme.primary)
-                        if (failed > 0) Pill("$failed failed", ErrorColor)
-                        if (!s.finished) Pill("interrupted", WarnColor)
+                    FlowRow(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.padding(top = 4.dp)) {
+                        Pill(stringResource(R.string.changed_count, done), OkColor)
+                        if (s.freedBytes > 0) Pill(stringResource(R.string.freed_size, formatSize(s.freedBytes)), OkColor)
+                        if (s.backupBytes > 0) Pill(stringResource(R.string.backup_size, formatSize(s.backupBytes)), MaterialTheme.colorScheme.outline)
+                        if (restored > 0) Pill(stringResource(R.string.restored_count, restored), MaterialTheme.colorScheme.primary)
+                        if (failed > 0) Pill(stringResource(R.string.failed_count, failed), ErrorColor)
+                        if (!s.finished) Pill(stringResource(R.string.interrupted), WarnColor)
                     }
                 }
                 Icon(if (expanded) Icons.Default.ExpandLess else Icons.Default.ExpandMore, null)
@@ -193,10 +198,7 @@ private fun SessionCard(s: BackupSession, vm: MainViewModel, onDelete: () -> Uni
                         Column(Modifier.weight(1f)) {
                             Text(e.label, style = MaterialTheme.typography.bodyMedium)
                             Text(
-                                "${e.packageName} · was ${e.stateBefore.title.lowercase()} · ${e.status.name.lowercase().replace('_', ' ')}" +
-                                    (if (e.sizeBytes > 0) " · size ${OperationEngine.fmtSize(e.sizeBytes)}" else "") +
-                                    (if (e.freedBytes > 0) " · freed ${OperationEngine.fmtSize(e.freedBytes)}" else "") +
-                                    (if (e.apkFiles.isNotEmpty()) " · APK backup ${OperationEngine.fmtSize(e.apkBytes)}" else ""),
+                                stringResource(R.string.backup_entry, e.packageName, stringResource(e.stateBefore.titleRes), stringResource(e.status.titleRes), formatSize(e.sizeBytes), formatSize(e.freedBytes), formatSize(e.apkBytes)),
                                 style = MaterialTheme.typography.bodySmall,
                             )
                             if (e.status == EntryStatus.FAILED || e.status == EntryStatus.SKIPPED) {
@@ -207,9 +209,9 @@ private fun SessionCard(s: BackupSession, vm: MainViewModel, onDelete: () -> Uni
                 }
                 val chosen = s.entries.filter { it.packageName in selected }
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.horizontalScroll(rememberScrollState())) {
-                    OutlinedButton(onClick = { vm.restoreSession(s, chosen, dryRun = true) }, enabled = chosen.isNotEmpty()) { Text("Test restore") }
-                    Button(onClick = { vm.restoreSession(s, chosen, dryRun = false) }, enabled = chosen.isNotEmpty()) { Text("Restore ${chosen.size}") }
-                    TextButton(onClick = onDelete) { Text("Delete", color = ErrorColor) }
+                    OutlinedButton(onClick = { vm.restoreSession(s, chosen, dryRun = true) }, enabled = chosen.isNotEmpty()) { Text(stringResource(R.string.test_restore)) }
+                    Button(onClick = { vm.restoreSession(s, chosen, dryRun = false) }, enabled = chosen.isNotEmpty()) { Text(stringResource(R.string.restore_count, chosen.size)) }
+                    TextButton(onClick = onDelete) { Text(stringResource(R.string.delete), color = ErrorColor) }
                 }
             }
         }
@@ -230,11 +232,11 @@ private fun LogDialog(file: File, onDismiss: () -> Unit) {
                 modifier = Modifier.heightIn(max = 480.dp).verticalScroll(rememberScrollState()),
             )
         },
-        confirmButton = { TextButton(onClick = onDismiss) { Text("Close") } },
+        confirmButton = { TextButton(onClick = onDismiss) { Text(stringResource(R.string.close)) } },
         dismissButton = {
             TextButton(onClick = {
-                ctx.startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, text), "Share log"))
-            }) { Text("Share") }
+                ctx.startActivity(Intent.createChooser(Intent(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, text), ctx.getString(R.string.share_log)))
+            }) { Text(stringResource(R.string.share)) }
         },
     )
 }
