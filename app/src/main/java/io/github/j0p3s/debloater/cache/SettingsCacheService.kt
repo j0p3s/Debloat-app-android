@@ -173,25 +173,41 @@ class SettingsCacheService : AccessibilityService() {
                     currentCoroutineContext().ensureActive()
                     if (instance !== this@SettingsCacheService ||
                         getSystemService(KeyguardManager::class.java).isKeyguardLocked ||
-                        !getSystemService(PowerManager::class.java).isInteractive) return@withTimeoutOrNull SettingsCacheResult.UNKNOWN
+                        !getSystemService(PowerManager::class.java).isInteractive) {
+                        diagnostic("Stop: assistant disconnected, screen locked or screen off")
+                        return@withTimeoutOrNull SettingsCacheResult.UNKNOWN
+                    }
                     val snapshot = snapshot()
                     if (snapshot != null) try {
                         val page = snapshot.page
                         if(stableTargetPolls == 0 && transitionPolls == 0) diagnostic("Window=${page.packageName}; nodes=${page.nodes.size}; complete=${page.complete}; target=${SettingsCachePolicy.isTarget(page, target, labels)}")
                         lastPageWasSettings = page.packageName == SettingsCachePolicy.SETTINGS_PACKAGE
-                        if(!lastPageWasSettings) return@withTimeoutOrNull SettingsCacheResult.UNKNOWN
+                        if(!lastPageWasSettings) {
+                            diagnostic("Stop: active window is ${page.packageName.ifBlank { "unknown" }}, not Settings")
+                            return@withTimeoutOrNull SettingsCacheResult.UNKNOWN
+                        }
                         if (!SettingsCachePolicy.isTarget(page, target, labels)) {
                             stableTargetPolls = 0
                             // Give Settings fragment transitions time to settle, but never click during them.
                             transitionPolls++
-                            if(clicked) return@withTimeoutOrNull SettingsCacheResult.UNKNOWN
-                            if(navigated && transitionPolls >= 6) return@withTimeoutOrNull SettingsCacheResult.UNAVAILABLE
+                            if(clicked) {
+                                diagnostic("Stop: Settings left the target app page after the press\n${SettingsCachePolicy.describe(page)}")
+                                return@withTimeoutOrNull SettingsCacheResult.UNKNOWN
+                            }
+                            if(navigated && transitionPolls >= 6) {
+                                diagnostic("Unavailable: storage page did not identify the app\n${SettingsCachePolicy.describe(page)}")
+                                return@withTimeoutOrNull SettingsCacheResult.UNAVAILABLE
+                            }
                         } else {
                             transitionPolls = 0
                             stableTargetPolls++
                             if (stableTargetPolls >= 2) {
                                 val clear = SettingsCachePolicy.clearButton(page, target, labels)
-                                if(stableTargetPolls == 2) diagnostic("Selectors: storage=${SettingsCachePolicy.storageRow(page, target, labels)}; clear=$clear; navigated=$navigated; clicked=$clicked")
+                                if(stableTargetPolls == 2) {
+                                    val storage = SettingsCachePolicy.storageRow(page, target, labels)
+                                    diagnostic("Selectors: storage=$storage; clear=$clear; navigated=$navigated; clicked=$clicked; clear labels=${labels.clearCache}")
+                                    if(storage == null && clear == null) diagnostic("Visible Settings nodes:\n${SettingsCachePolicy.describe(page)}")
+                                }
                                 if (clear != null) {
                                     val enabled = SettingsCachePolicy.controlEnabled(page.nodes, clear)
                                     if (clicked) {
@@ -216,9 +232,10 @@ class SettingsCacheService : AccessibilityService() {
                                         navigated = true
                                         stableTargetPolls = 0
                                     } else if (scrolls < 3 && stableTargetPolls % 4 == 0) {
-                                        snapshot.nodes.firstOrNull { it.isScrollable && it.isVisibleToUser }
+                                        val scrolled = snapshot.nodes.firstOrNull { it.isScrollable && it.isVisibleToUser }
                                             ?.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD)
                                         scrolls++
+                                        diagnostic("Storage row not found; scroll ${scrolls}/3 (${scrolled ?: "no scrollable list"})\n${SettingsCachePolicy.describe(page)}")
                                     }
                                 }
                             }
@@ -227,7 +244,9 @@ class SettingsCacheService : AccessibilityService() {
                     delay(300)
                 }
                 null
-            } ?: SettingsCachePolicy.timedOutResult(clickedAnyCache, lastPageWasSettings)
+            } ?: SettingsCachePolicy.timedOutResult(clickedAnyCache, lastPageWasSettings).also {
+                diagnostic("Timed out: pressed=$clickedAnyCache; navigated=$navigated; scrolls=$scrolls; last window Settings=$lastPageWasSettings")
+            }
         } catch (error: CancellationException) {
             throw error
         } catch (error: Exception) {

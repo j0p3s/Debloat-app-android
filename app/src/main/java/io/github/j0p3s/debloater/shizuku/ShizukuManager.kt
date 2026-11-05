@@ -171,7 +171,9 @@ object ShizukuManager {
 
     /** Every privileged command and its outcome goes to the debug log (output truncated). */
     private fun record(kind: String, command: String, result: ShellResult): ShellResult {
-        val text = "$kind exit=${result.exitCode}: $command" + result.output.takeIf { it.isNotBlank() }?.let { "\n" + it.take(4000) }.orEmpty()
+        // Help text is only used to detect support; log whether --cache-only appears, not the whole page.
+        val output = if (command.endsWith(" help")) "(${result.output.length} chars; mentions --cache-only: ${result.output.contains("--cache-only")})" else result.output.take(4000)
+        val text = "$kind exit=${result.exitCode}: $command" + output.takeIf { it.isNotBlank() }?.let { "\n" + it }.orEmpty()
         if (result.exitCode == 0) DebugLog.info("shell", text) else DebugLog.warn("shell", text)
         return result
     }

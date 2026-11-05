@@ -42,6 +42,16 @@ object SettingsCachePolicy {
         return Labels(storage, setOf(words[1]), setOf(words[2]), storage + words[3])
     }
 
+    /** Compact description of visible labelled Settings nodes for the debug log (Settings window only). */
+    fun describe(page: Page, limit: Int = 80): String = page.nodes.withIndex()
+        .filter { (_, n) -> n.visible && (n.text.isNotBlank() || n.description.isNotBlank() || n.clickable) }
+        .take(limit)
+        .joinToString("\n") { (i, n) ->
+            val label = listOf(n.text, n.description).filter { it.isNotBlank() }.joinToString(" | ").take(80)
+            "#$i^${n.parent ?: "-"} ${n.id.substringAfter(":id/").ifBlank { "(no id)" }}" +
+                "${if (n.clickable) " click" else ""}${if (!n.enabled) " disabled" else ""} \"$label\""
+        }
+
     fun normalize(value: String): String = value.replace(Regex("[\\u200e\\u200f\\u202a-\\u202e\\u2066-\\u2069]"), "")
         .replace('\u00a0', ' ').trim().replace(Regex("\\s+"), " ").lowercase(Locale.ROOT)
 

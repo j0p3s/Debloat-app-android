@@ -5,6 +5,22 @@ import org.junit.Assert.*
 import org.junit.Test
 
 class SettingsCachePolicyTest {
+    @Test fun describeListsVisibleLabelledAndClickableNodesOnly() {
+        val page = Policy.Page(Policy.SETTINGS_PACKAGE, listOf(
+            Policy.Node(id = "com.android.settings:id/list"),
+            Policy.Node(id = "android:id/title", text = "Armazenamento", parent = 2),
+            Policy.Node(clickable = true, parent = 0),
+            Policy.Node(text = "hidden", visible = false),
+            Policy.Node(text = "Limpar cache", enabled = false, parent = 0),
+        ))
+        val text = Policy.describe(page)
+        assertTrue(text.contains("#1^2 title \"Armazenamento\""))
+        assertTrue(text.contains("#2^0 (no id) click"))
+        assertTrue(text.contains("disabled \"Limpar cache\""))
+        assertFalse(text.contains("hidden"))
+        assertFalse(text.contains("#0"))
+    }
+
     @Test fun pressExtendsDeadlineForLargeCachesButNeverShortensIt() {
         assertEquals(1_000L + Policy.CLEAR_TIMEOUT_MS, Policy.deadlineAfterPress(1_000L, 20_000L))
         assertEquals(500_000L, Policy.deadlineAfterPress(1_000L, 500_000L))

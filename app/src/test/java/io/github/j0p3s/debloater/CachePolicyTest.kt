@@ -10,6 +10,15 @@ import org.junit.Test
 import java.util.UUID
 
 class CachePolicyTest {
+    @Test fun timedOutClearCountsOnlyWhenTheCacheReallyShrank() {
+        assertTrue(CachePolicy.clearedAfterTimeout(2_200_000_000, 0))
+        assertTrue(CachePolicy.clearedAfterTimeout(2_200_000_000, 40_000_000))
+        assertFalse(CachePolicy.clearedAfterTimeout(2_200_000_000, 2_100_000_000))
+        assertFalse(CachePolicy.clearedAfterTimeout(2_200_000_000, null))
+        assertFalse(CachePolicy.clearedAfterTimeout(null, 5))
+        assertTrue(CachePolicy.clearedAfterTimeout(null, 0))
+    }
+
     private fun help(text: String, code: Int = 0) = ShellResult(code, text, "")
     private fun row(label: String, bytes: Long?) = CacheGroup(label.hashCode(), UUID(0, 0), listOf("p.$label"), label, false, bytes)
 

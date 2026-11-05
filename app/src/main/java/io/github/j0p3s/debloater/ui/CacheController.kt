@@ -125,6 +125,21 @@ class CacheController(
         partial = stopRequested
     }
 
+    /** Polls this group's cache size after a timed-out clear. Returns the last size, 0 when cleared, null if unreadable. */
+    private suspend fun awaitCacheCleared(group: CacheGroup): Long? {
+        if(!repo.hasUsageAccess()) return null
+        val stats = app.getSystemService(StorageStatsManager::class.java)
+        var last: Long? = null
+        val deadline = System.currentTimeMillis() + CachePolicy.TIMEOUT_GRACE_MS
+        while(System.currentTimeMillis() < deadline && !stopRequested) {
+            last = runCatching { reader.read { stats.queryStatsForUid(group.volume, group.uid).cacheBytes.coerceAtLeast(0) } }
+                .getOrElse { if(it is CancellationException && it !is TimeoutCancellationException) throw it; null }
+            if(CachePolicy.clearedAfterTimeout(group.bytes, last)) return last
+            kotlinx.coroutines.delay(3_000)
+        }
+        return last
+    }
+
     fun scan(category: CacheScope) {
         if(busy || !canRun()) return
         busy = true
@@ -215,10 +230,18 @@ class CacheController(
                     if(clearMethod == CacheClearMethod.SHIZUKU) {
                         val command = CachePolicy.clearCommand(repo.userId, pkg)
                         val result = ShizukuManager.execCache(command)
-                        val success = CachePolicy.succeeded(result)
+                        var success = CachePolicy.succeeded(result)
+                        log += "${if(success) "OK" else if(result.exitCode == 124) "WAIT" else "FAIL"}  $command\n${result.output}"
+                        if(result.exitCode == 124) {
+                            // Android keeps deleting after pm is stopped; check the real cache size before giving up.
+                            val group = targets.first { pkg in it.packages }
+                            val remaining = awaitCacheCleared(group)
+                            success = CachePolicy.clearedAfterTimeout(group.bytes, remaining)
+                            log += if(success) "OK $pkg: Android finished clearing after the command timeout (cache was ${group.bytes} bytes, now $remaining bytes)."
+                                else "UNKNOWN $pkg: cache still ${remaining?.let { "$it bytes" } ?: "unreadable"} ${CachePolicy.TIMEOUT_GRACE_MS / 1000} s after the timeout; batch stopped."
+                            if(!success) { failures++; stopRequested = true; break }
+                        }
                         if(success) successes++ else failures++
-                        log += "${if(success) "OK" else "FAIL"}  $command\n${result.output}"
-                        if(result.exitCode == 124) { stopRequested = true; break }
                     } else {
                         log += "START Settings UI: $pkg → Storage → Clear cache (no shell command)"
                         val result = settingsTargets[pkg]?.let { SettingsCacheService.clear(it, index, packages.size) { detail -> log += "$pkg: $detail" } } ?: SettingsCacheResult.SKIPPED

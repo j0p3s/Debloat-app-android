@@ -38,6 +38,13 @@ enum class CacheClearMethod(@param:StringRes @get:StringRes val titleRes: Int) {
 }
 
 object CachePolicy {
+    /** After a timed-out cache-only clear, how long the real cache size is re-checked before the batch stops. */
+    const val TIMEOUT_GRACE_MS = 60_000L
+
+    /** A running app may refill a little cache at once; at most 5 % of the old size left counts as cleared. */
+    fun clearedAfterTimeout(before: Long?, now: Long?): Boolean =
+        now == 0L || (now != null && before != null && before > 0 && now <= before / 20)
+
     fun inScope(groups: List<CacheGroup>, scope: CacheScope): List<CacheGroup> = groups.filter(scope::includes)
 
     /** Clearing uses the same category as the list, including when selections exist in other categories. */

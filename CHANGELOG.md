@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.12.1 — 2026-11-05
+
+- Shizuku cache clearing: when `pm clear --cache-only` times out (seen on RedMagic OS 11 / Android 16), re-check the app's real cache size for up to 60 s. Android keeps deleting after the command is stopped; a cleared cache now counts as success and the batch continues.
+- Settings assistant debug log: list the visible Settings controls when the Storage row or Clear cache button is not found, and log the exact reason for every stop, skip and timeout.
+- Debug log: log only a one-line summary of `pm help` output.
+
+
 ## 1.12.0 — 2026-11-05
 
 - New **Settings → Debug** section: a persistent on-device debug log of every tool (debloat/restore operations, cache cleaner and Settings assistant, leftovers, permission setup), every Shizuku command with exit code and output, user-visible messages, list-update results, caught errors and crashes.
