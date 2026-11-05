@@ -430,4 +430,8 @@
     <string name="ota_current">You have the latest version.</string>
     <string name="ota_error">Update check or download failed. Check your connection and try again.</string>
     <string name="ota_done">Download complete. Open the Android download notification or the APK in a file manager to install.</string>
+
+    <string name="permissions_auto">通过 Shizuku 配置权限</string>
+    <string name="permissions_auto_help">确认后授予使用情况访问权限，并尝试仅启用缓存助手。保留现有无障碍服务。Android 可能仍要求手动设置。不会开始清理。</string>
+    <string name="permissions_auto_result">设置结果（技术详情可能为英文）</string>
 </resources>

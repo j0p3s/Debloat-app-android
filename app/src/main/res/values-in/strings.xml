@@ -430,4 +430,8 @@
     <string name="ota_current">You have the latest version.</string>
     <string name="ota_error">Update check or download failed. Check your connection and try again.</string>
     <string name="ota_done">Download complete. Open the Android download notification or the APK in a file manager to install.</string>
+
+    <string name="permissions_auto">Atur akses dengan Shizuku</string>
+    <string name="permissions_auto_help">Setelah konfirmasi, berikan akses penggunaan dan coba aktifkan hanya asisten cache. Layanan Aksesibilitas yang ada dipertahankan. Android mungkin memerlukan pengaturan manual. Pembersihan tidak dimulai.</string>
+    <string name="permissions_auto_result">Hasil (detail teknis mungkin dalam bahasa Inggris)</string>
 </resources>

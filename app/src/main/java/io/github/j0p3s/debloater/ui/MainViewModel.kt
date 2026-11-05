@@ -4,6 +4,9 @@ import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
 import io.github.j0p3s.debloater.R
 import io.github.j0p3s.debloater.backup.BackupEntry
 import io.github.j0p3s.debloater.backup.BackupManager
@@ -24,6 +27,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -55,8 +59,8 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     val backups = BackupManager(app)
     val engine = OperationEngine(repo, backups)
     val cache: CacheController = CacheController(app, repo, viewModelScope, ::canRunCache, ::refreshAfterCache)
-    val leftovers: LeftoverController = LeftoverController(repo.userId, viewModelScope) { !engine.isRunning && !cache.busy }
-    private fun canRunCache(): Boolean = !engine.isRunning && !leftovers.busy
+    val leftovers: LeftoverController = LeftoverController(repo.userId, viewModelScope) { !engine.isRunning && !cache.busy && !configuringAccess }
+    private fun canRunCache(): Boolean = !engine.isRunning && !leftovers.busy && !configuringAccess
     val prefs = Prefs(app)
     /** Current debloat list (re-read after an in-app update). */
     val database: DebloatDatabase get() = DebloatDatabase.get(getApplication())
@@ -165,6 +169,39 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         if (System.currentTimeMillis() - last > 7L * 24 * 60 * 60 * 1000) updateLists(silent = true)
     }
 
+    var configuringAccess by mutableStateOf(false); private set
+    var accessSetupRevision by mutableStateOf(0); private set
+    val accessSetupLog = androidx.compose.runtime.mutableStateListOf<String>()
+
+    fun configureAccessWithShizuku() {
+        if(configuringAccess || engine.isRunning || cache.busy || leftovers.busy || !ShizukuManager.isReady()) return
+        configuringAccess = true
+        accessSetupLog.clear()
+        viewModelScope.launch {
+            try {
+                val pkg = getApplication<Application>().packageName
+                check(PackageRepository.isValidPackageName(pkg))
+                val user = repo.userId
+                val usage = ShizukuManager.execCache("appops set --user $user $pkg GET_USAGE_STATS allow")
+                accessSetupLog += "Usage Access: ${if(repo.hasUsageAccess()) "OK" else "FAIL ${usage.output}"}"
+                val get = ShizukuManager.execCache("settings --user $user get secure enabled_accessibility_services")
+                check(get.isSuccess) { get.output }
+                val service = "$pkg/${io.github.j0p3s.debloater.cache.SettingsCacheService::class.java.name}"
+                val merged = io.github.j0p3s.debloater.data.PermissionSetupPolicy.addService(get.stdout, service)
+                val write = ShizukuManager.execCache("settings --user $user put secure enabled_accessibility_services '$merged'")
+                check(write.isSuccess) { write.output }
+                val enable = ShizukuManager.execCache("settings --user $user put secure accessibility_enabled 1")
+                check(enable.isSuccess) { enable.output }
+                val connected = kotlinx.coroutines.withTimeoutOrNull(5000) {
+                    io.github.j0p3s.debloater.cache.SettingsCacheService.available.first { it }
+                } == true
+                accessSetupLog += if(connected) "Accessibility: OK (service connected)" else "Accessibility: not connected; manual setup required"
+            } catch(error: kotlinx.coroutines.CancellationException) { throw error }
+            catch(error: Exception) { accessSetupLog += "FAIL: ${error.message}; use manual setup" }
+            finally { configuringAccess = false; accessSetupRevision++ }
+        }
+    }
+
     fun grantUsageAccessWithShizuku() {
         viewModelScope.launch {
             val pkg = getApplication<Application>().packageName
@@ -248,7 +285,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     private fun start(apps: List<AppInfo>, action: Action, dryRun: Boolean, keepData: Boolean) {
-        if (engine.isRunning || cache.busy || leftovers.busy) return
+        if (engine.isRunning || cache.busy || leftovers.busy || configuringAccess) return
         lastRequest = LastRequest.Run(apps.map { it.packageName }, action, keepData)
         if (!dryRun) {
             _debloatSelection.value = emptySet()
@@ -311,7 +348,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     private fun startRestore(items: List<RestoreItem>, dryRun: Boolean, title: String) {
-        if (engine.isRunning || cache.busy || leftovers.busy) return
+        if (engine.isRunning || cache.busy || leftovers.busy || configuringAccess) return
         lastRequest = LastRequest.Restore(items, title)
         if (_backStack.value.last() != Screen.OPERATION) navigate(Screen.OPERATION)
         viewModelScope.launch {
