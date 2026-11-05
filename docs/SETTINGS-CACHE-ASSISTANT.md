@@ -18,3 +18,7 @@
 - Test one disposable user app, then a permitted system app, all scopes, cancellation, lock screen, revoked Accessibility, empty cache and an unsupported Settings page on a real phone.
 - Check app data/accounts remain intact, granting access never starts cleaning, process death never resumes actions and unknown outcomes never appear as success.
 - Device/OEM compatibility and performance require physical-device testing; CI does not establish these.
+
+## Missing controls
+
+If no cache button was pressed and Settings remains open, an unavailable control is logged and skipped. The batch continues with the next app. Short fragment transitions are tolerated without clicks. Uncertain outcomes after a cache press, screen lock or leaving Settings still stop the sequence. This behavior applies to user and system apps.
