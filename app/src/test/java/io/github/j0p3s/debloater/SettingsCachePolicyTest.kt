@@ -5,6 +5,19 @@ import org.junit.Assert.*
 import org.junit.Test
 
 class SettingsCachePolicyTest {
+    @Test fun actualNubiaStorageRowSupportsAndAndAmpersandVariants() {
+        val target = Policy.Target("com.supercell.clashofclans", "Clash of Clans", true)
+        val labels = Policy.fallbackLabels("en")
+        for(text in listOf("Storage and cache", "Storage & cache")) {
+            val details = page(Policy.Node("com.android.settings:id/base_sink_page_primary_title", "App info"),
+                Policy.Node("com.android.settings:id/entity_header_title", "Clash of Clans"),
+                Policy.Node("com.android.settings:id/common_preference_layout", clickable = true),
+                Policy.Node("com.android.settings:id/text_frame", parent = 2),
+                Policy.Node("android:id/title", text, parent = 3))
+            assertEquals(2, Policy.storageRow(details, target, labels))
+            assertNull(Policy.clearButton(details, target, labels))
+        }
+    }
     @Test fun verifiedResourceLabelAliasesSupportRegionalSystemAppNames() {
         val localized = target.copy(label = "Gerenciador de rede", labelAliases = setOf("Gestor de redes"))
         assertTrue(Policy.isTarget(page(header("Gestor de redes")), localized))
@@ -14,8 +27,8 @@ class SettingsCachePolicyTest {
     @Test fun allSupportedLanguagesFollowStorageThenCacheWithoutSelectingData() {
         for(language in listOf("en","pt","es","fr","de","it","ru","zh","hi","ar","id","in")) {
             val translated = Policy.fallbackLabels(language)
-            val storageText = translated.storage.single()
-            val infoTitle = translated.pageTitles.first { it != storageText }
+            val storageText = translated.storage.first()
+            val infoTitle = translated.pageTitles.first { it !in translated.storage }
             val details = page(Policy.Node(text = infoTitle), Policy.Node(text = target.label),
                 Policy.Node(clickable = true), Policy.Node(text = storageText, parent = 2))
             assertEquals(language, 2, Policy.storageRow(details, target, translated))

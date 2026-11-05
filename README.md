@@ -1,6 +1,6 @@
 # Debloater (Shizuku)
 
-**Current release: [1.11.5](https://github.com/j0p3s/Debloat-app-android/releases/tag/v1.11.5)** · [Download APK](https://github.com/j0p3s/Debloat-app-android/releases/download/v1.11.5/Debloater-v1.11.5.apk) · [Release notes](docs/RELEASE-1.11.5.md) · [Changelog](CHANGELOG.md)
+**Current release: [1.11.6](https://github.com/j0p3s/Debloat-app-android/releases/tag/v1.11.6)** · [Download APK](https://github.com/j0p3s/Debloat-app-android/releases/download/v1.11.6/Debloater-v1.11.6.apk) · [Release notes](docs/RELEASE-1.11.6.md) · [Changelog](CHANGELOG.md)
 
 An Android app that debloats **any Android version from Android 11 to Android 17** without root, using
 [Shizuku](https://shizuku.rikka.app/). It also works as a normal app manager, so you can remove any user app.
@@ -246,3 +246,5 @@ The Accessibility cleaner skips unavailable cache controls when no cache button 
 The cache cleaner defaults to Settings assistant (Accessibility). Shizuku remains available through the clearing-method selector. Accessibility still needs manual enablement and per-batch confirmation.
 
 From 1.11.5, Permissions offers **Set up access with Shizuku** after an explicit disclosure/confirmation. It grants Usage Access and tries enabling only the cache assistant while preserving other services. Runtime connection and access checks determine the results; manual setup remains available when blocked. Setup never starts cache cleaning.
+
+In 1.11.6, cache navigation recognizes both English “Storage and cache” and “Storage & cache”. The floating Cancel bar is placed at the bottom to keep Settings titles visible. Cache logs include identity/selector/exception diagnostics. Shizuku pipe-read exceptions are contained rather than crashing its service. Read-only Settings inspection was performed on a Nubia Android 16 phone; full cleaning with the updated APK still needs device verification.

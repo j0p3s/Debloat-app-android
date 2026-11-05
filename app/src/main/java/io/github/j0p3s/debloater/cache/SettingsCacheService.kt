@@ -37,8 +37,8 @@ class SettingsCacheService : AccessibilityService() {
 
         fun settingsIntent(): Intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
 
-        suspend fun clear(target: SettingsCachePolicy.Target, completed: Int, total: Int): SettingsCacheResult =
-            instance?.clearOne(target, completed, total) ?: SettingsCacheResult.SKIPPED
+        suspend fun clear(target: SettingsCachePolicy.Target, completed: Int, total: Int, diagnostic: (String) -> Unit = {}): SettingsCacheResult =
+            instance?.clearOne(target, completed, total, diagnostic) ?: SettingsCacheResult.SKIPPED
     }
 
     private var activeJob: Job? = null
@@ -130,7 +130,7 @@ class SettingsCacheService : AccessibilityService() {
         // A small, non-focusable accessibility overlay keeps Stop reachable while Settings is open.
         val params = WindowManager.LayoutParams(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT,
             WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, PixelFormat.TRANSLUCENT)
-            .apply { gravity = Gravity.TOP }
+            .apply { gravity = Gravity.BOTTOM }
         manager.addView(bar, params)
         stopView = bar
     }
@@ -140,12 +140,13 @@ class SettingsCacheService : AccessibilityService() {
         stopView = null
     }
 
-    private suspend fun clearOne(target: SettingsCachePolicy.Target, completed: Int, total: Int): SettingsCacheResult {
+    private suspend fun clearOne(target: SettingsCachePolicy.Target, completed: Int, total: Int, diagnostic: (String) -> Unit): SettingsCacheResult {
         check(activeJob == null) { "Settings cache assistant is already busy" }
         if (target.packageName in setOf(packageName, SettingsCachePolicy.SETTINGS_PACKAGE)) return SettingsCacheResult.SKIPPED
         activeJob = currentCoroutineContext()[Job]
         try {
             val labels = labels()
+            diagnostic("Start: label=${target.label}; aliases=${target.labelAliases}; unique=${target.uniqueLabel}; storage labels=${labels.storage}")
             if (labels.clearCache.isEmpty() || labels.storage.isEmpty()) return SettingsCacheResult.UNKNOWN
             val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:${target.packageName}"))
                 .setPackage(SettingsCachePolicy.SETTINGS_PACKAGE).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
@@ -172,6 +173,7 @@ class SettingsCacheService : AccessibilityService() {
                     val snapshot = snapshot()
                     if (snapshot != null) try {
                         val page = snapshot.page
+                        if(stableTargetPolls == 0 && transitionPolls == 0) diagnostic("Window=${page.packageName}; nodes=${page.nodes.size}; complete=${page.complete}; target=${SettingsCachePolicy.isTarget(page, target, labels)}")
                         lastPageWasSettings = page.packageName == SettingsCachePolicy.SETTINGS_PACKAGE
                         if(!lastPageWasSettings) return@withTimeoutOrNull SettingsCacheResult.UNKNOWN
                         if (!SettingsCachePolicy.isTarget(page, target, labels)) {
@@ -185,6 +187,7 @@ class SettingsCacheService : AccessibilityService() {
                             stableTargetPolls++
                             if (stableTargetPolls >= 2) {
                                 val clear = SettingsCachePolicy.clearButton(page, target, labels)
+                                if(stableTargetPolls == 2) diagnostic("Selectors: storage=${SettingsCachePolicy.storageRow(page, target, labels)}; clear=$clear; navigated=$navigated; clicked=$clicked")
                                 if (clear != null) {
                                     val button = page.nodes[clear]
                                     if (clicked) {
@@ -220,7 +223,8 @@ class SettingsCacheService : AccessibilityService() {
             } ?: SettingsCachePolicy.timedOutResult(clickedAnyCache, lastPageWasSettings)
         } catch (error: CancellationException) {
             throw error
-        } catch (_: Exception) {
+        } catch (error: Exception) {
+            diagnostic("Exception: ${error.javaClass.simpleName}: ${error.message}")
             return SettingsCacheResult.UNKNOWN
         } finally {
             removeStopControl()

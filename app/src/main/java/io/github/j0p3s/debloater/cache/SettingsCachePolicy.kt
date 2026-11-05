@@ -33,7 +33,8 @@ object SettingsCachePolicy {
             "id", "in" -> listOf("Penyimpanan & cache", "Hapus cache", "Hapus penyimpanan", "Info aplikasi")
             else -> return Labels(emptySet(), emptySet(), emptySet())
         }
-        return Labels(setOf(words[0]), setOf(words[1]), setOf(words[2]), setOf(words[0], words[3]))
+        val storage = setOf(words[0]) + if(language == "en") setOf("Storage and cache") else emptySet()
+        return Labels(storage, setOf(words[1]), setOf(words[2]), storage + words[3])
     }
 
     fun normalize(value: String): String = value.replace(Regex("[\\u200e\\u200f\\u202a-\\u202e\\u2066-\\u2069]"), "")

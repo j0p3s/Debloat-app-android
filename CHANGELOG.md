@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.11.6 — 2026-11-05
+
+- Add the actual Nubia English “Storage and cache” label alongside “Storage & cache”.
+- Add a regression test using the observed Settings row identifiers and parent hierarchy.
+- Move the floating Cancel bar to the bottom and log cache navigation/identity/exception diagnostics.
+- Contain interrupted command-pipe reader exceptions so they do not crash the Shizuku service.
+- Add worker-thread regression tests for interrupted output reads.
+
+
 ## 1.11.5 — 2026-11-05
 
 - Add confirmed Shizuku-assisted permission setup, preserving existing Accessibility services and validating results.
