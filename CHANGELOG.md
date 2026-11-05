@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.11.3 — 2026-11-05
+
+- Fix persistent updater errors from old failed downloads.
+- Add a validated official GitHub latest-release redirect fallback for API failures.
+- Display HTTP/download error details and a direct GitHub release link.
+- Add regression tests rejecting foreign repositories and prerelease fallback tags.
+
+
 ## 1.11.2 — 2026-11-05
 
 - Add on-demand GitHub app update checks, APK download progress/cancellation and Android-managed downloads.
