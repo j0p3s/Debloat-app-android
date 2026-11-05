@@ -221,7 +221,7 @@ class CacheController(
                         if(result.exitCode == 124) { stopRequested = true; break }
                     } else {
                         log += "START Settings UI: $pkg → Storage → Clear cache (no shell command)"
-                        val result = settingsTargets[pkg]?.let { SettingsCacheService.clear(it, index, packages.size) } ?: SettingsCacheResult.SKIPPED
+                        val result = settingsTargets[pkg]?.let { SettingsCacheService.clear(it, index, packages.size) { detail -> log += "$pkg: $detail" } } ?: SettingsCacheResult.SKIPPED
                         when(result) {
                             SettingsCacheResult.CONFIRMED -> { successes++; log += "OK $pkg: Settings disabled Clear cache after the press; rescan checks the size." }
                             SettingsCacheResult.SKIPPED -> { failures++; log += "SKIP $pkg: unavailable, empty, protected assistant package or unsupported Settings layout." }

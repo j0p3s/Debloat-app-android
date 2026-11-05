@@ -114,8 +114,15 @@ class ShellService : IShellService.Stub {
             val process = ProcessBuilder("sh", "-c", command).start()
             val stdout = StringBuilder()
             val stderr = StringBuilder()
-            val outReader = thread { stdout.append(process.inputStream.bufferedReader().readText()) }
-            val errReader = thread { stderr.append(process.errorStream.bufferedReader().readText()) }
+            val readFailure = java.util.concurrent.atomic.AtomicReference<Throwable?>(null)
+            // Killing a timed-out process closes its pipes. Never let reader exceptions
+            // escape a worker thread and crash the entire privileged service.
+            val outReader = thread {
+                CommandOutputReader.capture(process.inputStream, stdout, readFailure)
+            }
+            val errReader = thread {
+                CommandOutputReader.capture(process.errorStream, stderr, readFailure)
+            }
             process.outputStream.use { os -> stdin?.copyTo(os) }
             val finished = process.waitFor(timeoutSeconds, TimeUnit.SECONDS)
             if (!finished) {
@@ -124,6 +131,7 @@ class ShellService : IShellService.Stub {
                 return result(124, stdout.toString(), "Timed out after ${timeoutSeconds}s; outcome unknown\n$stderr")
             }
             outReader.join(); errReader.join()
+            readFailure.get()?.let { return result(-1, stdout.toString(), "Command output read failed: ${it.message}") }
             result(process.exitValue(), stdout.toString(), stderr.toString())
         } catch (t: Throwable) {
             result(-1, "", t.toString())
