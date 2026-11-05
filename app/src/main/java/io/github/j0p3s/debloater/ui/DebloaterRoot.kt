@@ -48,6 +48,7 @@ fun DebloaterRoot(vm: MainViewModel) {
         Screen.USER_CACHE -> io.github.j0p3s.debloater.ui.screens.CacheScreen(vm, system = false)
         Screen.SYSTEM_CACHE -> io.github.j0p3s.debloater.ui.screens.CacheScreen(vm, system = true)
         Screen.LEFTOVERS -> io.github.j0p3s.debloater.ui.screens.LeftoversScreen(vm)
+        Screen.PERMISSIONS -> io.github.j0p3s.debloater.ui.screens.PermissionsScreen(vm)
         Screen.OPERATION -> OperationScreen(vm)
         Screen.BACKUPS -> BackupsScreen(vm)
         Screen.SETTINGS -> SettingsScreen(vm)

@@ -75,6 +75,9 @@ fun SettingsScreen(vm: MainViewModel) {
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             io.github.j0p3s.debloater.ui.components.LanguageSetting()
+            OutlinedButton(onClick = { vm.navigate(io.github.j0p3s.debloater.ui.Screen.PERMISSIONS) }, modifier = Modifier.fillMaxWidth()) {
+                Text(stringResource(R.string.permissions_title))
+            }
             SettingRow(
                 stringResource(R.string.expert_mode),
                 stringResource(R.string.expert_help),

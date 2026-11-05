@@ -35,7 +35,7 @@ sealed interface ListUpdateState {
     data class Failed(val message: String) : ListUpdateState
 }
 
-enum class Screen { HOME, DEBLOAT, APP_MANAGER, OPERATION, BACKUPS, SETTINGS, ADL_CHECK, USER_CACHE, SYSTEM_CACHE, CLEANUP, HELP, LEFTOVERS }
+enum class Screen { HOME, DEBLOAT, APP_MANAGER, OPERATION, BACKUPS, SETTINGS, ADL_CHECK, USER_CACHE, SYSTEM_CACHE, CLEANUP, HELP, LEFTOVERS, PERMISSIONS }
 
 /** A request that needs the user's confirmation before it runs. */
 data class PendingOperation(

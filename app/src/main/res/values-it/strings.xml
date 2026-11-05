@@ -414,4 +414,12 @@
     <string name="leftovers_delete_warning">Eliminare definitivamente questi file per liberare spazio? Potrebbero contenere file personali. L’azione è irreversibile e non resteranno backup.</string>
     <string name="leftovers_move_warning">Queste cartelle possono contenere file personali. Controlla ogni percorso. Saranno spostate in .DebloaterRecovery nella memoria condivisa, registrando le posizioni originali. Il recupero è possibile, ma lo spazio si libera solo con l’eliminazione definitiva. Evita di installare o disinstallare app durante l’operazione. Continuare?</string>
     <string name="leftovers_action_done">Completate: %1$d · Non riuscite: %2$d</string>
+
+    <string name="permissions_ready">Available</string>
+    <string name="permissions_automatic">Granted by Android at installation; no separate permission prompt. This checks authorization, not network connectivity.</string>
+    <string name="permissions_missing">Not available — review setup</string>
+    <string name="permissions_title">Permissions</string>
+    <string name="permissions_usage">Usage Access (optional measurements)</string>
+    <string name="permissions_validate">Validate access</string>
+    <string name="cache_settings_remaining">Elaborate: %1$d / %2$d · Rimanenti (inclusa quella attuale): %3$d</string>
 </resources>

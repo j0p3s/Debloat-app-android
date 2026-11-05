@@ -1,6 +1,6 @@
 # Debloater (Shizuku)
 
-**Current release: [1.11.0](https://github.com/j0p3s/Debloat-app-android/releases/tag/v1.11.0)** · [Download APK](https://github.com/j0p3s/Debloat-app-android/releases/download/v1.11.0/Debloater-v1.11.0.apk) · [Release notes](docs/RELEASE-1.11.0.md) · [Changelog](CHANGELOG.md)
+**Current release: [1.11.1](https://github.com/j0p3s/Debloat-app-android/releases/tag/v1.11.1)** · [Download APK](https://github.com/j0p3s/Debloat-app-android/releases/download/v1.11.1/Debloater-v1.11.1.apk) · [Release notes](docs/RELEASE-1.11.1.md) · [Changelog](CHANGELOG.md)
 
 An Android app that debloats **any Android version from Android 11 to Android 17** without root, using
 [Shizuku](https://shizuku.rikka.app/). It also works as a normal app manager, so you can remove any user app.
@@ -228,3 +228,9 @@ Debloat lists); `tools/update_uad_list.sh` and `tools/update_adl_list.sh` update
 | `assets/uad_lists.json` | UAD-NG list (unmodified, GPL-3.0) |
 | `assets/uad_overrides.json` | Overrides from System App Remover (GPL-3.0) |
 | `assets/adl/` | Android Debloat List (unmodified, AGPL-3.0) |
+
+## Permission checks
+
+Open Settings → Permissions to validate Shizuku, optional Usage Access, the optional Accessibility assistant and installation-granted package visibility/Internet access. Status refreshes on returning from Android settings. Internet authorization does not test connectivity. New permission labels currently have English and Portuguese coverage; other locales use English labels.
+
+During Accessibility cache clearing, the floating Cancel bar shows processed/total and remaining apps, including the current app. Counts describe processing attempts, including skipped apps, not successful clears.
