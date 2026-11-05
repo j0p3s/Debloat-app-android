@@ -422,4 +422,12 @@
     <string name="permissions_usage">Usage Access (optional measurements)</string>
     <string name="permissions_validate">Validate access</string>
     <string name="cache_settings_remaining">प्रक्रिया पूरी: %1$d / %2$d · शेष (मौजूदा सहित): %3$d</string>
+
+    <string name="ota_title">App updates</string>
+    <string name="ota_help">Check official GitHub releases. Downloads use your connection and continue in Android Downloads. Installation requires Android confirmation; no automatic installation.</string>
+    <string name="ota_check">Check for updates</string>
+    <string name="ota_download">Download update</string>
+    <string name="ota_current">You have the latest version.</string>
+    <string name="ota_error">Update check or download failed. Check your connection and try again.</string>
+    <string name="ota_done">Download complete. Open the Android download notification or the APK in a file manager to install.</string>
 </resources>
