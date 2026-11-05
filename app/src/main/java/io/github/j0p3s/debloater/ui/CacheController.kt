@@ -218,6 +218,7 @@ class CacheController(
                         when(result) {
                             SettingsCacheResult.CONFIRMED -> { successes++; log += "OK $pkg: Settings disabled Clear cache after the press; rescan checks the size." }
                             SettingsCacheResult.SKIPPED -> { failures++; log += "SKIP $pkg: unavailable, empty, protected assistant package or unsupported Settings layout." }
+                            SettingsCacheResult.UNAVAILABLE -> { failures++; log += "SKIP $pkg: cache control could not be identified safely; no cache button was pressed. Continuing with the next app." }
                             SettingsCacheResult.UNKNOWN -> { failures++; log += "UNKNOWN $pkg: screen changed, cache outcome unverified or timed out; batch stopped." }
                         }
                         if(result == SettingsCacheResult.UNKNOWN) { stopRequested = true; break }

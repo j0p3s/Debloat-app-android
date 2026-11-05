@@ -5,6 +5,19 @@ import org.junit.Assert.*
 import org.junit.Test
 
 class SettingsCachePolicyTest {
+    @Test fun missingControlContinuesOnlyIfNoCacheClickWasSentAndSettingsRemainsOpen() {
+        assertEquals(io.github.j0p3s.debloater.cache.SettingsCacheResult.UNAVAILABLE, Policy.timedOutResult(false, true))
+        assertEquals(io.github.j0p3s.debloater.cache.SettingsCacheResult.UNKNOWN, Policy.timedOutResult(true, true))
+        assertEquals(io.github.j0p3s.debloater.cache.SettingsCacheResult.UNKNOWN, Policy.timedOutResult(false, false))
+    }
+    @Test fun storageRowSupportsCustomSettingsTitleAndMissingViewIds() {
+        val row = Policy.Node(clickable = true)
+        for(id in listOf("com.android.settings:id/title", "")) {
+            val title = Policy.Node(id, "Storage & cache", parent = 1)
+            assertEquals(1, Policy.storageRow(page(header(), row, title), target, labels))
+            assertNull(Policy.storageRow(page(header("Other"), row, title), target, labels))
+        }
+    }
     private val target = Policy.Target("com.example.target", "Example", true)
     private val labels = Policy.Labels(setOf("Storage & cache"), setOf("Clear cache"), setOf("Clear storage", "Manage space"))
     private fun header(text: String = "Example") = Policy.Node("com.android.settings:id/entity_header_title", text)

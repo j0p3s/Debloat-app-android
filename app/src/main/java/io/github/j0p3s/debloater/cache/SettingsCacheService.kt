@@ -27,7 +27,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.withTimeoutOrNull
 
-enum class SettingsCacheResult { CONFIRMED, SKIPPED, UNKNOWN }
 
 /** Opt-in, foreground Settings UI assistance; never runs from accessibility events alone. */
 class SettingsCacheService : AccessibilityService() {
@@ -153,6 +152,9 @@ class SettingsCacheService : AccessibilityService() {
             var disabledPolls = 0
             var scrolls = 0
             var stableTargetPolls = 0
+            var clickedAnyCache = false
+            var lastPageWasSettings = false
+            var transitionPolls = 0
             return withTimeoutOrNull(20_000) {
                 // Let the explicit package URI replace the previously visible Settings page.
                 delay(600)
@@ -164,11 +166,16 @@ class SettingsCacheService : AccessibilityService() {
                     val snapshot = snapshot()
                     if (snapshot != null) try {
                         val page = snapshot.page
+                        lastPageWasSettings = page.packageName == SettingsCachePolicy.SETTINGS_PACKAGE
+                        if(!lastPageWasSettings) return@withTimeoutOrNull SettingsCacheResult.UNKNOWN
                         if (!SettingsCachePolicy.isTarget(page, target)) {
                             stableTargetPolls = 0
-                            // After entering this target, any different screen stops the run.
-                            if (navigated || clicked) return@withTimeoutOrNull SettingsCacheResult.UNKNOWN
+                            // Give Settings fragment transitions time to settle, but never click during them.
+                            transitionPolls++
+                            if(clicked) return@withTimeoutOrNull SettingsCacheResult.UNKNOWN
+                            if(navigated && transitionPolls >= 6) return@withTimeoutOrNull SettingsCacheResult.UNAVAILABLE
                         } else {
+                            transitionPolls = 0
                             stableTargetPolls++
                             if (stableTargetPolls >= 2) {
                                 val clear = SettingsCachePolicy.clearButton(page, target, labels)
@@ -182,6 +189,7 @@ class SettingsCacheService : AccessibilityService() {
                                     } else {
                                         // Exactly one press; no dialog confirmation, gestures or blind key navigation.
                                         clicked = snapshot.nodes[clear].performAction(AccessibilityNodeInfo.ACTION_CLICK)
+                                        clickedAnyCache = clicked
                                         if (!clicked) return@withTimeoutOrNull SettingsCacheResult.UNKNOWN
                                     }
                                 } else if (!navigated && !clicked) {
@@ -203,7 +211,7 @@ class SettingsCacheService : AccessibilityService() {
                     delay(300)
                 }
                 @Suppress("UNREACHABLE_CODE") SettingsCacheResult.UNKNOWN
-            } ?: SettingsCacheResult.UNKNOWN
+            } ?: SettingsCachePolicy.timedOutResult(clickedAnyCache, lastPageWasSettings)
         } catch (error: CancellationException) {
             throw error
         } catch (_: Exception) {
