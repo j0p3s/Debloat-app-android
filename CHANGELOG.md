@@ -1,6 +1,6 @@
 # Changelog
 
-## 1.11.0 — Unreleased
+## 1.11.0 — 2026-11-05
 
 - Add an opt-in Settings Accessibility cache assistant for selected user and system apps, with disclosure and a warning before every batch.
 - Verify app identity and localized cache controls; stop on unknown screens, lock, cancellation or uncertain outcomes. Keep Shizuku as a separate method.

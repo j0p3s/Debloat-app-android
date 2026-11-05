@@ -1,11 +1,9 @@
 # Debloater (Shizuku)
 
-**Current release: [1.10.3](https://github.com/j0p3s/Debloat-app-android/releases/tag/v1.10.3)** · [Download APK](https://github.com/j0p3s/Debloat-app-android/releases/download/v1.10.3/Debloater-v1.10.3.apk) · [Release notes](docs/RELEASE-1.10.3.md) · [Changelog](CHANGELOG.md)
+**Current release: [1.11.0](https://github.com/j0p3s/Debloat-app-android/releases/tag/v1.11.0)** · [Download APK](https://github.com/j0p3s/Debloat-app-android/releases/download/v1.11.0/Debloater-v1.11.0.apk) · [Release notes](docs/RELEASE-1.11.0.md) · [Changelog](CHANGELOG.md)
 
 An Android app that debloats **any Android version from Android 11 to Android 17** without root, using
 [Shizuku](https://shizuku.rikka.app/). It also works as a normal app manager, so you can remove any user app.
-
-**In development: 1.11.0** adds the Settings cache assistant and App leftovers. These tools are not included in the 1.10.3 download above.
 
 ## Features
 
@@ -98,7 +96,7 @@ An Android app that debloats **any Android version from Android 11 to Android 17
     back with `install-existing`, deleted user apps are reinstalled from the APK backup (`pm install-create/write/commit`).
   - Export/import all backups as a zip.
 - **Protected packages** (System UI, Settings, telephony, package installer, permission controller, WebView,
-  Shizuku, your current launcher and keyboard, …) can never be modified, even in expert mode.
+  Shizuku, your current launcher and keyboard, …) can never be disabled or removed, even in expert mode.
 - Logs of every run and test are saved and can be shared.
 
 ## App leftovers
@@ -151,7 +149,8 @@ On-device performance and cache behavior remain untested; no numeric speed impro
 ## Requirements
 
 - Android 11 (API 30) up to Android 17 (API 37). Newer versions run but show an "untested" warning.
-- Shizuku, started with Wireless debugging (no PC needed on Android 11+) or with root.
+- Shizuku, started with Wireless debugging (no PC needed on Android 11+) or with root, for debloating and App leftovers.
+- The Settings cache assistant instead requires manually enabled Accessibility access. Usage Access is needed for cache measurements.
 
 ## Usage
 
@@ -217,7 +216,9 @@ Debloat lists); `tools/update_uad_list.sh` and `tools/update_adl_list.sh` update
 
 | Path | What it does |
 | --- | --- |
-| `shizuku/ShellService.kt` | Shizuku UserService (runs as shell/root): commands, APK install sessions, file copy |
+| `shizuku/ShellService.kt` | Shizuku UserService: commands, APK sessions, file copy and validated leftovers actions |
+| `cache/SettingsCacheService.kt`, `cache/SettingsCachePolicy.kt` | Opt-in Settings UI assistance and conservative control/identity checks |
+| `leftovers/LeftoverStore.kt`, `ui/LeftoverController.kt` | Ownership checks, recovery moves, restore/delete and operation state |
 | `shizuku/ShizukuManager.kt` | Shizuku status, permission, binding, command execution |
 | `data/` | Package listing, debloat list loader, protected packages, settings |
 | `backup/` | Restore points, APK backups, export/import |
