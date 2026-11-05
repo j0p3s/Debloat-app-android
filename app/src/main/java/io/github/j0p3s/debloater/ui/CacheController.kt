@@ -45,8 +45,8 @@ class CacheController(
     var nonzeroOnly by mutableStateOf(false)
     var supported by mutableStateOf<Boolean?>(null); private set
     var pending by mutableStateOf<List<CacheGroup>?>(null)
-    var method by mutableStateOf(CacheClearMethod.SHIZUKU)
-    var pendingMethod by mutableStateOf(CacheClearMethod.SHIZUKU); private set
+    var method by mutableStateOf(CacheClearMethod.SETTINGS)
+    var pendingMethod by mutableStateOf(CacheClearMethod.SETTINGS); private set
     private var activeMethod: CacheClearMethod? = null
     var notice by mutableStateOf<UiMessage?>(null); private set
     val log = mutableStateListOf<String>()

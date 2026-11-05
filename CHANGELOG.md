@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.11.5 — 2026-11-05
+
+- Default cache cleaning to Settings assistant (Accessibility), for user and system apps.
+- Keep Shizuku selectable, with existing consent and permission checks unchanged.
+
+
 ## 1.11.4 — 2026-11-05
 
 - Fix OEM App info → Storage and cache → Clear cache recognition with verified target identity, including id-less headers and wrapped labels.

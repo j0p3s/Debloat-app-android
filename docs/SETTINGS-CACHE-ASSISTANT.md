@@ -24,3 +24,5 @@
 Before treating a cache control as unavailable, the assistant follows App info → Storage and cache → Clear cache. OEM screens may omit standard header/control IDs: a recognized Settings page title plus the exact unique installed app label can identify the screen. Wrapped action text is normalized. Language-specific fallbacks cover all 11 app languages; installed Settings resources remain the primary label source. Device/ROM translation variants still require phone validation.
 
 If no cache button was pressed and Settings remains open, an unavailable control is logged and skipped. The batch continues with the next app. Short fragment transitions are tolerated without clicks. Uncertain outcomes after a cache press, screen lock or leaving Settings still stop the sequence. This behavior applies to user and system apps.
+
+From 1.11.5, Settings assistant is the default cache clearing method. Users can explicitly switch to Shizuku. Manual permission enablement and batch confirmation remain required.
