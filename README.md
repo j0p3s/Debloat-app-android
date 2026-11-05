@@ -250,3 +250,6 @@ From 1.11.5, Permissions offers **Set up access with Shizuku** after an explicit
 In 1.11.6, cache navigation recognizes both English “Storage and cache” and “Storage & cache”. The floating Cancel bar is placed at the bottom to keep Settings titles visible. Cache logs include identity/selector/exception diagnostics. Shizuku pipe-read exceptions are contained rather than crashing its service. Read-only Settings inspection was performed on a Nubia Android 16 phone; full cleaning with the updated APK still needs device verification.
 
 From 1.11.7, a disabled Clear cache control is identified even if Android marks it non-clickable. The assistant checks the control and its ancestors, logs a skip and continues without clicking.
+
+
+[![Buy Me A Coffee](https://img.shields.io/badge/Buy%20Me%20a%20Coffee-ffdd00?style=for-the-badge&logo=buy-me-a-coffee&logoColor=black)](https://buymeacoffee.com/j0p3s)
