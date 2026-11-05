@@ -434,4 +434,15 @@
     <string name="permissions_auto">Configurar accesos con Shizuku</string>
     <string name="permissions_auto_help">Tras confirmar, concede acceso de uso e intenta activar solo el asistente de caché. Conserva los servicios de Accesibilidad existentes. Android puede exigir configuración manual. No inicia la limpieza.</string>
     <string name="permissions_auto_result">Resultados (los detalles técnicos pueden estar en inglés)</string>
+    <string name="debug_title">Depuración</string>
+    <string name="debug_help">Debloater guarda en este teléfono los registros de todas las herramientas (debloat, restauración, caché, restos, configuración de permisos), todos los comandos de Shizuku, mensajes, errores y cierres inesperados. No se envía nada a menos que guardes o compartas un informe. Los informes incluyen nombres de paquetes y datos del dispositivo.</string>
+    <string name="debug_log_size">Tamaño del registro de depuración: %1$s</string>
+    <string name="debug_save_folder">Guardar en carpeta</string>
+    <string name="debug_choose_folder">Elegir carpeta</string>
+    <string name="debug_folder">Carpeta: %1$s</string>
+    <string name="debug_share">Exportar / compartir</string>
+    <string name="debug_clear">Borrar registro de depuración</string>
+    <string name="debug_saved">Informe creado: %1$s</string>
+    <string name="debug_failed">No se pudo guardar el informe: %1$s</string>
+    <string name="debug_working">Recopilando registros…</string>
 </resources>

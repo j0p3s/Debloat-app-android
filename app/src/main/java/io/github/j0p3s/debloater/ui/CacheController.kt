@@ -49,7 +49,7 @@ class CacheController(
     var pendingMethod by mutableStateOf(CacheClearMethod.SETTINGS); private set
     private var activeMethod: CacheClearMethod? = null
     var notice by mutableStateOf<UiMessage?>(null); private set
-    val log = mutableStateListOf<String>()
+    val log = io.github.j0p3s.debloater.debug.DebugLog.Mirror("cache")
     private val reader = BoundedCacheReader()
     private var job: Job? = null
     var stopRequested by mutableStateOf(false); private set

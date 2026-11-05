@@ -434,4 +434,15 @@
     <string name="permissions_auto">Configurer les accès avec Shizuku</string>
     <string name="permissions_auto_help">Après confirmation, accorde l’accès aux données d’utilisation et tente d’activer uniquement l’assistant de cache. Les services d’accessibilité existants sont conservés. Android peut exiger une configuration manuelle. Aucun nettoyage ne démarre.</string>
     <string name="permissions_auto_result">Résultats (les détails techniques peuvent être en anglais)</string>
+    <string name="debug_title">Débogage</string>
+    <string name="debug_help">Debloater enregistre sur ce téléphone les journaux de tous les outils (debloat, restauration, cache, restes, configuration des autorisations), toutes les commandes Shizuku, les messages, les erreurs et les plantages. Rien n’est envoyé sauf si vous enregistrez ou partagez un rapport. Les rapports contiennent les noms de paquets et des informations sur l’appareil.</string>
+    <string name="debug_log_size">Taille du journal de débogage : %1$s</string>
+    <string name="debug_save_folder">Enregistrer dans le dossier</string>
+    <string name="debug_choose_folder">Choisir un dossier</string>
+    <string name="debug_folder">Dossier : %1$s</string>
+    <string name="debug_share">Exporter / partager</string>
+    <string name="debug_clear">Effacer le journal de débogage</string>
+    <string name="debug_saved">Rapport créé : %1$s</string>
+    <string name="debug_failed">Impossible d’enregistrer le rapport : %1$s</string>
+    <string name="debug_working">Collecte des journaux…</string>
 </resources>

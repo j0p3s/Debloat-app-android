@@ -434,4 +434,15 @@
     <string name="permissions_auto">Shizuku से ऐक्सेस सेट करें</string>
     <string name="permissions_auto_help">पुष्टि के बाद उपयोग का ऐक्सेस देता है और केवल कैश सहायक चालू करने का प्रयास करता है। मौजूदा सुलभता सेवाएँ बनी रहती हैं। Android में मैन्युअल सेटअप की ज़रूरत हो सकती है। सफ़ाई शुरू नहीं होती।</string>
     <string name="permissions_auto_result">परिणाम (तकनीकी विवरण अंग्रेज़ी में हो सकते हैं)</string>
+    <string name="debug_title">डीबग</string>
+    <string name="debug_help">Debloater इस फ़ोन पर सभी टूल (डीब्लोट, रिस्टोर, कैश, बचे हुए फ़ोल्डर, अनुमति सेटअप) के लॉग, हर Shizuku कमांड, संदेश, त्रुटियाँ और क्रैश रिकॉर्ड करता है। जब तक आप रिपोर्ट सेव या शेयर नहीं करते, कुछ भी नहीं भेजा जाता। रिपोर्ट में पैकेज नाम और डिवाइस की जानकारी होती है।</string>
+    <string name="debug_log_size">डीबग लॉग का आकार: %1$s</string>
+    <string name="debug_save_folder">फ़ोल्डर में सेव करें</string>
+    <string name="debug_choose_folder">फ़ोल्डर चुनें</string>
+    <string name="debug_folder">फ़ोल्डर: %1$s</string>
+    <string name="debug_share">एक्सपोर्ट / शेयर करें</string>
+    <string name="debug_clear">डीबग लॉग मिटाएँ</string>
+    <string name="debug_saved">रिपोर्ट बनाई गई: %1$s</string>
+    <string name="debug_failed">रिपोर्ट सेव नहीं हो सकी: %1$s</string>
+    <string name="debug_working">लॉग इकट्ठा किए जा रहे हैं…</string>
 </resources>

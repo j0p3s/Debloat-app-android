@@ -1,6 +1,6 @@
 # Debloater (Shizuku)
 
-**Current release: [1.11.8](https://github.com/j0p3s/Debloat-app-android/releases/tag/v1.11.8)** · [Download APK](https://github.com/j0p3s/Debloat-app-android/releases/download/v1.11.8/Debloater-v1.11.8.apk) · [Release notes](docs/RELEASE-1.11.8.md) · [Changelog](CHANGELOG.md)
+**Current release: [1.12.0](https://github.com/j0p3s/Debloat-app-android/releases/tag/v1.12.0)** · [Download APK](https://github.com/j0p3s/Debloat-app-android/releases/download/v1.12.0/Debloater-v1.12.0.apk) · [Release notes](docs/RELEASE-1.12.0.md) · [Changelog](CHANGELOG.md)
 
 An Android app that debloats **any Android version from Android 11 to Android 17** without root, using
 [Shizuku](https://shizuku.rikka.app/). It also works as a normal app manager, so you can remove any user app.
@@ -145,6 +145,10 @@ Known-empty caches are skipped. App Manager sizes affected by clearing fall back
 without automatically measuring every app again.
 
 On-device performance and cache behavior remain untested; no numeric speed improvement is claimed.
+
+## Debug logs
+
+**Settings → Debug** keeps a size-limited log on the phone covering every tool (operations, cache cleaner, Settings assistant, leftovers, permission setup), every Shizuku command with its result, messages, errors and crashes. **Save to folder** writes a timestamped report into a folder you choose. **Export / share** sends it through the Android share sheet. The report also adds device details, saved operation logs and the app's logcat. Nothing is sent unless you save or share it.
 
 ## Requirements
 

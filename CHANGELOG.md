@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.12.0 — 2026-11-05
+
+- New **Settings → Debug** section: a persistent on-device debug log of every tool (debloat/restore operations, cache cleaner and Settings assistant, leftovers, permission setup), every Shizuku command with exit code and output, user-visible messages, list-update results, caught errors and crashes.
+- Save a full report (device info, debug log, saved operation logs, app logcat) into a folder of your choice, or export/share it. Clear the log at any time. Nothing leaves the phone unless you save or share it.
+- Includes the unreleased 1.11.8 cache-assistant fix (wait up to 2 minutes for large caches).
+
+
 ## 1.11.8 — 2026-11-05
 
 - Settings assistant: after pressing Clear cache, wait up to 2 minutes for Android to finish deleting instead of timing out within the 20-second search window. Large caches (e.g. 2+ GB game caches) previously timed out before Settings disabled the button.

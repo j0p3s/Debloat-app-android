@@ -19,6 +19,7 @@ import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
 import rikka.shizuku.Shizuku
+import io.github.j0p3s.debloater.debug.DebugLog
 
 /** Result of a shell command executed through Shizuku. */
 data class ShellResult(val exitCode: Int, val stdout: String, val stderr: String) {
@@ -126,13 +127,14 @@ object ShizukuManager {
             }
         } catch (t: Throwable) {
             Log.w(TAG, "status check failed", t)
+            DebugLog.error("shizuku", "Status check failed", t)
             ShizukuStatus.NOT_RUNNING
         }
     }
 
     fun requestPermission() {
         runCatching { Shizuku.requestPermission(REQUEST_CODE) }
-            .onFailure { Log.w(TAG, "requestPermission failed", it) }
+            .onFailure { Log.w(TAG, "requestPermission failed", it); DebugLog.error("shizuku", "requestPermission failed", it) }
     }
 
     fun isReady() = status.value == ShizukuStatus.READY
@@ -156,7 +158,10 @@ object ShizukuManager {
     suspend fun exec(command: String): ShellResult = execInternal(command, false)
     suspend fun execCache(command: String): ShellResult = execInternal(command, true)
 
-    suspend fun leftovers(action: String, userId: Int, argument: String = ""): ShellResult = withContext(Dispatchers.IO) {
+    suspend fun leftovers(action: String, userId: Int, argument: String = ""): ShellResult =
+        record("leftovers", "$action user=$userId $argument".trim(), leftoversRaw(action, userId, argument))
+
+    private suspend fun leftoversRaw(action: String, userId: Int, argument: String): ShellResult = withContext(Dispatchers.IO) {
         try {
             val result = getService().leftovers(action, userId, argument)
             ShellResult(result.getInt(ShellService.KEY_EXIT, -1), result.getString(ShellService.KEY_STDOUT).orEmpty(), result.getString(ShellService.KEY_STDERR).orEmpty())
@@ -164,7 +169,17 @@ object ShizukuManager {
         catch (error: Exception) { ShellResult(-1, "", error.message.orEmpty()) }
     }
 
-    private suspend fun execInternal(command: String, cache: Boolean): ShellResult = withContext(Dispatchers.IO) {
+    /** Every privileged command and its outcome goes to the debug log (output truncated). */
+    private fun record(kind: String, command: String, result: ShellResult): ShellResult {
+        val text = "$kind exit=${result.exitCode}: $command" + result.output.takeIf { it.isNotBlank() }?.let { "\n" + it.take(4000) }.orEmpty()
+        if (result.exitCode == 0) DebugLog.info("shell", text) else DebugLog.warn("shell", text)
+        return result
+    }
+
+    private suspend fun execInternal(command: String, cache: Boolean): ShellResult =
+        record(if (cache) "execCache" else "exec", command, execRaw(command, cache))
+
+    private suspend fun execRaw(command: String, cache: Boolean): ShellResult = withContext(Dispatchers.IO) {
         try {
             val s = getService()
             val b = if (cache) s.execCache(command) else s.exec(command)
@@ -178,7 +193,10 @@ object ShizukuManager {
         }
     }
 
-    suspend fun installApks(files: List<java.io.File>, userId: Int): ShellResult = withContext(Dispatchers.IO) {
+    suspend fun installApks(files: List<java.io.File>, userId: Int): ShellResult =
+        record("installApks", files.joinToString { it.name } + " user=$userId", installApksRaw(files, userId))
+
+    private suspend fun installApksRaw(files: List<java.io.File>, userId: Int): ShellResult = withContext(Dispatchers.IO) {
         try {
             val fds = files.map { ParcelFileDescriptor.open(it, ParcelFileDescriptor.MODE_READ_ONLY) }.toTypedArray()
             val b = getService().installApks(fds, files.map { it.length() }.toLongArray(), files.map { it.name }.toTypedArray(), userId)
@@ -202,8 +220,9 @@ object ShizukuManager {
             )
             val copied = getService().copyFile(path, pfd)
             runCatching { pfd.close() }
-            copied
+            copied.also { DebugLog.info("shell", "copyFile $path -> ${dest.name}: $it bytes") }
         } catch (t: Throwable) {
+            DebugLog.error("shell", "copyFile $path failed", t)
             -1L
         }
     }

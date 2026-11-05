@@ -434,4 +434,15 @@
     <string name="permissions_auto">إعداد الوصول عبر Shizuku</string>
     <string name="permissions_auto_help">بعد التأكيد يمنح الوصول إلى الاستخدام ويحاول تفعيل مساعد ذاكرة التخزين المؤقت فقط. تبقى خدمات إمكانية الوصول الحالية محفوظة. قد يتطلب Android إعداداً يدوياً. لا يبدأ التنظيف.</string>
     <string name="permissions_auto_result">النتائج (قد تكون التفاصيل التقنية بالإنجليزية)</string>
+    <string name="debug_title">تصحيح الأخطاء</string>
+    <string name="debug_help">يسجّل Debloater على هذا الهاتف سجلات جميع الأدوات (الإزالة، الاستعادة، ذاكرة التخزين المؤقت، البقايا، إعداد الأذونات) وكل أوامر Shizuku والرسائل والأخطاء والأعطال. لا يُرسَل أي شيء ما لم تحفظ تقريرًا أو تشاركه. تتضمن التقارير أسماء الحزم وتفاصيل الجهاز.</string>
+    <string name="debug_log_size">حجم سجل تصحيح الأخطاء: %1$s</string>
+    <string name="debug_save_folder">حفظ في المجلد</string>
+    <string name="debug_choose_folder">اختيار مجلد</string>
+    <string name="debug_folder">المجلد: %1$s</string>
+    <string name="debug_share">تصدير / مشاركة</string>
+    <string name="debug_clear">مسح سجل تصحيح الأخطاء</string>
+    <string name="debug_saved">تم إنشاء التقرير: %1$s</string>
+    <string name="debug_failed">تعذّر حفظ التقرير: %1$s</string>
+    <string name="debug_working">جارٍ جمع السجلات…</string>
 </resources>

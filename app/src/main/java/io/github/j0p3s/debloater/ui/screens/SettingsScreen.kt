@@ -32,6 +32,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.runtime.LaunchedEffect
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import android.content.Intent
+import androidx.core.net.toUri
+import io.github.j0p3s.debloater.ui.components.formatSize
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -166,6 +173,7 @@ fun SettingsScreen(vm: MainViewModel) {
                     }
                 }
             }
+            DebugSection(vm)
             Card {
                 Column(Modifier.fillMaxWidth().padding(14.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     Text(stringResource(R.string.about), style = MaterialTheme.typography.titleMedium)
@@ -215,6 +223,59 @@ private fun SettingRow(title: String, subtitle: String, checked: Boolean, onChan
                 Text(subtitle, style = MaterialTheme.typography.bodySmall)
             }
             Switch(checked = checked, onCheckedChange = onChange)
+        }
+    }
+}
+
+@OptIn(ExperimentalLayoutApi::class)
+@Composable
+private fun DebugSection(vm: MainViewModel) {
+    val context = LocalContext.current
+    val folder by vm.prefs.debugFolder.collectAsStateWithLifecycle()
+    val export by vm.debugExport.collectAsStateWithLifecycle()
+    val size by vm.debugLogSize.collectAsStateWithLifecycle()
+    LaunchedEffect(export) { vm.refreshDebugLogSize() }
+    val pickFolder = rememberLauncherForActivityResult(ActivityResultContracts.OpenDocumentTree()) { uri ->
+        if (uri != null) {
+            runCatching {
+                context.contentResolver.takePersistableUriPermission(uri,
+                    Intent.FLAG_GRANT_READ_URI_PERMISSION or Intent.FLAG_GRANT_WRITE_URI_PERMISSION)
+            }
+            vm.prefs.setDebugFolder(uri.toString())
+            vm.saveDebugReport(uri)
+        }
+    }
+    val folderUri = folder?.toUri()?.takeIf { uri ->
+        context.contentResolver.persistedUriPermissions.any { it.uri == uri && it.isWritePermission }
+    }
+    val working = export is MainViewModel.DebugExport.Working
+    Card {
+        Column(Modifier.fillMaxWidth().padding(14.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+            Text(stringResource(R.string.debug_title), style = MaterialTheme.typography.titleMedium)
+            Text(stringResource(R.string.debug_help), style = MaterialTheme.typography.bodySmall)
+            Text(stringResource(R.string.debug_log_size, formatSize(size)), style = MaterialTheme.typography.bodySmall, fontWeight = FontWeight.SemiBold)
+            folderUri?.let {
+                Text(stringResource(R.string.debug_folder, it.lastPathSegment?.substringAfterLast(':')?.ifBlank { null } ?: it.toString()),
+                    style = MaterialTheme.typography.bodySmall)
+            }
+            FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Button(onClick = { if (folderUri != null) vm.saveDebugReport(folderUri) else pickFolder.launch(null) }, enabled = !working) {
+                    Text(stringResource(R.string.debug_save_folder))
+                }
+                OutlinedButton(onClick = { pickFolder.launch(folderUri) }, enabled = !working) { Text(stringResource(R.string.debug_choose_folder)) }
+                OutlinedButton(onClick = { vm.shareDebugReport(context) }, enabled = !working) { Text(stringResource(R.string.debug_share)) }
+                TextButton(onClick = vm::clearDebugLog, enabled = !working) { Text(stringResource(R.string.debug_clear)) }
+            }
+            when (val e = export) {
+                MainViewModel.DebugExport.Working -> Row(verticalAlignment = Alignment.CenterVertically) {
+                    CircularProgressIndicator(Modifier.size(18.dp), strokeWidth = 2.dp)
+                    Spacer(Modifier.width(8.dp))
+                    Text(stringResource(R.string.debug_working), style = MaterialTheme.typography.bodySmall)
+                }
+                is MainViewModel.DebugExport.Saved -> Text(stringResource(R.string.debug_saved, e.name), style = MaterialTheme.typography.bodySmall)
+                is MainViewModel.DebugExport.Failed -> Text(stringResource(R.string.debug_failed, e.reason), style = MaterialTheme.typography.bodySmall, color = ErrorColor)
+                MainViewModel.DebugExport.Idle -> {}
+            }
         }
     }
 }

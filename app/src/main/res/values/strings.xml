@@ -436,4 +436,15 @@
     <string name="permissions_auto">Set up access with Shizuku</string>
     <string name="permissions_auto_help">After confirmation, grant Usage Access and try enabling only the cache assistant. Existing Accessibility services are preserved. Android may require manual setup. This does not start cleaning.</string>
     <string name="permissions_auto_result">Setup results (technical details may be in English)</string>
+    <string name="debug_title">Debug</string>
+    <string name="debug_help">Debloater records logs from every tool (debloat, restore, cache, leftovers, permission setup), every Shizuku command, messages, errors and crashes on this phone. Nothing is sent anywhere unless you save or share a report. Reports include package names and device details.</string>
+    <string name="debug_log_size">Debug log size: %1$s</string>
+    <string name="debug_save_folder">Save to folder</string>
+    <string name="debug_choose_folder">Choose folder</string>
+    <string name="debug_folder">Folder: %1$s</string>
+    <string name="debug_share">Export / share</string>
+    <string name="debug_clear">Clear debug log</string>
+    <string name="debug_saved">Report created: %1$s</string>
+    <string name="debug_failed">Could not save the report: %1$s</string>
+    <string name="debug_working">Collecting logs…</string>
 </resources>

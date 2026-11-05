@@ -434,4 +434,15 @@
     <string name="permissions_auto">Настроить доступ через Shizuku</string>
     <string name="permissions_auto_help">После подтверждения предоставляет доступ к статистике использования и пытается включить только помощник очистки кэша. Существующие службы специальных возможностей сохраняются. Android может потребовать ручную настройку. Очистка не запускается.</string>
     <string name="permissions_auto_result">Результаты (технические сведения могут быть на английском)</string>
+    <string name="debug_title">Отладка</string>
+    <string name="debug_help">Debloater записывает на этом телефоне журналы всех инструментов (удаление, восстановление, кеш, остатки, настройка разрешений), все команды Shizuku, сообщения, ошибки и сбои. Ничего не отправляется, пока вы не сохраните отчёт или не поделитесь им. Отчёты содержат имена пакетов и сведения об устройстве.</string>
+    <string name="debug_log_size">Размер журнала отладки: %1$s</string>
+    <string name="debug_save_folder">Сохранить в папку</string>
+    <string name="debug_choose_folder">Выбрать папку</string>
+    <string name="debug_folder">Папка: %1$s</string>
+    <string name="debug_share">Экспорт / поделиться</string>
+    <string name="debug_clear">Очистить журнал отладки</string>
+    <string name="debug_saved">Отчёт создан: %1$s</string>
+    <string name="debug_failed">Не удалось сохранить отчёт: %1$s</string>
+    <string name="debug_working">Сбор журналов…</string>
 </resources>

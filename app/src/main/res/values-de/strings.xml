@@ -434,4 +434,15 @@
     <string name="permissions_auto">Zugriffe mit Shizuku einrichten</string>
     <string name="permissions_auto_help">Nach Bestätigung wird der Nutzungszugriff gewährt und nur der Cache-Assistent zu aktivieren versucht. Vorhandene Bedienungshilfen bleiben erhalten. Android kann manuelle Einrichtung verlangen. Die Bereinigung startet nicht.</string>
     <string name="permissions_auto_result">Ergebnisse (technische Details können auf Englisch sein)</string>
+    <string name="debug_title">Debug</string>
+    <string name="debug_help">Debloater speichert auf diesem Telefon Protokolle aller Werkzeuge (Debloat, Wiederherstellung, Cache, Überreste, Berechtigungseinrichtung), jeden Shizuku-Befehl, Meldungen, Fehler und Abstürze. Es wird nichts gesendet, außer Sie speichern oder teilen einen Bericht. Berichte enthalten Paketnamen und Gerätedetails.</string>
+    <string name="debug_log_size">Größe des Debug-Protokolls: %1$s</string>
+    <string name="debug_save_folder">In Ordner speichern</string>
+    <string name="debug_choose_folder">Ordner wählen</string>
+    <string name="debug_folder">Ordner: %1$s</string>
+    <string name="debug_share">Exportieren / teilen</string>
+    <string name="debug_clear">Debug-Protokoll löschen</string>
+    <string name="debug_saved">Bericht erstellt: %1$s</string>
+    <string name="debug_failed">Bericht konnte nicht gespeichert werden: %1$s</string>
+    <string name="debug_working">Protokolle werden gesammelt…</string>
 </resources>

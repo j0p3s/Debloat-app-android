@@ -23,7 +23,7 @@ class LeftoverController(private val userId: Int, private val scope: CoroutineSc
     var notice by mutableStateOf<UiMessage?>(null); private set
     var pending by mutableStateOf<LeftoverRequest?>(null)
     val warnings = mutableStateListOf<String>()
-    val log = mutableStateListOf<String>()
+    val log = io.github.j0p3s.debloater.debug.DebugLog.Mirror("leftovers")
 
     fun visible(): List<LeftoverRow> = candidates.filter { it.key.contains(query, true) }.let { rows ->
         if(largestFirst) rows.sortedByDescending { it.bytes } else rows.sortedBy { it.key.lowercase() }

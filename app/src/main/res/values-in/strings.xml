@@ -434,4 +434,15 @@
     <string name="permissions_auto">Atur akses dengan Shizuku</string>
     <string name="permissions_auto_help">Setelah konfirmasi, berikan akses penggunaan dan coba aktifkan hanya asisten cache. Layanan Aksesibilitas yang ada dipertahankan. Android mungkin memerlukan pengaturan manual. Pembersihan tidak dimulai.</string>
     <string name="permissions_auto_result">Hasil (detail teknis mungkin dalam bahasa Inggris)</string>
+    <string name="debug_title">Debug</string>
+    <string name="debug_help">Debloater mencatat log semua alat (debloat, pemulihan, cache, sisa file, penyiapan izin), setiap perintah Shizuku, pesan, error, dan crash di ponsel ini. Tidak ada yang dikirim kecuali Anda menyimpan atau membagikan laporan. Laporan berisi nama paket dan detail perangkat.</string>
+    <string name="debug_log_size">Ukuran log debug: %1$s</string>
+    <string name="debug_save_folder">Simpan ke folder</string>
+    <string name="debug_choose_folder">Pilih folder</string>
+    <string name="debug_folder">Folder: %1$s</string>
+    <string name="debug_share">Ekspor / bagikan</string>
+    <string name="debug_clear">Hapus log debug</string>
+    <string name="debug_saved">Laporan dibuat: %1$s</string>
+    <string name="debug_failed">Tidak dapat menyimpan laporan: %1$s</string>
+    <string name="debug_working">Mengumpulkan log…</string>
 </resources>

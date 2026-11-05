@@ -434,4 +434,15 @@
     <string name="permissions_auto">通过 Shizuku 配置权限</string>
     <string name="permissions_auto_help">确认后授予使用情况访问权限，并尝试仅启用缓存助手。保留现有无障碍服务。Android 可能仍要求手动设置。不会开始清理。</string>
     <string name="permissions_auto_result">设置结果（技术详情可能为英文）</string>
+    <string name="debug_title">调试</string>
+    <string name="debug_help">Debloater 会在本机记录所有工具（精简、恢复、缓存、残留文件、权限设置）的日志、每条 Shizuku 命令、提示消息、错误和崩溃。除非你保存或分享报告，否则不会发送任何内容。报告包含软件包名称和设备信息。</string>
+    <string name="debug_log_size">调试日志大小：%1$s</string>
+    <string name="debug_save_folder">保存到文件夹</string>
+    <string name="debug_choose_folder">选择文件夹</string>
+    <string name="debug_folder">文件夹：%1$s</string>
+    <string name="debug_share">导出 / 分享</string>
+    <string name="debug_clear">清除调试日志</string>
+    <string name="debug_saved">已创建报告：%1$s</string>
+    <string name="debug_failed">无法保存报告：%1$s</string>
+    <string name="debug_working">正在收集日志…</string>
 </resources>

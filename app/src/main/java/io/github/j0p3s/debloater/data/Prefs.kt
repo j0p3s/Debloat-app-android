@@ -45,6 +45,14 @@ class Prefs(context: Context) {
         sp.edit { putBoolean(KEY_EXPERT, v) }; _expertMode.value = v
     }
 
+    private val _debugFolder = MutableStateFlow(sp.getString(KEY_DEBUG_FOLDER, null))
+    /** Document tree URI chosen for saving debug reports, with a persisted read/write grant. */
+    val debugFolder: StateFlow<String?> = _debugFolder.asStateFlow()
+
+    fun setDebugFolder(v: String?) {
+        sp.edit { putString(KEY_DEBUG_FOLDER, v) }; _debugFolder.value = v
+    }
+
     fun setKeepData(v: Boolean) {
         sp.edit { putBoolean(KEY_KEEP_DATA, v) }; _keepData.value = v
     }
@@ -55,5 +63,6 @@ class Prefs(context: Context) {
         const val KEY_SORT = "sort"
         const val KEY_AUTO_UPDATE = "auto_update_lists"
         const val KEY_ONBOARDING = "onboarding_done"
+        const val KEY_DEBUG_FOLDER = "debug_folder"
     }
 }
