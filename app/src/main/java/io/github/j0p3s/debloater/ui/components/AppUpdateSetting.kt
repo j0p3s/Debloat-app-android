@@ -32,6 +32,11 @@ internal object AppReleasePolicy {
         return a.zip(b).firstOrNull { it.first != it.second }?.let { it.first > it.second } ?: false
     }
     fun asset(tag: String) = "https://github.com/j0p3s/Debloat-app-android/releases/download/$tag/Debloater-$tag.apk"
+    fun redirectedTag(location: String): String {
+        val prefix = "https://github.com/j0p3s/Debloat-app-android/releases/tag/"
+        require(location.startsWith(prefix)) { "Unexpected release redirect" }
+        return location.removePrefix(prefix).also { require(it.startsWith("v") && version(it) != null) { "Invalid release tag" } }
+    }
 }
 
 @Composable
@@ -46,6 +51,7 @@ fun AppUpdateSetting() {
     var status by remember { mutableIntStateOf(0) }
     var percent by remember { mutableIntStateOf(0) }
     var failed by remember { mutableStateOf(false) }
+    var detail by remember { mutableStateOf("") }
     LaunchedEffect(downloadId) {
         if(downloadId < 0) return@LaunchedEffect
         while(true) {
@@ -55,6 +61,7 @@ fun AppUpdateSetting() {
                         val state = cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_STATUS))
                         val bytes = cursor.getLong(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR))
                         val total = cursor.getLong(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_TOTAL_SIZE_BYTES))
+                        if(state == DownloadManager.STATUS_FAILED) detail = "Android download error: ${cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_REASON))}"
                         state to if(total > 0) ((bytes * 100 / total).coerceIn(0,100)).toInt() else 0
                     }
                 }
@@ -72,7 +79,8 @@ fun AppUpdateSetting() {
             Text(stringResource(R.string.ota_help))
             Text(BuildConfig.VERSION_NAME)
             OutlinedButton(enabled = !checking && !active, onClick = {
-                checking = true; failed = false; remote = null
+                checking = true; failed = false; detail = ""; remote = null
+                if(status == DownloadManager.STATUS_FAILED) { status = 0; downloadId = -1; prefs.edit().remove("download").apply() }
                 scope.launch {
                     try {
                         remote = withContext(Dispatchers.IO) {
@@ -81,7 +89,7 @@ fun AppUpdateSetting() {
                                 connection.connectTimeout = 15000; connection.readTimeout = 15000
                                 connection.setRequestProperty("Accept", "application/vnd.github+json")
                                 connection.setRequestProperty("User-Agent", "Debloater/${BuildConfig.VERSION_NAME}")
-                                check(connection.responseCode == 200)
+                                check(connection.responseCode == 200) { "GitHub HTTP ${connection.responseCode}; remaining API requests: ${connection.getHeaderField("X-RateLimit-Remaining") ?: "unknown"}" }
                                 val data = connection.inputStream.use { input ->
                                     val output = java.io.ByteArrayOutputStream()
                                     val buffer = ByteArray(8192)
@@ -102,15 +110,33 @@ fun AppUpdateSetting() {
                                     it.getString("browser_download_url") == AppReleasePolicy.asset(tag) && it.getLong("size") in 1..200_000_000
                                 } })
                                 tag
+                            } catch(primary: Exception) {
+                                if(primary is kotlinx.coroutines.CancellationException) throw primary
+                                // Public latest-release redirects do not consume the REST API quota.
+                                val fallback = URL("https://github.com/j0p3s/Debloat-app-android/releases/latest").openConnection() as HttpURLConnection
+                                try {
+                                    fallback.connectTimeout = 15000; fallback.readTimeout = 15000
+                                    fallback.requestMethod = "HEAD"
+                                    fallback.instanceFollowRedirects = true
+                                    check(fallback.responseCode == 200) { "Release page HTTP ${fallback.responseCode}" }
+                                    AppReleasePolicy.redirectedTag(fallback.url.toString())
+                                } catch(secondary: Exception) {
+                                    throw java.io.IOException("${primary.message}; fallback: ${secondary.message}", secondary)
+                                } finally { fallback.disconnect() }
                             } finally { connection.disconnect() }
                         }
                     } catch(error: kotlinx.coroutines.CancellationException) { throw error }
-                    catch(_: Exception) { failed = true }
+                    catch(error: Exception) { failed = true; detail = error.message.orEmpty() }
                     finally { checking = false }
                 }
             }) { Text(stringResource(R.string.ota_check)) }
             if(checking) LinearProgressIndicator(Modifier.fillMaxWidth())
-            if(failed || status == DownloadManager.STATUS_FAILED) Text(stringResource(R.string.ota_error))
+            if(failed || status == DownloadManager.STATUS_FAILED) {
+                Text(stringResource(R.string.ota_error))
+                if(detail.isNotBlank()) Text(detail, style = MaterialTheme.typography.bodySmall)
+                TextButton(onClick = { runCatching { context.startActivity(android.content.Intent(android.content.Intent.ACTION_VIEW,
+                    Uri.parse("https://github.com/j0p3s/Debloat-app-android/releases/latest"))) } }) { Text("GitHub") }
+            }
             remote?.let { tag ->
                 if(AppReleasePolicy.newer(tag, BuildConfig.VERSION_NAME)) {
                     Text(tag)
@@ -123,7 +149,7 @@ fun AppUpdateSetting() {
                             status = DownloadManager.STATUS_PENDING; percent = 0
                             downloadId = manager.enqueue(request)
                             prefs.edit().putLong("download", downloadId).apply()
-                        } catch(_: Exception) { failed = true }
+                        } catch(error: Exception) { failed = true; detail = error.message.orEmpty() }
                     }) { Text(stringResource(R.string.ota_download)) }
                 } else Text(stringResource(R.string.ota_current))
             }
