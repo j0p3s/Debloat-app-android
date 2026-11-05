@@ -23,6 +23,8 @@ import io.github.j0p3s.debloater.R
 import io.github.j0p3s.debloater.data.CacheSort
 import io.github.j0p3s.debloater.data.CacheScope
 import io.github.j0p3s.debloater.data.CachePolicy
+import io.github.j0p3s.debloater.data.CacheClearMethod
+import io.github.j0p3s.debloater.cache.SettingsCacheService
 import io.github.j0p3s.debloater.shizuku.ShizukuStatus
 import io.github.j0p3s.debloater.ui.MainViewModel
 import io.github.j0p3s.debloater.ui.components.BackTopBar
@@ -36,8 +38,10 @@ fun CacheScreen(vm: MainViewModel, system: Boolean) {
     val cache = vm.cache
     val context = LocalContext.current
     val status by vm.shizukuStatus.collectAsStateWithLifecycle()
+    val settingsAvailable by SettingsCacheService.available.collectAsStateWithLifecycle()
+    var showAccessDisclosure by rememberSaveable { mutableStateOf(false) }
     val operation by vm.operation.collectAsStateWithLifecycle()
-    val free = !cache.busy && operation?.finished != false
+    val free = !cache.busy && !vm.leftovers.busy && operation?.finished != false
     var categoryName by rememberSaveable(system) { mutableStateOf(if(system) CacheScope.SYSTEM.name else CacheScope.USER.name) }
     val category = CacheScope.valueOf(categoryName)
     val categoryGroups = CachePolicy.inScope(cache.groups, category)
@@ -103,8 +107,34 @@ fun CacheScreen(vm: MainViewModel, system: Boolean) {
                 OutlinedButton(onClick = cache::cancel, enabled = !cache.stopRequested) { Text(stringResource(R.string.cancel)) }
             }
             cache.notice?.let { message -> item { Text(stringResource(message.resource, *message.args.toTypedArray())) } }
-            if(status != ShizukuStatus.READY) item { Text(stringResource(R.string.cache_needs_shizuku)) }
-            if(cache.supported == false) item { Text(stringResource(R.string.cache_unsupported)) }
+            item {
+                Text(stringResource(R.string.cache_clear_method), style = MaterialTheme.typography.titleMedium)
+                var methodMenu by remember { mutableStateOf(false) }
+                Box {
+                    OutlinedButton(onClick = { methodMenu = true }, enabled = free, modifier = Modifier.fillMaxWidth()) {
+                        Text(stringResource(cache.method.titleRes), Modifier.weight(1f))
+                        Icon(Icons.Default.ArrowDropDown, contentDescription = null)
+                    }
+                    DropdownMenu(expanded = methodMenu, onDismissRequest = { methodMenu = false }) {
+                        CacheClearMethod.entries.forEach { method -> DropdownMenuItem(
+                            text = { Text(stringResource(method.titleRes)) },
+                            onClick = { cache.method = method; methodMenu = false },
+                        ) }
+                    }
+                }
+                if(cache.method == CacheClearMethod.SETTINGS) {
+                    Text(stringResource(R.string.cache_settings_help))
+                    if(!settingsAvailable) {
+                        Text(stringResource(R.string.cache_settings_enable_help))
+                        OutlinedButton(onClick = { showAccessDisclosure = true }, enabled = free) {
+                            Text(stringResource(R.string.cache_settings_enable))
+                        }
+                    }
+                } else {
+                    if(status != ShizukuStatus.READY) Text(stringResource(R.string.cache_needs_shizuku))
+                    if(cache.supported == false) Text(stringResource(R.string.cache_unsupported))
+                }
+            }
             item {
                 OutlinedTextField(value = cache.query, onValueChange = { cache.query = it }, label = { Text(stringResource(R.string.cache_search)) }, singleLine = true, modifier = Modifier.fillMaxWidth())
                 var menu by remember { mutableStateOf(false) }
@@ -124,7 +154,8 @@ fun CacheScreen(vm: MainViewModel, system: Boolean) {
                 }
                 Text(stringResource(R.string.cache_selection, chosen.size, formatSize(chosen.sumOf { it.bytes ?: 0 })))
                 Text(stringResource(R.string.cache_hidden_selection), style = MaterialTheme.typography.bodySmall)
-                Button(onClick = { cache.requestClear(category) }, enabled = free && chosen.isNotEmpty() && status == ShizukuStatus.READY && cache.supported != false) { Text(stringResource(R.string.cache_clear)) }
+                Button(onClick = { cache.requestClear(category) }, enabled = free && chosen.isNotEmpty() &&
+                    (if(cache.method == CacheClearMethod.SETTINGS) settingsAvailable else status == ShizukuStatus.READY && cache.supported != false)) { Text(stringResource(R.string.cache_clear)) }
             }
             if(visible.isEmpty() && cache.scannedAt != null) item { Text(stringResource(R.string.cache_empty)) }
             items(visible, key = { it.key }) { group ->
@@ -156,12 +187,25 @@ fun CacheScreen(vm: MainViewModel, system: Boolean) {
             title = { Text(stringResource(R.string.cache_confirm_title, targets.sumOf { it.packages.size })) },
             text = {
                 Column(Modifier.heightIn(max = 360.dp).verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Text(stringResource(R.string.cache_confirm_help, formatSize(targets.sumOf { it.bytes ?: 0 })))
+                    if(cache.pendingMethod == CacheClearMethod.SETTINGS) Text(stringResource(R.string.cache_settings_warning))
+                    else Text(stringResource(R.string.cache_confirm_help, formatSize(targets.sumOf { it.bytes ?: 0 })))
                     targets.forEach { Text("• ${it.label}\n${it.packages.joinToString(", ")}") }
                 }
             },
-            confirmButton = { Button(onClick = cache::confirmClear, enabled = free && status == ShizukuStatus.READY) { Text(stringResource(R.string.cache_clear)) } },
+            confirmButton = { Button(onClick = cache::confirmClear, enabled = free &&
+                (if(cache.pendingMethod == CacheClearMethod.SETTINGS) settingsAvailable else status == ShizukuStatus.READY)) { Text(stringResource(R.string.cache_clear)) } },
             dismissButton = { TextButton(onClick = { cache.pending = null }) { Text(stringResource(R.string.cancel)) } },
         )
     }
+    if(showAccessDisclosure) AlertDialog(
+        onDismissRequest = { showAccessDisclosure = false },
+        title = { Text(stringResource(R.string.cache_settings_enable)) },
+        text = { Text(stringResource(R.string.cache_settings_disclosure), Modifier.heightIn(max = 360.dp).verticalScroll(rememberScrollState())) },
+        confirmButton = { TextButton(onClick = {
+            showAccessDisclosure = false
+            runCatching { context.startActivity(SettingsCacheService.settingsIntent(context)) }
+                .recoverCatching { context.startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)) }
+        }) { Text(stringResource(R.string.open_settings)) } },
+        dismissButton = { TextButton(onClick = { showAccessDisclosure = false }) { Text(stringResource(R.string.cancel)) } },
+    )
 }

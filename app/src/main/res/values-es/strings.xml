@@ -382,4 +382,36 @@
     <string name="cache_refreshing">Actualizando las apps limpiadas</string>
     <string name="cache_stopped">Detenido. Los resultados pueden ser parciales. Las limpiezas hechas no se deshacen; una en curso puede terminar.</string>
     <string name="cache_partial">Mediciones parciales; se excluyen tamaños no disponibles.</string>
+
+    <!-- Optional Settings UI cache clearing -->
+    <string name="cache_clear_method">Método de limpieza</string>
+    <string name="cache_shizuku_method">Shizuku (comando solo de caché)</string>
+    <string name="cache_settings_method">Asistente de Ajustes (Accesibilidad)</string>
+    <string name="cache_settings_help">Abre los ajustes de Android y pulsa Borrar caché en las apps de usuario o del sistema seleccionadas, como lo harías manualmente. No necesita Shizuku. Se detiene ante pantallas desconocidas.</string>
+    <string name="cache_settings_enable">Activar asistente de Ajustes</string>
+    <string name="cache_settings_enable_help">Activa el asistente en los ajustes de Accesibilidad de Android, vuelve y confirma la limpieza. Activar el acceso no inicia la limpieza.</string>
+    <string name="cache_settings_warning">El asistente controlará Ajustes para las apps de abajo y pulsará solo Borrar caché. Mantén la pantalla desbloqueada y evita tocar Ajustes. Usa Cancelar en la barra flotante para detenerlo. Las apps y cuentas se conservan, pero la caché borrada no se puede respaldar ni restaurar. Las pantallas incompatibles o los resultados inciertos detienen el lote. ¿Continuar?</string>
+    <string name="cache_settings_disclosure">El acceso opcional de Accesibilidad permite a Debloater leer los controles visibles de Ajustes de Android y pulsar Almacenamiento y Borrar caché, solo para las apps que selecciones y confirmes. El contenido de la pantalla no se guarda ni se envía. El botón flotante Cancelar permanece visible durante la limpieza. Puedes desactivar el servicio en Accesibilidad cuando quieras.</string>
+    <string name="cache_settings_running">Borrando caché: %1$s</string>
+
+    <!-- Reviewed app leftovers and recovery -->
+    <string name="leftovers_title">Restos de aplicaciones</string>
+    <string name="leftovers_nav_help">Buscar carpetas de apps desinstaladas</string>
+    <string name="leftovers_help">Busca posibles restos, revisa sus rutas y mueve las carpetas seleccionadas a recuperación. Nada se selecciona ni se elimina automáticamente.</string>
+    <string name="leftovers_scope">Solo el almacenamiento principal del usuario actual: Android/data, Android/obb y Android/media. Se protegen las apps instaladas, desactivadas y con registros conservados. Se omiten carpetas desconocidas y áreas inaccesibles.</string>
+    <string name="leftovers_scan">Buscar restos</string>
+    <string name="leftovers_needs_shizuku">Shizuku debe estar activo y autorizado para analizar y recuperar.</string>
+    <string name="leftovers_scan_done">Posibles carpetas residuales: %1$d</string>
+    <string name="leftovers_stop_help">Cancelar detiene el proceso tras la operación de archivos actual. Las acciones completadas no se deshacen.</string>
+    <string name="leftovers_partial">Análisis parcial: no se pudieron comprobar algunas ubicaciones o carpetas.</string>
+    <string name="leftovers_move">Mover a recuperación</string>
+    <string name="leftovers_recovery">Recuperación de restos</string>
+    <string name="leftovers_recovery_help">La recuperación conserva los archivos en almacenamiento compartido y no libera espacio. Restáuralos o elimina cada registro permanentemente tras revisarlo.</string>
+    <string name="leftovers_load_recovery">Cargar registros de recuperación</string>
+    <string name="leftovers_restore">Restaurar carpeta</string>
+    <string name="leftovers_delete">Eliminar permanentemente</string>
+    <string name="leftovers_restore_warning">¿Restaurar esta carpeta a su ubicación original? Las carpetas existentes nunca se sustituyen ni se combinan. Pausa otras operaciones de archivos.</string>
+    <string name="leftovers_delete_warning">¿Eliminar permanentemente estos archivos para liberar espacio? Pueden contener archivos personales. No se puede deshacer y no quedará ninguna copia de seguridad.</string>
+    <string name="leftovers_move_warning">Estas carpetas pueden contener archivos personales. Revisa cada ruta. Se moverán a .DebloaterRecovery en almacenamiento compartido con sus ubicaciones originales registradas. Se pueden recuperar, pero no liberan espacio hasta su eliminación permanente. Evita instalar o desinstalar apps durante la operación. ¿Continuar?</string>
+    <string name="leftovers_action_done">Completadas: %1$d · Fallidas: %2$d</string>
 </resources>

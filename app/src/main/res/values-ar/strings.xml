@@ -382,4 +382,36 @@
     <string name="cache_refreshing">تحديث التطبيقات التي تم تنظيفها</string>
     <string name="cache_stopped">تم الإيقاف. قد تكون النتائج جزئية. لا يتم التراجع عن التنظيف المكتمل وقد تكتمل العملية الجارية.</string>
     <string name="cache_partial">قياسات جزئية؛ الأحجام غير المتاحة مستبعدة.</string>
+
+    <!-- Optional Settings UI cache clearing -->
+    <string name="cache_clear_method">طريقة التنظيف</string>
+    <string name="cache_shizuku_method">Shizuku (أمر ذاكرة التخزين المؤقت فقط)</string>
+    <string name="cache_settings_method">مساعد الإعدادات (إمكانية الوصول)</string>
+    <string name="cache_settings_help">يفتح إعدادات تطبيقات Android ويضغط مسح ذاكرة التخزين المؤقت للتطبيقات المحددة، سواء تطبيقات المستخدم أو النظام، كما تفعل يدوياً. لا يحتاج إلى Shizuku. يتوقف بأمان عند الشاشات غير المعروفة.</string>
+    <string name="cache_settings_enable">تفعيل مساعد الإعدادات</string>
+    <string name="cache_settings_enable_help">فعّل المساعد في إعدادات إمكانية الوصول في Android ثم ارجع وأكّد التنظيف. منح الوصول لا يبدأ التنظيف.</string>
+    <string name="cache_settings_warning">سيتحكم المساعد في إعدادات التطبيقات المدرجة أدناه وسيضغط فقط مسح ذاكرة التخزين المؤقت. أبقِ الشاشة مفتوحة ولا تلمس الإعدادات. اضغط إلغاء في الشريط العائم للتوقف. تبقى التطبيقات والحسابات، لكن لا يمكن نسخ ذاكرة التخزين المؤقت المحذوفة احتياطياً أو استعادتها. توقف الشاشات غير المدعومة أو النتائج غير المؤكدة الدفعة. هل تريد المتابعة؟</string>
+    <string name="cache_settings_disclosure">يسمح وصول إمكانية الوصول الاختياري لـ Debloater بقراءة عناصر إعدادات Android الظاهرة والضغط على التخزين ومسح ذاكرة التخزين المؤقت، فقط للتطبيقات التي تحددها وتؤكدها. لا يتم حفظ محتوى الشاشة أو إرساله. يظل زر إلغاء عائم ظاهراً أثناء التنظيف. يمكنك تعطيل الخدمة في إعدادات إمكانية الوصول في أي وقت.</string>
+    <string name="cache_settings_running">جارٍ مسح ذاكرة التخزين المؤقت: %1$s</string>
+
+    <!-- Reviewed app leftovers and recovery -->
+    <string name="leftovers_title">بقايا التطبيقات</string>
+    <string name="leftovers_nav_help">العثور على مجلدات التطبيقات المحذوفة</string>
+    <string name="leftovers_help">ابحث عن البقايا المحتملة وراجع مساراتها ثم انقل المجلدات المحددة إلى الاسترداد. لا يتم تحديد أي شيء أو حذفه تلقائياً.</string>
+    <string name="leftovers_scope">التخزين الأساسي للمستخدم الحالي فقط: Android/data وAndroid/obb وAndroid/media. تتم حماية الحزم المثبتة والمعطلة والسجلات المحتفظ بها. يتم تجاوز المجلدات غير المعروفة والمناطق غير المتاحة.</string>
+    <string name="leftovers_scan">فحص بقايا التطبيقات</string>
+    <string name="leftovers_needs_shizuku">يجب تشغيل Shizuku ومنحه الإذن للفحص والاسترداد.</string>
+    <string name="leftovers_scan_done">المجلدات المتبقية المحتملة: %1$d</string>
+    <string name="leftovers_stop_help">يتوقف الإلغاء بعد عملية الملفات الحالية المحدودة. لا يتم التراجع عن الإجراءات المكتملة.</string>
+    <string name="leftovers_partial">فحص جزئي: تعذر التحقق من بعض المواقع أو المجلدات.</string>
+    <string name="leftovers_move">نقل إلى الاسترداد</string>
+    <string name="leftovers_recovery">استرداد البقايا</string>
+    <string name="leftovers_recovery_help">يحتفظ الاسترداد بالملفات في التخزين المشترك ولا يحرر مساحة. استعدها أو احذف السجلات بشكل دائم كل على حدة بعد المراجعة.</string>
+    <string name="leftovers_load_recovery">تحميل سجلات الاسترداد</string>
+    <string name="leftovers_restore">استعادة المجلد</string>
+    <string name="leftovers_delete">حذف دائم</string>
+    <string name="leftovers_restore_warning">هل تريد استعادة هذا المجلد إلى موقعه الأصلي؟ لا يتم استبدال المجلدات الموجودة أو دمجها أبداً. أوقف عمليات الملفات الأخرى مؤقتاً.</string>
+    <string name="leftovers_delete_warning">هل تريد حذف ملفات الاسترداد هذه نهائياً لتحرير مساحة؟ قد تحتوي على ملفات شخصية. لا يمكن التراجع ولن تبقى نسخة احتياطية.</string>
+    <string name="leftovers_move_warning">قد تحتوي هذه المجلدات على ملفات شخصية. راجع كل مسار. ستنقل المجلدات المحددة إلى .DebloaterRecovery في التخزين المشترك مع تسجيل مواقعها الأصلية. يمكن استردادها لكنها لا تحرر مساحة قبل الحذف الدائم. تجنب تثبيت التطبيقات أو إلغاء تثبيتها أثناء العملية. هل تريد المتابعة؟</string>
+    <string name="leftovers_action_done">مكتملة: %1$d · فاشلة: %2$d</string>
 </resources>

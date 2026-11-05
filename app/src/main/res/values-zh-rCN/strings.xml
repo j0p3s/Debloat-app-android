@@ -382,4 +382,36 @@
     <string name="cache_refreshing">正在更新已清理应用</string>
     <string name="cache_stopped">已停止。结果可能不完整。已完成的清理无法撤销，进行中的清理可能仍会完成。</string>
     <string name="cache_partial">部分测量；不包含无法获取的大小。</string>
+
+    <!-- Optional Settings UI cache clearing -->
+    <string name="cache_clear_method">清理方式</string>
+    <string name="cache_shizuku_method">Shizuku（仅清理缓存命令）</string>
+    <string name="cache_settings_method">设置助手（无障碍）</string>
+    <string name="cache_settings_help">打开 Android 应用设置，像手动操作一样点击所选用户应用或系统应用的清除缓存。无需 Shizuku。遇到无法识别的界面会安全停止。</string>
+    <string name="cache_settings_enable">启用设置助手</string>
+    <string name="cache_settings_enable_help">请在 Android 无障碍设置中启用助手，然后返回并确认清理。启用权限不会开始清理。</string>
+    <string name="cache_settings_warning">助手将控制下列应用的设置，仅点击清除缓存。请保持屏幕解锁，不要触碰设置界面。点击悬浮栏中的取消可停止。应用和账号会保留，但清除的缓存无法备份或恢复。不支持的界面或不确定的结果会停止整批操作。是否继续？</string>
+    <string name="cache_settings_disclosure">可选的无障碍权限允许 Debloater 读取 Android 设置中可见的控件，并仅对您选择且确认的应用点击存储和清除缓存。屏幕内容不会被保存或发送。清理时会一直显示悬浮取消按钮。您可以随时在无障碍设置中禁用此服务。</string>
+    <string name="cache_settings_running">正在清理缓存：%1$s</string>
+
+    <!-- Reviewed app leftovers and recovery -->
+    <string name="leftovers_title">应用残留</string>
+    <string name="leftovers_nav_help">查找已卸载应用留下的文件夹</string>
+    <string name="leftovers_help">查找可能的残留，检查路径后将所选文件夹移到恢复区。不会自动选择或删除任何内容。</string>
+    <string name="leftovers_scope">仅扫描当前用户的主存储空间：Android/data、Android/obb 和 Android/media。已安装、已停用及保留记录的软件包受到保护。跳过未知文件夹和无法访问的区域。</string>
+    <string name="leftovers_scan">扫描应用残留</string>
+    <string name="leftovers_needs_shizuku">扫描和恢复需要 Shizuku 正在运行且已获授权。</string>
+    <string name="leftovers_scan_done">可能的残留文件夹：%1$d</string>
+    <string name="leftovers_stop_help">取消会在当前受限文件操作结束后停止。已完成的操作不会撤销。</string>
+    <string name="leftovers_partial">扫描不完整：部分位置或文件夹无法检查。</string>
+    <string name="leftovers_move">移到恢复区</string>
+    <string name="leftovers_recovery">残留恢复区</string>
+    <string name="leftovers_recovery_help">恢复区将文件保存在共享存储中，不会释放空间。您可以恢复文件，或在检查后逐条永久删除。</string>
+    <string name="leftovers_load_recovery">加载恢复记录</string>
+    <string name="leftovers_restore">恢复文件夹</string>
+    <string name="leftovers_delete">永久删除</string>
+    <string name="leftovers_restore_warning">将此文件夹恢复到原位置？不会覆盖或合并现有文件夹。请暂停其他文件操作。</string>
+    <string name="leftovers_delete_warning">永久删除这些恢复文件以释放空间？其中可能包含个人文件。此操作无法撤销，且不会保留备份。</string>
+    <string name="leftovers_move_warning">这些文件夹可能包含个人文件。请检查所有路径。所选文件夹将移到共享存储中的 .DebloaterRecovery，并记录原位置。可以恢复，但永久删除之前不会释放空间。操作期间请勿安装或卸载应用。是否继续？</string>
+    <string name="leftovers_action_done">已完成：%1$d · 失败：%2$d</string>
 </resources>

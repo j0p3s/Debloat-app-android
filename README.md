@@ -5,6 +5,8 @@
 An Android app that debloats **any Android version from Android 11 to Android 17** without root, using
 [Shizuku](https://shizuku.rikka.app/). It also works as a normal app manager, so you can remove any user app.
 
+**In development: 1.11.0** adds the Settings cache assistant and App leftovers. These tools are not included in the 1.10.3 download above.
+
 ## Features
 
 - **Languages**: English, Spanish, French, German, Portuguese, Italian, Russian, Simplified Chinese,
@@ -99,6 +101,13 @@ An Android app that debloats **any Android version from Android 11 to Android 17
   Shizuku, your current launcher and keyboard, …) can never be modified, even in expert mode.
 - Logs of every run and test are saved and can be shared.
 
+## App leftovers
+
+Open **App leftovers** to find package-named folders left by uninstalled apps in primary `Android/data`, `Android/obb` and `Android/media` storage.
+Shizuku verifies package ownership; installed, disabled and retained packages are protected. Review paths and sizes before moving selected folders to recovery.
+Recovery is persistent and can restore folders without overwriting existing data. Moving does not free space; a separately confirmed permanent deletion does.
+See [scope, recovery and limitations](docs/APP-LEFTOVERS.md). Unrecognized folders and private/OS storage are outside scope.
+
 ## Cache cleaner
 
 Open **User cache** or **System cache** from the main dashboard and choose **Application type**, then tap **Scan selected app type**.
@@ -115,7 +124,14 @@ Sort by largest/smallest cache or app name A–Z/Z–A, search app/package names
 Select shown results or individual groups, then **Clear selected caches** and review the confirmation.
 Filtering does not deselect hidden selections; the confirmation lists every targeted app.
 
-Clearing requires Shizuku and a successful `pm help` capability check for `clear --cache-only`.
+Choose **Clearing method**: **Shizuku** or **Settings assistant (Accessibility)** for either user or system app caches.
+The optional Settings assistant opens each selected app's Android settings and presses **Clear cache**, like manual cleaning.
+It requires a permission disclosure, manual Accessibility enablement and a warning/target confirmation before every batch.
+A floating **Cancel** button stops the assistant. Unrecognized screens or uncertain outcomes stop safely; manufacturer compatibility varies.
+It does not need Shizuku. Without Usage Access you can select apps, but cache sizes remain unknown.
+See [Settings assistant setup, limitations and validation](docs/SETTINGS-CACHE-ASSISTANT.md).
+
+The Shizuku method requires a successful `pm help` capability check for `clear --cache-only`.
 Every command keeps the `--cache-only` flag and current user scope. Unsupported Android versions are blocked,
 and ROM permission failures appear in the cache log. App data and accounts remain intact.
 Cache deletion is permanent and cannot be restored from debloat backups. Only targeted non-empty/unknown cache groups are refreshed afterwards;

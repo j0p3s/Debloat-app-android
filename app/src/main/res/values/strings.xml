@@ -384,4 +384,36 @@
     <string name="cache_refreshing">Refreshing cleared apps</string>
     <string name="cache_stopped">Stopped. Results may be partial. Completed clears are not undone; an in-flight clear may still finish.</string>
     <string name="cache_partial">Partial measurements; unavailable sizes are excluded.</string>
+
+    <!-- Optional Settings UI cache clearing -->
+    <string name="cache_clear_method">Clearing method</string>
+    <string name="cache_shizuku_method">Shizuku (cache-only command)</string>
+    <string name="cache_settings_method">Settings assistant (Accessibility)</string>
+    <string name="cache_settings_help">Opens Android app settings and presses Clear cache for selected user or system apps, like you would. No Shizuku needed. Unrecognized screens are stopped safely.</string>
+    <string name="cache_settings_enable">Enable Settings assistant</string>
+    <string name="cache_settings_enable_help">Enable the assistant in Android Accessibility settings, return here and confirm clearing. Enabling access does not start cleaning.</string>
+    <string name="cache_settings_warning">The assistant will control Settings for the apps listed below and press only Clear cache. Keep the screen unlocked and avoid touching Settings. Use Cancel on the floating bar to stop. Apps and accounts are kept, but cleared cache cannot be backed up or restored. Unsupported screens or uncertain results stop the batch. Continue?</string>
+    <string name="cache_settings_disclosure">Optional Accessibility access lets Debloater read visible Android Settings controls and press Storage and Clear cache, only for apps you select and confirm. Screen contents are not saved or sent. A floating Cancel button stays visible while cleaning. You can disable the service in Accessibility settings at any time.</string>
+    <string name="cache_settings_running">Clearing cache: %1$s</string>
+
+    <!-- Reviewed app leftovers and recovery -->
+    <string name="leftovers_title">App leftovers</string>
+    <string name="leftovers_nav_help">Find folders left by uninstalled apps</string>
+    <string name="leftovers_help">Find possible leftovers, review their paths, then move selected folders to recovery. Nothing is selected or deleted automatically.</string>
+    <string name="leftovers_scope">Current user’s primary storage only: Android/data, Android/obb and Android/media. Installed, disabled and retained package owners are protected. Unrecognized folders and inaccessible areas are skipped.</string>
+    <string name="leftovers_scan">Scan app leftovers</string>
+    <string name="leftovers_needs_shizuku">Shizuku must be running and authorized for scanning and recovery.</string>
+    <string name="leftovers_scan_done">Possible leftover folders: %1$d</string>
+    <string name="leftovers_stop_help">Cancel stops after the current bounded file operation. Completed actions are not undone.</string>
+    <string name="leftovers_partial">Partial scan: some locations or folders could not be checked.</string>
+    <string name="leftovers_move">Move to recovery</string>
+    <string name="leftovers_recovery">Leftover recovery</string>
+    <string name="leftovers_recovery_help">Recovery keeps the files in shared storage and does not free space. Restore them or permanently delete individual records after review.</string>
+    <string name="leftovers_load_recovery">Load recovery records</string>
+    <string name="leftovers_restore">Restore folder</string>
+    <string name="leftovers_delete">Permanently delete</string>
+    <string name="leftovers_restore_warning">Restore this recovery folder to its original location? Existing folders are never overwritten or merged. Keep other file operations paused.</string>
+    <string name="leftovers_delete_warning">Permanently delete these recovery files to free space? They may contain personal files. This cannot be undone and no backup will remain.</string>
+    <string name="leftovers_move_warning">These folders may contain personal files. Review every path. Selected folders will move to .DebloaterRecovery in shared storage with their original locations recorded. This is recoverable but does not free space until permanent deletion. Avoid installing or uninstalling apps during this operation. Continue?</string>
+    <string name="leftovers_action_done">Completed: %1$d · Failed: %2$d</string>
 </resources>

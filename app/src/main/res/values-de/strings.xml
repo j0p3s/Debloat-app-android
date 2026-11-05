@@ -382,4 +382,36 @@
     <string name="cache_refreshing">Geleerte Apps aktualisieren</string>
     <string name="cache_stopped">Gestoppt. Ergebnisse können unvollständig sein. Bereits geleerte Caches bleiben gelöscht; laufendes Leeren kann noch enden.</string>
     <string name="cache_partial">Teilweise Messung; unbekannte Größen sind ausgeschlossen.</string>
+
+    <!-- Optional Settings UI cache clearing -->
+    <string name="cache_clear_method">Bereinigungsmethode</string>
+    <string name="cache_shizuku_method">Shizuku (nur Cache-Befehl)</string>
+    <string name="cache_settings_method">Einstellungsassistent (Bedienungshilfen)</string>
+    <string name="cache_settings_help">Öffnet die Android-Einstellungen und drückt Cache leeren für ausgewählte Benutzer- oder System-Apps, wie bei manueller Bedienung. Shizuku ist nicht nötig. Unbekannte Ansichten stoppen den Ablauf.</string>
+    <string name="cache_settings_enable">Einstellungsassistent aktivieren</string>
+    <string name="cache_settings_enable_help">Aktiviere den Assistenten in den Android-Bedienungshilfen, kehre zurück und bestätige die Bereinigung. Das Aktivieren startet keine Bereinigung.</string>
+    <string name="cache_settings_warning">Der Assistent steuert die Einstellungen für die unten aufgeführten Apps und drückt nur Cache leeren. Lass den Bildschirm entsperrt und berühre die Einstellungen nicht. Mit Abbrechen in der schwebenden Leiste kannst du stoppen. Apps und Konten bleiben erhalten, geleerter Cache lässt sich jedoch nicht sichern oder wiederherstellen. Unbekannte Ansichten oder unsichere Ergebnisse stoppen den Stapel. Fortfahren?</string>
+    <string name="cache_settings_disclosure">Der optionale Zugriff auf Bedienungshilfen erlaubt Debloater, sichtbare Android-Einstellungen zu lesen und Speicher sowie Cache leeren zu drücken, nur für ausgewählte und bestätigte Apps. Bildschirminhalte werden nicht gespeichert oder gesendet. Während der Bereinigung bleibt eine schwebende Abbrechen-Schaltfläche sichtbar. Du kannst den Dienst jederzeit in den Bedienungshilfen deaktivieren.</string>
+    <string name="cache_settings_running">Cache wird geleert: %1$s</string>
+
+    <!-- Reviewed app leftovers and recovery -->
+    <string name="leftovers_title">App-Reste</string>
+    <string name="leftovers_nav_help">Ordner deinstallierter Apps finden</string>
+    <string name="leftovers_help">Finde mögliche Reste, prüfe die Pfade und verschiebe ausgewählte Ordner zur Wiederherstellung. Nichts wird automatisch ausgewählt oder gelöscht.</string>
+    <string name="leftovers_scope">Nur der primäre Speicher des aktuellen Nutzers: Android/data, Android/obb und Android/media. Installierte, deaktivierte und als Paketdatensatz erhaltene Apps sind geschützt. Unbekannte Ordner und unzugängliche Bereiche werden übersprungen.</string>
+    <string name="leftovers_scan">App-Reste suchen</string>
+    <string name="leftovers_needs_shizuku">Shizuku muss für Suche und Wiederherstellung laufen und autorisiert sein.</string>
+    <string name="leftovers_scan_done">Mögliche Restordner: %1$d</string>
+    <string name="leftovers_stop_help">Abbrechen stoppt nach dem laufenden Dateivorgang. Abgeschlossene Aktionen werden nicht rückgängig gemacht.</string>
+    <string name="leftovers_partial">Unvollständige Suche: Einige Orte oder Ordner konnten nicht geprüft werden.</string>
+    <string name="leftovers_move">Zur Wiederherstellung verschieben</string>
+    <string name="leftovers_recovery">Wiederherstellung von App-Resten</string>
+    <string name="leftovers_recovery_help">Die Wiederherstellung bewahrt Dateien im gemeinsamen Speicher auf und gibt keinen Platz frei. Stelle sie wieder her oder lösche einzelne Einträge nach Prüfung endgültig.</string>
+    <string name="leftovers_load_recovery">Wiederherstellungseinträge laden</string>
+    <string name="leftovers_restore">Ordner wiederherstellen</string>
+    <string name="leftovers_delete">Endgültig löschen</string>
+    <string name="leftovers_restore_warning">Diesen Ordner am ursprünglichen Ort wiederherstellen? Vorhandene Ordner werden nie überschrieben oder zusammengeführt. Pausiere andere Dateivorgänge.</string>
+    <string name="leftovers_delete_warning">Diese Dateien endgültig löschen, um Platz freizugeben? Sie können persönliche Dateien enthalten. Dies ist unwiderruflich und es bleibt keine Sicherung.</string>
+    <string name="leftovers_move_warning">Diese Ordner können persönliche Dateien enthalten. Prüfe jeden Pfad. Ausgewählte Ordner werden mit gespeicherten Ursprungsorten nach .DebloaterRecovery im gemeinsamen Speicher verschoben. Sie sind wiederherstellbar, geben aber erst nach endgültigem Löschen Platz frei. Installiere oder deinstalliere währenddessen keine Apps. Fortfahren?</string>
+    <string name="leftovers_action_done">Abgeschlossen: %1$d · Fehlgeschlagen: %2$d</string>
 </resources>

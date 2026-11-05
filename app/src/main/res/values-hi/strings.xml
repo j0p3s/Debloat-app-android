@@ -382,4 +382,36 @@
     <string name="cache_refreshing">साफ किए गए ऐप अपडेट हो रहे हैं</string>
     <string name="cache_stopped">रोका गया। परिणाम आंशिक हो सकते हैं। पूरी हुई सफाई वापस नहीं होती; जारी सफाई अभी पूरी हो सकती है।</string>
     <string name="cache_partial">आंशिक माप; अनुपलब्ध आकार शामिल नहीं हैं।</string>
+
+    <!-- Optional Settings UI cache clearing -->
+    <string name="cache_clear_method">साफ़ करने का तरीका</string>
+    <string name="cache_shizuku_method">Shizuku (केवल कैश का कमांड)</string>
+    <string name="cache_settings_method">सेटिंग सहायक (सुलभता)</string>
+    <string name="cache_settings_help">Android की ऐप सेटिंग खोलकर चुने हुए उपयोगकर्ता या सिस्टम ऐप के लिए कैश साफ़ करें दबाता है, जैसे आप खुद करते हैं। Shizuku की ज़रूरत नहीं है। अनजान स्क्रीन पर सुरक्षित रूप से रुक जाता है।</string>
+    <string name="cache_settings_enable">सेटिंग सहायक चालू करें</string>
+    <string name="cache_settings_enable_help">Android की सुलभता सेटिंग में सहायक चालू करें, यहाँ लौटें और सफ़ाई की पुष्टि करें। अनुमति देने से सफ़ाई शुरू नहीं होती।</string>
+    <string name="cache_settings_warning">सहायक नीचे दिए ऐप की सेटिंग नियंत्रित करेगा और केवल कैश साफ़ करें दबाएगा। स्क्रीन अनलॉक रखें और सेटिंग को न छुएँ। रोकने के लिए तैरती पट्टी पर रद्द करें दबाएँ। ऐप और खाते सुरक्षित रहते हैं, लेकिन साफ़ किया हुआ कैश बैकअप या पुनर्स्थापित नहीं हो सकता। असमर्थित स्क्रीन या अनिश्चित परिणाम पर पूरा बैच रुक जाता है। जारी रखें?</string>
+    <string name="cache_settings_disclosure">वैकल्पिक सुलभता अनुमति से Debloater Android सेटिंग के दिखने वाले नियंत्रण पढ़ सकता है और केवल आपके चुने व पुष्टि किए ऐप के लिए स्टोरेज और कैश साफ़ करें दबा सकता है। स्क्रीन की सामग्री सहेजी या भेजी नहीं जाती। सफ़ाई के दौरान तैरता रद्द करें बटन दिखता रहता है। आप सुलभता सेटिंग में सेवा कभी भी बंद कर सकते हैं।</string>
+    <string name="cache_settings_running">कैश साफ़ हो रहा है: %1$s</string>
+
+    <!-- Reviewed app leftovers and recovery -->
+    <string name="leftovers_title">ऐप के बचे हुए फ़ाइल</string>
+    <string name="leftovers_nav_help">हटाए गए ऐप के बचे फ़ोल्डर खोजें</string>
+    <string name="leftovers_help">संभावित बचे फ़ोल्डर खोजें, उनके पथ जाँचें और चुने हुए फ़ोल्डर पुनर्प्राप्ति में ले जाएँ। कुछ भी अपने आप चुना या हटाया नहीं जाता।</string>
+    <string name="leftovers_scope">केवल मौजूदा उपयोगकर्ता का मुख्य स्टोरेज: Android/data, Android/obb और Android/media। इंस्टॉल, बंद और रिकॉर्ड रखे गए पैकेज सुरक्षित हैं। अनजान फ़ोल्डर और पहुँच से बाहर स्थान छोड़ दिए जाते हैं।</string>
+    <string name="leftovers_scan">बचे फ़ोल्डर स्कैन करें</string>
+    <string name="leftovers_needs_shizuku">स्कैन और पुनर्प्राप्ति के लिए Shizuku चालू और अधिकृत होना चाहिए।</string>
+    <string name="leftovers_scan_done">संभावित बचे फ़ोल्डर: %1$d</string>
+    <string name="leftovers_stop_help">रद्द करने पर मौजूदा सीमित फ़ाइल कार्रवाई पूरी होने के बाद रुकता है। पूरी हुई कार्रवाइयाँ वापस नहीं होतीं।</string>
+    <string name="leftovers_partial">अधूरा स्कैन: कुछ स्थान या फ़ोल्डर जाँचे नहीं जा सके।</string>
+    <string name="leftovers_move">पुनर्प्राप्ति में ले जाएँ</string>
+    <string name="leftovers_recovery">बचे फ़ाइलों की पुनर्प्राप्ति</string>
+    <string name="leftovers_recovery_help">पुनर्प्राप्ति फ़ाइलों को साझा स्टोरेज में रखती है और जगह खाली नहीं करती। उन्हें वापस लाएँ या जाँच के बाद अलग-अलग रिकॉर्ड हमेशा के लिए हटाएँ।</string>
+    <string name="leftovers_load_recovery">पुनर्प्राप्ति रिकॉर्ड लोड करें</string>
+    <string name="leftovers_restore">फ़ोल्डर वापस लाएँ</string>
+    <string name="leftovers_delete">हमेशा के लिए हटाएँ</string>
+    <string name="leftovers_restore_warning">इस फ़ोल्डर को मूल स्थान पर वापस लाएँ? मौजूद फ़ोल्डर न बदले जाएँगे, न मिलाए जाएँगे। दूसरी फ़ाइल कार्रवाइयाँ रोकें।</string>
+    <string name="leftovers_delete_warning">जगह खाली करने के लिए ये फ़ाइल हमेशा के लिए हटाएँ? इनमें निजी फ़ाइल हो सकती हैं। इसे वापस नहीं किया जा सकता और कोई बैकअप नहीं रहेगा।</string>
+    <string name="leftovers_move_warning">इन फ़ोल्डर में निजी फ़ाइल हो सकती हैं। हर पथ जाँचें। चुने फ़ोल्डर मूल स्थान दर्ज करके साझा स्टोरेज के .DebloaterRecovery में जाएँगे। उन्हें वापस लाया जा सकता है, लेकिन स्थायी रूप से हटाने तक जगह खाली नहीं होगी। कार्रवाई के दौरान ऐप इंस्टॉल या अनइंस्टॉल न करें। जारी रखें?</string>
+    <string name="leftovers_action_done">पूरी हुईं: %1$d · विफल: %2$d</string>
 </resources>

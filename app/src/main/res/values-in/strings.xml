@@ -382,4 +382,36 @@
     <string name="cache_refreshing">Memperbarui aplikasi yang dibersihkan</string>
     <string name="cache_stopped">Dihentikan. Hasil mungkin sebagian. Pembersihan selesai tidak dibatalkan; proses berjalan mungkin masih selesai.</string>
     <string name="cache_partial">Pengukuran sebagian; ukuran tidak tersedia tidak dihitung.</string>
+
+    <!-- Optional Settings UI cache clearing -->
+    <string name="cache_clear_method">Metode pembersihan</string>
+    <string name="cache_shizuku_method">Shizuku (perintah khusus cache)</string>
+    <string name="cache_settings_method">Asisten Setelan (Aksesibilitas)</string>
+    <string name="cache_settings_help">Membuka setelan aplikasi Android dan menekan Hapus cache untuk aplikasi pengguna atau sistem yang dipilih, seperti tindakan manual. Tidak perlu Shizuku. Berhenti dengan aman pada layar yang tidak dikenal.</string>
+    <string name="cache_settings_enable">Aktifkan asisten Setelan</string>
+    <string name="cache_settings_enable_help">Aktifkan asisten di setelan Aksesibilitas Android, kembali ke sini lalu konfirmasi pembersihan. Mengaktifkan akses tidak memulai pembersihan.</string>
+    <string name="cache_settings_warning">Asisten akan mengontrol Setelan untuk aplikasi di bawah dan hanya menekan Hapus cache. Biarkan layar terbuka dan jangan sentuh Setelan. Tekan Batal pada bilah mengambang untuk berhenti. Aplikasi dan akun tetap tersimpan, tetapi cache yang dihapus tidak dapat dicadangkan atau dipulihkan. Layar yang tidak didukung atau hasil tidak pasti menghentikan seluruh proses. Lanjutkan?</string>
+    <string name="cache_settings_disclosure">Akses Aksesibilitas opsional memungkinkan Debloater membaca kontrol Setelan Android yang terlihat dan menekan Penyimpanan serta Hapus cache, hanya untuk aplikasi yang Anda pilih dan konfirmasi. Isi layar tidak disimpan atau dikirim. Tombol Batal mengambang tetap terlihat selama pembersihan. Anda dapat menonaktifkan layanan kapan saja di setelan Aksesibilitas.</string>
+    <string name="cache_settings_running">Menghapus cache: %1$s</string>
+
+    <!-- Reviewed app leftovers and recovery -->
+    <string name="leftovers_title">Sisa aplikasi</string>
+    <string name="leftovers_nav_help">Temukan folder dari aplikasi yang dihapus</string>
+    <string name="leftovers_help">Temukan kemungkinan sisa, periksa jalurnya, lalu pindahkan folder pilihan ke pemulihan. Tidak ada yang dipilih atau dihapus secara otomatis.</string>
+    <string name="leftovers_scope">Hanya penyimpanan utama pengguna saat ini: Android/data, Android/obb dan Android/media. Paket terpasang, nonaktif dan catatan yang dipertahankan dilindungi. Folder tidak dikenal dan area yang tidak dapat diakses dilewati.</string>
+    <string name="leftovers_scan">Pindai sisa aplikasi</string>
+    <string name="leftovers_needs_shizuku">Shizuku harus aktif dan diizinkan untuk pemindaian dan pemulihan.</string>
+    <string name="leftovers_scan_done">Kemungkinan folder sisa: %1$d</string>
+    <string name="leftovers_stop_help">Batal menghentikan setelah operasi berkas terbatas saat ini. Tindakan selesai tidak dibatalkan.</string>
+    <string name="leftovers_partial">Pemindaian sebagian: beberapa lokasi atau folder tidak dapat diperiksa.</string>
+    <string name="leftovers_move">Pindahkan ke pemulihan</string>
+    <string name="leftovers_recovery">Pemulihan sisa</string>
+    <string name="leftovers_recovery_help">Pemulihan menyimpan berkas di penyimpanan bersama dan tidak mengosongkan ruang. Pulihkan atau hapus permanen setiap catatan setelah ditinjau.</string>
+    <string name="leftovers_load_recovery">Muat catatan pemulihan</string>
+    <string name="leftovers_restore">Pulihkan folder</string>
+    <string name="leftovers_delete">Hapus permanen</string>
+    <string name="leftovers_restore_warning">Pulihkan folder ini ke lokasi asal? Folder yang ada tidak pernah ditimpa atau digabungkan. Jeda operasi berkas lain.</string>
+    <string name="leftovers_delete_warning">Hapus permanen berkas pemulihan ini untuk mengosongkan ruang? Berkas pribadi mungkin ada di dalamnya. Ini tidak dapat dibatalkan dan tidak ada cadangan yang tersisa.</string>
+    <string name="leftovers_move_warning">Folder ini mungkin berisi berkas pribadi. Periksa setiap jalur. Folder pilihan akan dipindahkan ke .DebloaterRecovery di penyimpanan bersama dengan lokasi asal dicatat. Berkas dapat dipulihkan, tetapi ruang baru kosong setelah penghapusan permanen. Jangan memasang atau menghapus aplikasi selama operasi. Lanjutkan?</string>
+    <string name="leftovers_action_done">Selesai: %1$d · Gagal: %2$d</string>
 </resources>

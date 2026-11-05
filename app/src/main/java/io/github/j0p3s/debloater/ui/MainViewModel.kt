@@ -35,7 +35,7 @@ sealed interface ListUpdateState {
     data class Failed(val message: String) : ListUpdateState
 }
 
-enum class Screen { HOME, DEBLOAT, APP_MANAGER, OPERATION, BACKUPS, SETTINGS, ADL_CHECK, USER_CACHE, SYSTEM_CACHE, CLEANUP, HELP }
+enum class Screen { HOME, DEBLOAT, APP_MANAGER, OPERATION, BACKUPS, SETTINGS, ADL_CHECK, USER_CACHE, SYSTEM_CACHE, CLEANUP, HELP, LEFTOVERS }
 
 /** A request that needs the user's confirmation before it runs. */
 data class PendingOperation(
@@ -54,7 +54,9 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     val repo = PackageRepository(app)
     val backups = BackupManager(app)
     val engine = OperationEngine(repo, backups)
-    val cache = CacheController(app, repo, viewModelScope, { !engine.isRunning }, ::refreshAfterCache)
+    val cache = CacheController(app, repo, viewModelScope, ::canRunCache, ::refreshAfterCache)
+    val leftovers = LeftoverController(repo.userId, viewModelScope) { !engine.isRunning && !cache.busy }
+    private fun canRunCache() = !engine.isRunning && !leftovers.busy
     val prefs = Prefs(app)
     /** Current debloat list (re-read after an in-app update). */
     val database: DebloatDatabase get() = DebloatDatabase.get(getApplication())
@@ -175,13 +177,13 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     // ------------------------------------------------------------ navigation
 
     fun navigate(screen: Screen) {
-        if (cache.busy) return
+        if (cache.busy || leftovers.busy) return
         _backStack.value = _backStack.value + screen
     }
 
     /** Returns false when there is nothing to go back to. */
     fun back(): Boolean {
-        if (cache.busy) return true
+        if (cache.busy || leftovers.busy) return true
         val stack = _backStack.value
         if (stack.last() == Screen.OPERATION && engine.isRunning) return true
         if (stack.size <= 1) return false
@@ -246,7 +248,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     private fun start(apps: List<AppInfo>, action: Action, dryRun: Boolean, keepData: Boolean) {
-        if (engine.isRunning || cache.busy) return
+        if (engine.isRunning || cache.busy || leftovers.busy) return
         lastRequest = LastRequest.Run(apps.map { it.packageName }, action, keepData)
         if (!dryRun) {
             _debloatSelection.value = emptySet()
@@ -309,7 +311,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     private fun startRestore(items: List<RestoreItem>, dryRun: Boolean, title: String) {
-        if (engine.isRunning || cache.busy) return
+        if (engine.isRunning || cache.busy || leftovers.busy) return
         lastRequest = LastRequest.Restore(items, title)
         if (_backStack.value.last() != Screen.OPERATION) navigate(Screen.OPERATION)
         viewModelScope.launch {

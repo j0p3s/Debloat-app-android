@@ -1,6 +1,17 @@
 # Changelog
 
-## 1.10.3 � 2026-11-04
+## 1.11.0 — Unreleased
+
+- Add an opt-in Settings Accessibility cache assistant for selected user and system apps, with disclosure and a warning before every batch.
+- Verify app identity and localized cache controls; stop on unknown screens, lock, cancellation or uncertain outcomes. Keep Shizuku as a separate method.
+- Allow selecting cache apps without Usage Access; measurement still requires it.
+- Add App leftovers: review possible orphan package folders in current-user primary Android/data, Android/obb and Android/media storage.
+- Protect installed, disabled and retained packages; reject unknown owners, unsafe paths and symbolic links.
+- Move reviewed leftovers into persistent recovery first; restore without overwrites, or permanently delete individual recovery records after a separate warning.
+- Add regression tests, setup/limitation docs and translations for all supported languages.
+
+
+## 1.10.3 — 2026-11-04
 
 - Measure only the selected cache category using two bounded workers and progressive partial results.
 - Add cancellable measurements with eight-second caller waits and bounded outstanding Binder calls.

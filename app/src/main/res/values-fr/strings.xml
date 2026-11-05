@@ -382,4 +382,36 @@
     <string name="cache_refreshing">Actualisation des applications nettoyées</string>
     <string name="cache_stopped">Arrêté. Résultats potentiellement partiels. Les caches déjà vidés ne sont pas restaurés ; un effacement en cours peut encore se terminer.</string>
     <string name="cache_partial">Mesures partielles ; tailles indisponibles exclues.</string>
+
+    <!-- Optional Settings UI cache clearing -->
+    <string name="cache_clear_method">Méthode de nettoyage</string>
+    <string name="cache_shizuku_method">Shizuku (commande de cache uniquement)</string>
+    <string name="cache_settings_method">Assistant des paramètres (Accessibilité)</string>
+    <string name="cache_settings_help">Ouvre les paramètres Android et appuie sur Vider le cache pour les applications utilisateur ou système sélectionnées, comme vous le feriez. Shizuku est inutile. Les écrans inconnus arrêtent la procédure.</string>
+    <string name="cache_settings_enable">Activer l’assistant des paramètres</string>
+    <string name="cache_settings_enable_help">Activez l’assistant dans les paramètres d’accessibilité Android, revenez et confirmez le nettoyage. Autoriser l’accès ne lance pas le nettoyage.</string>
+    <string name="cache_settings_warning">L’assistant contrôlera les paramètres pour les applications ci-dessous et appuiera uniquement sur Vider le cache. Gardez l’écran déverrouillé et évitez de toucher aux paramètres. Utilisez Annuler dans la barre flottante pour arrêter. Les applications et comptes sont conservés, mais le cache vidé ne peut être sauvegardé ni restauré. Les écrans incompatibles ou résultats incertains arrêtent le lot. Continuer ?</string>
+    <string name="cache_settings_disclosure">L’accès facultatif à l’accessibilité permet à Debloater de lire les commandes visibles des paramètres Android et d’appuyer sur Stockage et Vider le cache, uniquement pour les applications sélectionnées et confirmées. Le contenu de l’écran n’est ni enregistré ni envoyé. Un bouton flottant Annuler reste visible pendant le nettoyage. Vous pouvez désactiver le service à tout moment dans les paramètres d’accessibilité.</string>
+    <string name="cache_settings_running">Nettoyage du cache : %1$s</string>
+
+    <!-- Reviewed app leftovers and recovery -->
+    <string name="leftovers_title">Résidus d’applications</string>
+    <string name="leftovers_nav_help">Trouver les dossiers d’applications désinstallées</string>
+    <string name="leftovers_help">Recherchez des résidus possibles, vérifiez leurs chemins puis déplacez les dossiers sélectionnés vers la récupération. Rien n’est sélectionné ni supprimé automatiquement.</string>
+    <string name="leftovers_scope">Stockage principal de l’utilisateur actuel uniquement : Android/data, Android/obb et Android/media. Les applications installées, désactivées et conservées sont protégées. Les dossiers inconnus et zones inaccessibles sont ignorés.</string>
+    <string name="leftovers_scan">Rechercher les résidus</string>
+    <string name="leftovers_needs_shizuku">Shizuku doit être actif et autorisé pour analyser et récupérer.</string>
+    <string name="leftovers_scan_done">Dossiers résiduels possibles : %1$d</string>
+    <string name="leftovers_stop_help">Annuler arrête après l’opération de fichiers en cours. Les actions terminées ne sont pas annulées.</string>
+    <string name="leftovers_partial">Analyse partielle : certains emplacements ou dossiers n’ont pas pu être vérifiés.</string>
+    <string name="leftovers_move">Déplacer vers la récupération</string>
+    <string name="leftovers_recovery">Récupération des résidus</string>
+    <string name="leftovers_recovery_help">La récupération garde les fichiers dans le stockage partagé et ne libère pas d’espace. Restaurez-les ou supprimez chaque entrée définitivement après vérification.</string>
+    <string name="leftovers_load_recovery">Charger les entrées de récupération</string>
+    <string name="leftovers_restore">Restaurer le dossier</string>
+    <string name="leftovers_delete">Supprimer définitivement</string>
+    <string name="leftovers_restore_warning">Restaurer ce dossier à son emplacement initial ? Les dossiers existants ne sont jamais remplacés ni fusionnés. Suspendez les autres opérations de fichiers.</string>
+    <string name="leftovers_delete_warning">Supprimer définitivement ces fichiers pour libérer de l’espace ? Ils peuvent contenir des fichiers personnels. Cette action est irréversible et aucune sauvegarde ne restera.</string>
+    <string name="leftovers_move_warning">Ces dossiers peuvent contenir des fichiers personnels. Vérifiez chaque chemin. Ils seront déplacés vers .DebloaterRecovery dans le stockage partagé avec leurs emplacements initiaux enregistrés. Ils restent récupérables, mais seul l’effacement définitif libère de l’espace. Évitez d’installer ou désinstaller des applications pendant l’opération. Continuer ?</string>
+    <string name="leftovers_action_done">Terminées : %1$d · Échecs : %2$d</string>
 </resources>

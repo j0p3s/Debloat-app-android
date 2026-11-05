@@ -33,6 +33,10 @@ enum class CacheScope(@param:StringRes @get:StringRes val titleRes: Int) {
     }
 }
 
+enum class CacheClearMethod(@param:StringRes @get:StringRes val titleRes: Int) {
+    SHIZUKU(R.string.cache_shizuku_method), SETTINGS(R.string.cache_settings_method);
+}
+
 object CachePolicy {
     fun inScope(groups: List<CacheGroup>, scope: CacheScope): List<CacheGroup> = groups.filter(scope::includes)
 
