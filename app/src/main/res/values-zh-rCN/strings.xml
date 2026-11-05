@@ -414,4 +414,12 @@
     <string name="leftovers_delete_warning">永久删除这些恢复文件以释放空间？其中可能包含个人文件。此操作无法撤销，且不会保留备份。</string>
     <string name="leftovers_move_warning">这些文件夹可能包含个人文件。请检查所有路径。所选文件夹将移到共享存储中的 .DebloaterRecovery，并记录原位置。可以恢复，但永久删除之前不会释放空间。操作期间请勿安装或卸载应用。是否继续？</string>
     <string name="leftovers_action_done">已完成：%1$d · 失败：%2$d</string>
+
+    <string name="permissions_ready">Available</string>
+    <string name="permissions_automatic">Granted by Android at installation; no separate permission prompt. This checks authorization, not network connectivity.</string>
+    <string name="permissions_missing">Not available — review setup</string>
+    <string name="permissions_title">Permissions</string>
+    <string name="permissions_usage">Usage Access (optional measurements)</string>
+    <string name="permissions_validate">Validate access</string>
+    <string name="cache_settings_remaining">已处理：%1$d / %2$d · 剩余（含当前）：%3$d</string>
 </resources>

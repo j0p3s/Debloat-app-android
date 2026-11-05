@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.11.1 — 2026-11-05
+
+- Add Settings → Permissions with live access validation and setup links.
+- Show processed/total and remaining apps in the Accessibility cache overlay; remaining includes the current app.
+- Count processed attempts, including skipped apps, without implying successful deletion.
+- Translate the counter across supported locales; new permissions labels currently use English outside Portuguese.
+
+
 ## 1.11.0 — 2026-11-05
 
 - Add an opt-in Settings Accessibility cache assistant for selected user and system apps, with disclosure and a warning before every batch.

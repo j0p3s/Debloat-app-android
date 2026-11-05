@@ -414,4 +414,12 @@
     <string name="leftovers_delete_warning">Удалить эти файлы навсегда, чтобы освободить место? Они могут содержать личные файлы. Это необратимо, резервной копии не останется.</string>
     <string name="leftovers_move_warning">В этих папках могут быть личные файлы. Проверьте все пути. Выбранные папки будут перемещены в .DebloaterRecovery в общем хранилище с записью исходных путей. Они восстановимы, но место освободится только после окончательного удаления. Не устанавливайте и не удаляйте приложения во время операции. Продолжить?</string>
     <string name="leftovers_action_done">Выполнено: %1$d · Ошибок: %2$d</string>
+
+    <string name="permissions_ready">Available</string>
+    <string name="permissions_automatic">Granted by Android at installation; no separate permission prompt. This checks authorization, not network connectivity.</string>
+    <string name="permissions_missing">Not available — review setup</string>
+    <string name="permissions_title">Permissions</string>
+    <string name="permissions_usage">Usage Access (optional measurements)</string>
+    <string name="permissions_validate">Validate access</string>
+    <string name="cache_settings_remaining">Обработано: %1$d / %2$d · Осталось (включая текущее): %3$d</string>
 </resources>

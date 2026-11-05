@@ -414,4 +414,12 @@
     <string name="leftovers_delete_warning">هل تريد حذف ملفات الاسترداد هذه نهائياً لتحرير مساحة؟ قد تحتوي على ملفات شخصية. لا يمكن التراجع ولن تبقى نسخة احتياطية.</string>
     <string name="leftovers_move_warning">قد تحتوي هذه المجلدات على ملفات شخصية. راجع كل مسار. ستنقل المجلدات المحددة إلى .DebloaterRecovery في التخزين المشترك مع تسجيل مواقعها الأصلية. يمكن استردادها لكنها لا تحرر مساحة قبل الحذف الدائم. تجنب تثبيت التطبيقات أو إلغاء تثبيتها أثناء العملية. هل تريد المتابعة؟</string>
     <string name="leftovers_action_done">مكتملة: %1$d · فاشلة: %2$d</string>
+
+    <string name="permissions_ready">Available</string>
+    <string name="permissions_automatic">Granted by Android at installation; no separate permission prompt. This checks authorization, not network connectivity.</string>
+    <string name="permissions_missing">Not available — review setup</string>
+    <string name="permissions_title">Permissions</string>
+    <string name="permissions_usage">Usage Access (optional measurements)</string>
+    <string name="permissions_validate">Validate access</string>
+    <string name="cache_settings_remaining">تمت المعالجة: %1$d / %2$d · المتبقي (بما فيه الحالي): %3$d</string>
 </resources>

@@ -414,4 +414,12 @@
     <string name="leftovers_delete_warning">Eliminar permanentemente estes ficheiros para libertar espaço? Podem conter ficheiros pessoais. Esta ação é irreversível e não ficará nenhuma cópia de segurança.</string>
     <string name="leftovers_move_warning">Estas pastas podem conter ficheiros pessoais. Reveja cada caminho. As pastas selecionadas serão movidas para .DebloaterRecovery no armazenamento partilhado, com os locais originais registados. Podem ser recuperadas, mas só a eliminação permanente liberta espaço. Evite instalar ou desinstalar apps durante a operação. Continuar?</string>
     <string name="leftovers_action_done">Concluídas: %1$d · Falhadas: %2$d</string>
+
+    <string name="permissions_ready">Disponível</string>
+    <string name="permissions_automatic">Concedida pelo Android na instalação, sem pedido separado. Verifica a autorização, não a ligação à Internet.</string>
+    <string name="permissions_missing">Indisponível — reveja a configuração</string>
+    <string name="permissions_title">Permissões</string>
+    <string name="permissions_usage">Acesso à utilização (medições opcionais)</string>
+    <string name="permissions_validate">Validar acesso</string>
+    <string name="cache_settings_remaining">Processadas: %1$d / %2$d · Restantes (incluindo a atual): %3$d</string>
 </resources>

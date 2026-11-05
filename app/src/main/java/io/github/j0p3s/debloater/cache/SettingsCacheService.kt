@@ -38,8 +38,8 @@ class SettingsCacheService : AccessibilityService() {
 
         fun settingsIntent(): Intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
 
-        suspend fun clear(target: SettingsCachePolicy.Target): SettingsCacheResult =
-            instance?.clearOne(target) ?: SettingsCacheResult.SKIPPED
+        suspend fun clear(target: SettingsCachePolicy.Target, completed: Int, total: Int): SettingsCacheResult =
+            instance?.clearOne(target, completed, total) ?: SettingsCacheResult.SKIPPED
     }
 
     private var activeJob: Job? = null
@@ -104,7 +104,7 @@ class SettingsCacheService : AccessibilityService() {
         }
     }
 
-    private fun showStopControl(label: String) {
+    private fun showStopControl(label: String, completed: Int, total: Int) {
         val manager = getSystemService(WindowManager::class.java)
         val dp = resources.displayMetrics.density
         val bar = LinearLayout(this).apply {
@@ -113,8 +113,9 @@ class SettingsCacheService : AccessibilityService() {
             setPadding((12 * dp).toInt(), (6 * dp).toInt(), (12 * dp).toInt(), (6 * dp).toInt())
             setBackgroundColor(0xff20352c.toInt())
             addView(TextView(context).apply {
-                text = getString(R.string.cache_settings_running, label)
-                setTextColor(0xffffffff.toInt()); maxLines = 2
+                text = getString(R.string.cache_settings_running, label) + "\n" +
+                    getString(R.string.cache_settings_remaining, completed, total, total - completed)
+                setTextColor(0xffffffff.toInt()); maxLines = 4
             }, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
             addView(Button(context).apply {
                 text = getString(R.string.cancel)
@@ -134,7 +135,7 @@ class SettingsCacheService : AccessibilityService() {
         stopView = null
     }
 
-    private suspend fun clearOne(target: SettingsCachePolicy.Target): SettingsCacheResult {
+    private suspend fun clearOne(target: SettingsCachePolicy.Target, completed: Int, total: Int): SettingsCacheResult {
         check(activeJob == null) { "Settings cache assistant is already busy" }
         if (target.packageName in setOf(packageName, SettingsCachePolicy.SETTINGS_PACKAGE)) return SettingsCacheResult.SKIPPED
         activeJob = currentCoroutineContext()[Job]
@@ -145,7 +146,7 @@ class SettingsCacheService : AccessibilityService() {
                 .setPackage(SettingsCachePolicy.SETTINGS_PACKAGE).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
             val activity = packageManager.resolveActivity(intent, 0)?.activityInfo ?: return SettingsCacheResult.UNKNOWN
             if (activity.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM == 0) return SettingsCacheResult.UNKNOWN
-            showStopControl(target.label) // If Stop cannot be shown, do not start automation.
+            showStopControl(target.label, completed, total) // If Stop cannot be shown, do not start automation.
             startActivity(intent)
             var navigated = false
             var clicked = false
