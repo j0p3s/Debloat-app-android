@@ -1,5 +1,12 @@
 # Changelog
 
+## 1.11.7 — 2026-11-05
+
+- Recognize disabled cache controls even when they are non-clickable.
+- Check ancestor enabled state before clicking, log a skip and continue to the next app.
+- Add disabled-control and disabled-parent regression tests.
+
+
 ## 1.11.6 — 2026-11-05
 
 - Add the actual Nubia English “Storage and cache” label alongside “Storage & cache”.

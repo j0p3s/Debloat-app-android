@@ -189,11 +189,12 @@ class SettingsCacheService : AccessibilityService() {
                                 val clear = SettingsCachePolicy.clearButton(page, target, labels)
                                 if(stableTargetPolls == 2) diagnostic("Selectors: storage=${SettingsCachePolicy.storageRow(page, target, labels)}; clear=$clear; navigated=$navigated; clicked=$clicked")
                                 if (clear != null) {
-                                    val button = page.nodes[clear]
+                                    val enabled = SettingsCachePolicy.controlEnabled(page.nodes, clear)
                                     if (clicked) {
-                                        disabledPolls = if (!button.enabled) disabledPolls + 1 else 0
+                                        disabledPolls = if (!enabled) disabledPolls + 1 else 0
                                         if (disabledPolls >= 3) return@withTimeoutOrNull SettingsCacheResult.CONFIRMED
-                                    } else if (!button.enabled) {
+                                    } else if (!enabled) {
+                                        diagnostic("Skip: Clear cache is disabled; no click sent; continue to next app")
                                         return@withTimeoutOrNull SettingsCacheResult.SKIPPED
                                     } else {
                                         // Exactly one press; no dialog confirmation, gestures or blind key navigation.

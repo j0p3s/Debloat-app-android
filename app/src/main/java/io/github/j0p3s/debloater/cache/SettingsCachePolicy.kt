@@ -66,13 +66,13 @@ object SettingsCachePolicy {
             page.nodes.any { it.visible && normalize(it.text) in names }
     }
 
-    private fun clickParent(nodes: List<Node>, index: Int, accept: (Node) -> Boolean): Int? {
+    private fun clickParent(nodes: List<Node>, index: Int, allowDisabled: Boolean = false, accept: (Node) -> Boolean): Int? {
         var cursor: Int? = index
         repeat(4) {
             val current = cursor ?: return null
             val node = nodes.getOrNull(current) ?: return null
             if (!node.visible) return null
-            if (node.clickable && accept(node)) return current
+            if ((node.clickable || (allowDisabled && !node.enabled)) && accept(node)) return current
             cursor = node.parent
         }
         return null
@@ -84,12 +84,24 @@ object SettingsCachePolicy {
             val node = page.nodes[i]
             node.visible && matches(node, labels.clearCache) && !matches(node, labels.destructive)
         }.mapNotNull { i ->
-            clickParent(page.nodes, i) { candidate ->
+            clickParent(page.nodes, i, allowDisabled = true) { candidate ->
                 // A directly labelled clickable cache control is safe even with an OEM ID.
                 (settingsId(candidate, clearIds) || matches(candidate, labels.clearCache)) && !matches(candidate, labels.destructive)
             }
         }.distinct()
         return candidates.singleOrNull()
+    }
+
+    fun controlEnabled(nodes: List<Node>, index: Int): Boolean {
+        var cursor: Int? = index
+        val visited = mutableSetOf<Int>()
+        while(cursor != null) {
+            if(!visited.add(cursor)) return false
+            val node = nodes.getOrNull(cursor) ?: return false
+            if(!node.enabled) return false
+            cursor = node.parent
+        }
+        return true
     }
 
     fun storageRow(page: Page, target: Target, labels: Labels): Int? {
