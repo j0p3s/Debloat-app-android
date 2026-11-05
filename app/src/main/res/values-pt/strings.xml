@@ -446,4 +446,10 @@
     <string name="debug_failed">Não foi possível guardar o relatório: %1$s</string>
     <string name="debug_working">A recolher registos…</string>
     <string name="cache_shell_ignored">O Android provavelmente ignorou o comando de cache enviado pelo Shizuku: o tamanho da cache não mudou nada. Em alguns telemóveis, o utilizador shell não pode limpar caches. Use o método Definições. (Se a app estava aberta, também pode ter voltado a encher a cache.)</string>
+    <string name="cache_fallback_title">O Shizuku não conseguiu limpar %1$d app(s)</string>
+    <string name="cache_fallback_help">O Android não limpou estas caches através do Shizuku. Selecione as apps a limpar com o método Definições. O aviso habitual do assistente das Definições aparece antes de começar.</string>
+    <string name="cache_fallback_failed">Falharam com o Shizuku</string>
+    <string name="cache_fallback_untried">Não tentadas: o Android ignorou o Shizuku neste telemóvel</string>
+    <string name="cache_fallback_use_settings">Usar método Definições</string>
+    <string name="cache_fallback_not_now">Agora não</string>
 </resources>

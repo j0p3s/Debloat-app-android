@@ -197,6 +197,41 @@ fun CacheScreen(vm: MainViewModel, system: Boolean) {
             dismissButton = { TextButton(onClick = { cache.pending = null }) { Text(stringResource(R.string.cancel)) } },
         )
     }
+    cache.fallback?.let { offer ->
+        var chosen by remember(offer) { mutableStateOf((offer.failed + offer.untried).map { it.key }.toSet()) }
+        AlertDialog(
+            onDismissRequest = { cache.fallback = null },
+            title = { Text(stringResource(R.string.cache_fallback_title, (offer.failed + offer.untried).size)) },
+            text = {
+                Column(Modifier.heightIn(max = 420.dp).verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    Text(stringResource(R.string.cache_fallback_help))
+                    @Composable fun section(title: Int, items: List<io.github.j0p3s.debloater.data.CacheGroup>) {
+                        if(items.isEmpty()) return
+                        Text(stringResource(title), style = MaterialTheme.typography.titleSmall)
+                        items.forEach { group ->
+                            Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
+                                Checkbox(checked = group.key in chosen, onCheckedChange = { on -> chosen = if(on) chosen + group.key else chosen - group.key })
+                                Column(Modifier.weight(1f)) {
+                                    Text(group.label)
+                                    Text(listOfNotNull(group.packages.joinToString(", "), group.bytes?.let { formatSize(it) }).joinToString(" · "),
+                                        style = MaterialTheme.typography.bodySmall)
+                                }
+                            }
+                        }
+                    }
+                    section(R.string.cache_fallback_failed, offer.failed)
+                    section(R.string.cache_fallback_untried, offer.untried)
+                    if(!settingsAvailable) {
+                        Text(stringResource(R.string.cache_settings_enable_help), color = MaterialTheme.colorScheme.error)
+                        TextButton(onClick = { showAccessDisclosure = true }) { Text(stringResource(R.string.cache_settings_enable)) }
+                    }
+                }
+            },
+            confirmButton = { Button(onClick = { cache.useSettingsFor(chosen) }, enabled = chosen.isNotEmpty() && settingsAvailable && free) {
+                Text(stringResource(R.string.cache_fallback_use_settings)) } },
+            dismissButton = { TextButton(onClick = { cache.fallback = null }) { Text(stringResource(R.string.cache_fallback_not_now)) } },
+        )
+    }
     if(showAccessDisclosure) AlertDialog(
         onDismissRequest = { showAccessDisclosure = false },
         title = { Text(stringResource(R.string.cache_settings_enable)) },

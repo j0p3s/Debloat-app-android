@@ -37,7 +37,20 @@ enum class CacheClearMethod(@param:StringRes @get:StringRes val titleRes: Int) {
     SHIZUKU(R.string.cache_shizuku_method), SETTINGS(R.string.cache_settings_method);
 }
 
+/** Groups Shizuku failed to clear, and groups not tried because Android ignored Shizuku. */
+data class CacheFallback(val failed: List<CacheGroup>, val untried: List<CacheGroup>)
+
 object CachePolicy {
+    /** After a timed-out shell clear, an unchanged size for this long ends the wait early. */
+    const val IGNORED_AFTER_MS = 20_000L
+
+    /** Maps failed/untried packages back to their (non-empty) cache groups; null when there is nothing to offer. */
+    fun fallback(targets: List<CacheGroup>, failed: Collection<String>, untried: Collection<String>): CacheFallback? {
+        val failedGroups = targets.filter { g -> g.bytes != 0L && g.packages.any { it in failed } }
+        val untriedGroups = targets.filter { g -> g.bytes != 0L && g !in failedGroups && g.packages.any { it in untried } }
+        return CacheFallback(failedGroups, untriedGroups).takeIf { failedGroups.isNotEmpty() || untriedGroups.isNotEmpty() }
+    }
+
     /** After a timed-out cache-only clear, how long the real cache size is re-checked before the batch stops. */
     const val TIMEOUT_GRACE_MS = 60_000L
 

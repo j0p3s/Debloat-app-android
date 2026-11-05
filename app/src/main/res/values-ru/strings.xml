@@ -446,4 +446,10 @@
     <string name="debug_failed">Не удалось сохранить отчёт: %1$s</string>
     <string name="debug_working">Сбор журналов…</string>
     <string name="cache_shell_ignored">Скорее всего, Android проигнорировал команду очистки кеша через Shizuku: размер кеша совсем не изменился. На некоторых телефонах пользователь shell не может очищать кеш. Используйте способ через Настройки. (Если приложение было открыто, оно также могло снова заполнить кеш.)</string>
+    <string name="cache_fallback_title">Shizuku не смог очистить приложений: %1$d</string>
+    <string name="cache_fallback_help">Android не очистил этот кеш через Shizuku. Выберите приложения, которые нужно очистить через Настройки. Перед началом появится обычное предупреждение помощника Настроек.</string>
+    <string name="cache_fallback_failed">Не удалось через Shizuku</string>
+    <string name="cache_fallback_untried">Не обработаны: Android проигнорировал Shizuku на этом телефоне</string>
+    <string name="cache_fallback_use_settings">Очистить через Настройки</string>
+    <string name="cache_fallback_not_now">Не сейчас</string>
 </resources>

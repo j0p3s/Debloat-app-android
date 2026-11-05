@@ -446,4 +446,10 @@
     <string name="debug_failed">Impossibile salvare il report: %1$s</string>
     <string name="debug_working">Raccolta dei log…</string>
     <string name="cache_shell_ignored">Probabilmente Android ha ignorato il comando cache inviato tramite Shizuku: la dimensione della cache non è cambiata affatto. Su alcuni telefoni l’utente shell non può svuotare le cache. Usa il metodo Impostazioni. (Se l’app era aperta, potrebbe anche aver riempito di nuovo la cache.)</string>
+    <string name="cache_fallback_title">Shizuku non è riuscito a svuotare %1$d app</string>
+    <string name="cache_fallback_help">Android non ha svuotato queste cache tramite Shizuku. Seleziona le app da svuotare con il metodo Impostazioni. Prima di iniziare viene mostrato il solito avviso dell’assistente Impostazioni.</string>
+    <string name="cache_fallback_failed">Non riuscite con Shizuku</string>
+    <string name="cache_fallback_untried">Non provate: Android ha ignorato Shizuku su questo telefono</string>
+    <string name="cache_fallback_use_settings">Usa metodo Impostazioni</string>
+    <string name="cache_fallback_not_now">Non ora</string>
 </resources>

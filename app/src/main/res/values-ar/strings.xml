@@ -446,4 +446,10 @@
     <string name="debug_failed">تعذّر حفظ التقرير: %1$s</string>
     <string name="debug_working">جارٍ جمع السجلات…</string>
     <string name="cache_shell_ignored">على الأرجح تجاهل Android أمر ذاكرة التخزين المؤقت المرسل عبر Shizuku: لم يتغير حجمها إطلاقًا. في بعض الهواتف لا يُسمح لمستخدم shell بمسح ذاكرة التخزين المؤقت. استخدم طريقة الإعدادات بدلاً من ذلك. (إذا كان التطبيق مفتوحًا، فربما أعاد ملء ذاكرة التخزين المؤقت أيضًا.)</string>
+    <string name="cache_fallback_title">تعذّر على Shizuku مسح %1$d من التطبيقات</string>
+    <string name="cache_fallback_help">لم يمسح Android ذاكرة التخزين المؤقت هذه عبر Shizuku. اختر التطبيقات المراد مسحها بطريقة الإعدادات بدلاً من ذلك. سيظهر تحذير مساعد الإعدادات المعتاد قبل البدء.</string>
+    <string name="cache_fallback_failed">فشلت مع Shizuku</string>
+    <string name="cache_fallback_untried">لم تُجرَّب: تجاهل Android ‏Shizuku على هذا الهاتف</string>
+    <string name="cache_fallback_use_settings">استخدام طريقة الإعدادات</string>
+    <string name="cache_fallback_not_now">ليس الآن</string>
 </resources>

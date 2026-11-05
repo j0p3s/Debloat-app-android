@@ -446,4 +446,10 @@
     <string name="debug_failed">Bericht konnte nicht gespeichert werden: %1$s</string>
     <string name="debug_working">Protokolle werden gesammelt…</string>
     <string name="cache_shell_ignored">Android hat den über Shizuku gesendeten Cache-Befehl wahrscheinlich ignoriert: Die Cache-Größe hat sich gar nicht geändert. Auf manchen Telefonen darf der Shell-Benutzer keine Caches leeren. Verwenden Sie die Einstellungen-Methode. (War die App geöffnet, kann sie ihren Cache auch wieder gefüllt haben.)</string>
+    <string name="cache_fallback_title">Shizuku konnte %1$d App(s) nicht leeren</string>
+    <string name="cache_fallback_help">Android hat diese Caches über Shizuku nicht geleert. Wählen Sie die Apps, die stattdessen mit der Einstellungen-Methode geleert werden sollen. Vor dem Start folgt die übliche Warnung des Einstellungen-Assistenten.</string>
+    <string name="cache_fallback_failed">Mit Shizuku fehlgeschlagen</string>
+    <string name="cache_fallback_untried">Nicht versucht: Android hat Shizuku auf diesem Telefon ignoriert</string>
+    <string name="cache_fallback_use_settings">Einstellungen-Methode verwenden</string>
+    <string name="cache_fallback_not_now">Nicht jetzt</string>
 </resources>

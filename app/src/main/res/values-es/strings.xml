@@ -446,4 +446,10 @@
     <string name="debug_failed">No se pudo guardar el informe: %1$s</string>
     <string name="debug_working">Recopilando registros…</string>
     <string name="cache_shell_ignored">Probablemente Android ignoró el comando de caché enviado mediante Shizuku: el tamaño de la caché no cambió nada. En algunos teléfonos el usuario shell no puede borrar cachés. Usa el método de Ajustes. (Si la app estaba abierta, también pudo volver a llenar su caché.)</string>
+    <string name="cache_fallback_title">Shizuku no pudo borrar %1$d app(s)</string>
+    <string name="cache_fallback_help">Android no borró estas cachés mediante Shizuku. Selecciona las apps que quieres borrar con el método de Ajustes. Antes de empezar verás el aviso habitual del asistente de Ajustes.</string>
+    <string name="cache_fallback_failed">Fallaron con Shizuku</string>
+    <string name="cache_fallback_untried">No intentadas: Android ignoró Shizuku en este teléfono</string>
+    <string name="cache_fallback_use_settings">Usar método de Ajustes</string>
+    <string name="cache_fallback_not_now">Ahora no</string>
 </resources>

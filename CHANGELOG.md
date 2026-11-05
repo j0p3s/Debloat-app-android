@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.12.5 — 2026-11-05
+
+- Shizuku cache clearing: after a run, a dialog lists the apps Shizuku could not clear. If Android ignored Shizuku entirely, it also lists the apps that were not tried. Tick the apps to clear with the Settings method instead; the usual Settings assistant confirmation follows. Nothing switches methods without this choice.
+- When the cache size has not changed by a single byte for 20 s after a timed-out shell clear, stop waiting early (previously 60 s).
+
+
 ## 1.12.4 — 2026-11-05
 
 - Shizuku cache clearing: when the command times out and the cache size has not changed by a single byte, say that Android probably ignored the request and suggest the Settings method, instead of only "stopped". Seen on RedMagic OS 11 (Android 16), where the Settings method works.

@@ -48,11 +48,13 @@ class CacheController(
     var pendingMethod by mutableStateOf(CacheClearMethod.SETTINGS); private set
     private var activeMethod: CacheClearMethod? = null
     var notice by mutableStateOf<UiMessage?>(null); private set
+    /** Apps Shizuku could not clear (and, when Android ignored it, apps not tried), offered for the Settings method. */
+    var fallback by mutableStateOf<CacheFallback?>(null)
     val log = io.github.j0p3s.debloater.debug.DebugLog.Mirror("cache")
     private val reader = BoundedCacheReader()
     private var job: Job? = null
     var stopRequested by mutableStateOf(false); private set
-    var phase by mutableStateOf(R.string.cache_scanner); private set
+    var phase by mutableIntStateOf(R.string.cache_scanner); private set
     var currentApp by mutableStateOf(""); private set
 
     fun cancel() {
@@ -67,6 +69,17 @@ class CacheController(
     fun toggle(key: String) { if(!busy) selected = if(key in selected) selected - key else selected + key }
     fun selectShown(category: CacheScope) { if(!busy) selected = selected + visible(category).map { it.key } }
     fun deselect(category: CacheScope) { if(!busy) selected = selected - CachePolicy.inScope(groups, category).map { it.key }.toSet() }
+    /** The user chose apps from the Shizuku fallback dialog; the normal Settings confirmation follows. */
+    fun useSettingsFor(keys: Set<String>) {
+        val offer = fallback ?: return
+        fallback = null
+        if(busy || !canRun()) return
+        val chosen = (offer.failed + offer.untried).filter { it.key in keys }
+        if(chosen.isEmpty()) return
+        pendingMethod = CacheClearMethod.SETTINGS
+        pending = chosen
+    }
+
     fun requestClear(category: CacheScope) {
         if(!busy && canRun()) {
             pendingMethod = method
@@ -146,6 +159,9 @@ class CacheController(
             last = runCatching { reader.read { stats.queryStatsForUid(group.volume, group.uid).cacheBytes.coerceAtLeast(0) } }
                 .getOrElse { if(it is CancellationException && it !is TimeoutCancellationException) throw it; null }
             if(CachePolicy.clearedAfterTimeout(group.bytes, last)) return last
+            // Not a single byte changed for a while: Android most likely ignored the request.
+            if(CachePolicy.likelyIgnored(group.bytes, last) &&
+                System.currentTimeMillis() - (deadline - CachePolicy.TIMEOUT_GRACE_MS) >= CachePolicy.IGNORED_AFTER_MS) return last
             kotlinx.coroutines.delay(3_000)
         }
         return last
@@ -194,6 +210,9 @@ class CacheController(
         job = scope.launch {
             val changedPackages = mutableSetOf<String>()
             var stopNotice: UiMessage? = null
+            val shellFailed = mutableListOf<String>()
+            var shellIgnoredAt: Int? = null
+            var shellPackages = emptyList<String>()
             try {
                 // No fallback to plain pm clear, global trim-caches or raw directory deletion.
                 if(clearMethod == CacheClearMethod.SHIZUKU) {
@@ -230,6 +249,7 @@ class CacheController(
                 var successes = 0
                 var failures = 0
                 val packages = targets.filter { it.bytes != 0L }.flatMap { it.packages }.distinct()
+                shellPackages = packages
                 progress = 0 to packages.size
                 for((index, pkg) in packages.withIndex()) {
                     if(stopRequested) break
@@ -251,11 +271,13 @@ class CacheController(
                             val remaining = awaitCacheCleared(group)
                             success = CachePolicy.clearedAfterTimeout(group.bytes, remaining)
                             log += if(success) "OK $pkg: Android finished clearing after the command timeout (cache was ${group.bytes} bytes, now $remaining bytes)."
-                                else "UNKNOWN $pkg: cache still ${remaining?.let { "$it bytes" } ?: "unreadable"} ${CachePolicy.TIMEOUT_GRACE_MS / 1000} s after the timeout; batch stopped."
+                                else "UNKNOWN $pkg: cache still ${remaining?.let { "$it bytes" } ?: "unreadable"} after waiting up to ${CachePolicy.TIMEOUT_GRACE_MS / 1000} s; batch stopped."
                             if(!success) {
                                 failures++
                                 stopRequested = true
                                 if(CachePolicy.likelyIgnored(group.bytes, remaining)) {
+                                    shellFailed += pkg
+                                    shellIgnoredAt = index
                                     stopNotice = UiMessage(R.string.cache_shell_ignored)
                                     log += "IGNORED? $pkg: cache size did not change by a single byte, so Android probably ignored the shell request on this phone. Use the Settings method. (If the app was open, it may also have refilled its cache.)"
                                 }
@@ -263,6 +285,7 @@ class CacheController(
                             }
                         }
                         logSizeAfter(pkg, targets.first { pkg in it.packages })
+                        if(!success) shellFailed += pkg
                         if(success) successes++ else failures++
                     } else {
                         log += "START Settings UI: $pkg → Storage → Clear cache (no shell command); cache before ${targets.first { pkg in it.packages }.bytes ?: "unknown"} bytes"
@@ -296,6 +319,12 @@ class CacheController(
                 scannedAt = null
                 notice = UiMessage(R.string.cache_error, listOf(e.message.orEmpty()))
             } finally {
+                if(clearMethod == CacheClearMethod.SHIZUKU) {
+                    // Untried apps are offered only when Android ignored Shizuku, not after a user stop.
+                    val untried = shellIgnoredAt?.let { shellPackages.drop(it + 1) }.orEmpty()
+                    fallback = CachePolicy.fallback(targets, shellFailed, untried)
+                    fallback?.let { f -> log += "OFFER Settings method for: failed ${f.failed.flatMap { it.packages }}; not tried ${f.untried.flatMap { it.packages }}" }
+                }
                 if(clearMethod == CacheClearMethod.SETTINGS) {
                     log += "Settings UI session ended; completed actions are not undone."
                     returnFromSettings()

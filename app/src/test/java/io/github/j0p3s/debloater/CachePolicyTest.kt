@@ -10,6 +10,21 @@ import org.junit.Test
 import java.util.UUID
 
 class CachePolicyTest {
+    @Test fun fallbackOffersFailedAndUntriedGroupsButNeverEmptyCaches() {
+        val volume = UUID.randomUUID()
+        fun g(uid: Int, vararg pkgs: String, bytes: Long? = 100) = CacheGroup(uid, volume, pkgs.toList(), pkgs.first(), false, bytes)
+        val coc = g(1, "com.supercell.clashofclans")
+        val shared = g(2, "a.one", "a.two")
+        val empty = g(3, "z.empty", bytes = 0)
+        val ok = g(4, "ok.app")
+        val offer = CachePolicy.fallback(listOf(coc, shared, empty, ok), failed = listOf("com.supercell.clashofclans"), untried = listOf("a.two", "z.empty"))!!
+        assertEquals(listOf(coc), offer.failed)
+        assertEquals(listOf(shared), offer.untried)
+        assertNull(CachePolicy.fallback(listOf(coc, ok), failed = emptyList(), untried = emptyList()))
+        // A group that failed is never listed twice.
+        assertEquals(emptyList<CacheGroup>(), CachePolicy.fallback(listOf(coc), listOf("com.supercell.clashofclans"), listOf("com.supercell.clashofclans"))!!.untried)
+    }
+
     @Test fun unchangedSizeAfterTimeoutIsReportedAsLikelyIgnored() {
         // RedMagic OS 11, Clash of Clans force-stopped: identical to the byte 75 s later.
         assertTrue(CachePolicy.likelyIgnored(2_222_620_672, 2_222_620_672))

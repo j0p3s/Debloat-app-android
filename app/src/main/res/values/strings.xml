@@ -448,4 +448,10 @@
     <string name="debug_failed">Could not save the report: %1$s</string>
     <string name="debug_working">Collecting logs…</string>
     <string name="cache_shell_ignored">Android probably ignored the cache command sent through Shizuku: the cache size did not change at all. On some phones the shell user is not allowed to clear caches. Use the Settings method instead. (If the app was open, it may also have refilled its cache.)</string>
+    <string name="cache_fallback_title">Shizuku could not clear %1$d app(s)</string>
+    <string name="cache_fallback_help">Android did not clear these caches through Shizuku. Select the apps to clear with the Settings method instead. The usual Settings assistant warning follows before anything starts.</string>
+    <string name="cache_fallback_failed">Failed with Shizuku</string>
+    <string name="cache_fallback_untried">Not tried: Android ignored Shizuku on this phone</string>
+    <string name="cache_fallback_use_settings">Use Settings method</string>
+    <string name="cache_fallback_not_now">Not now</string>
 </resources>

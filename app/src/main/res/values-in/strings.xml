@@ -446,4 +446,10 @@
     <string name="debug_failed">Tidak dapat menyimpan laporan: %1$s</string>
     <string name="debug_working">Mengumpulkan log…</string>
     <string name="cache_shell_ignored">Android kemungkinan mengabaikan perintah cache yang dikirim melalui Shizuku: ukuran cache sama sekali tidak berubah. Di beberapa ponsel pengguna shell tidak boleh menghapus cache. Gunakan metode Setelan. (Jika aplikasi sedang terbuka, aplikasi itu juga mungkin mengisi ulang cache-nya.)</string>
+    <string name="cache_fallback_title">Shizuku tidak dapat menghapus %1$d aplikasi</string>
+    <string name="cache_fallback_help">Android tidak menghapus cache ini melalui Shizuku. Pilih aplikasi yang akan dihapus dengan metode Setelan. Peringatan asisten Setelan yang biasa muncul sebelum dimulai.</string>
+    <string name="cache_fallback_failed">Gagal dengan Shizuku</string>
+    <string name="cache_fallback_untried">Tidak dicoba: Android mengabaikan Shizuku di ponsel ini</string>
+    <string name="cache_fallback_use_settings">Gunakan metode Setelan</string>
+    <string name="cache_fallback_not_now">Nanti saja</string>
 </resources>

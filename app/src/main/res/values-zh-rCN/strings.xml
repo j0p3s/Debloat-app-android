@@ -446,4 +446,10 @@
     <string name="debug_failed">无法保存报告：%1$s</string>
     <string name="debug_working">正在收集日志…</string>
     <string name="cache_shell_ignored">Android 可能忽略了通过 Shizuku 发送的缓存命令：缓存大小完全没有变化。在部分手机上，shell 用户无权清除缓存。请改用“设置”方式。（如果该应用当时处于打开状态，也可能是它重新写入了缓存。）</string>
+    <string name="cache_fallback_title">Shizuku 未能清除 %1$d 个应用</string>
+    <string name="cache_fallback_help">Android 没有通过 Shizuku 清除这些缓存。请选择改用“设置”方式清除的应用。开始前会显示设置助手的常规警告。</string>
+    <string name="cache_fallback_failed">Shizuku 清除失败</string>
+    <string name="cache_fallback_untried">未尝试：此手机上 Android 忽略了 Shizuku</string>
+    <string name="cache_fallback_use_settings">使用“设置”方式</string>
+    <string name="cache_fallback_not_now">暂不</string>
 </resources>
