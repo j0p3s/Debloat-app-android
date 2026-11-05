@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.12.7 — 2026-11-05
+
+- Cache cleaner: "Select shown" skips apps marked with leftover cache that a previous clear could not remove. They can still be ticked individually.
+
+
 ## 1.12.6 — 2026-11-05
 
 - Cache cleaner: when Android still reports most of an app's cache (8 MB or more) after a confirmed clear, mark that app with the leftover size and explain that Clear cache probably cannot remove it. The total line shows how much of the reported cache is such leftover. The mark disappears once the app has new, clearable cache or a later clear works.

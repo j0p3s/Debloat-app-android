@@ -94,7 +94,10 @@ class CacheController(
             (group.label.contains(query, true) || group.packages.any { it.contains(query, true) })
     }, sort)
     fun toggle(key: String) { if(!busy) selected = if(key in selected) selected - key else selected + key }
-    fun selectShown(category: CacheScope) { if(!busy) selected = selected + visible(category).map { it.key } }
+    /** Apps whose reported cache a previous clear could not remove are skipped; they can still be ticked one by one. */
+    fun selectShown(category: CacheScope) {
+        if(!busy) selected = selected + visible(category).filter { residueFor(it) == null }.map { it.key }
+    }
     fun deselect(category: CacheScope) { if(!busy) selected = selected - CachePolicy.inScope(groups, category).map { it.key }.toSet() }
     /** The user chose apps from the Shizuku fallback dialog; the normal Settings confirmation follows. */
     fun useSettingsFor(keys: Set<String>) {
