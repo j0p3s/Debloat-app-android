@@ -5,7 +5,6 @@ import android.app.KeyguardManager
 import android.content.Intent
 import android.content.pm.ApplicationInfo
 import android.content.res.Configuration
-import android.content.res.Resources
 import android.graphics.PixelFormat
 import android.net.Uri
 import android.os.PowerManager
@@ -59,13 +58,13 @@ class SettingsCacheService : AccessibilityService() {
     @Suppress("DiscouragedApi") // Read the installed Settings app's own labels in the system locale.
     private fun labels(): SettingsCachePolicy.Labels {
         val settings = createPackageContext(SettingsCachePolicy.SETTINGS_PACKAGE, 0)
-        val config = Configuration(settings.resources.configuration).apply { setLocales(Resources.getSystem().configuration.locales) }
+        val config = Configuration(settings.resources.configuration).apply { setLocales(SystemLocales.get(this@SettingsCacheService)) }
         val resources = settings.createConfigurationContext(config).resources
         fun strings(vararg names: String): Set<String> = names.mapNotNull { name ->
             val id = resources.getIdentifier(name, "string", SettingsCachePolicy.SETTINGS_PACKAGE)
             if (id == 0) null else runCatching { resources.getString(id) }.getOrNull()
         }.toSet()
-        val fallback = SettingsCachePolicy.fallbackLabels(Resources.getSystem().configuration.locales[0].language)
+        val fallback = SettingsCachePolicy.fallbackLabels(SystemLocales.get(this).get(0).language)
         return SettingsCachePolicy.Labels(
             strings("storage_settings_for_app", "storage_settings", "storage_use", "storage_label") +
                 fallback.storage,
@@ -147,7 +146,7 @@ class SettingsCacheService : AccessibilityService() {
         activeJob = currentCoroutineContext()[Job]
         try {
             val labels = labels()
-            diagnostic("Start: label=${target.label}; aliases=${target.labelAliases}; unique=${target.uniqueLabel}; storage labels=${labels.storage}")
+            diagnostic("Start: Settings language=${SystemLocales.get(this).toLanguageTags()}; label=${target.label}; aliases=${target.labelAliases}; unique=${target.uniqueLabel}; storage labels=${labels.storage}")
             if (labels.clearCache.isEmpty() || labels.storage.isEmpty()) return SettingsCacheResult.UNKNOWN
             val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:${target.packageName}"))
                 .setPackage(SettingsCachePolicy.SETTINGS_PACKAGE).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)

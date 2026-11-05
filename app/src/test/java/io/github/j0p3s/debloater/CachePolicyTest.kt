@@ -15,8 +15,10 @@ class CachePolicyTest {
         assertTrue(CachePolicy.clearedAfterTimeout(2_200_000_000, 40_000_000))
         assertFalse(CachePolicy.clearedAfterTimeout(2_200_000_000, 2_100_000_000))
         assertFalse(CachePolicy.clearedAfterTimeout(2_200_000_000, null))
-        assertFalse(CachePolicy.clearedAfterTimeout(null, 5))
         assertTrue(CachePolicy.clearedAfterTimeout(null, 0))
+        // Seen on RedMagic OS 11: 282624 bytes of empty cache folders left after the clear.
+        assertTrue(CachePolicy.clearedAfterTimeout(null, 282_624))
+        assertFalse(CachePolicy.clearedAfterTimeout(null, 5_000_000))
     }
 
     private fun help(text: String, code: Int = 0) = ShellResult(code, text, "")

@@ -41,9 +41,13 @@ object CachePolicy {
     /** After a timed-out cache-only clear, how long the real cache size is re-checked before the batch stops. */
     const val TIMEOUT_GRACE_MS = 60_000L
 
-    /** A running app may refill a little cache at once; at most 5 % of the old size left counts as cleared. */
+    /**
+     * A running app may refill a little cache at once, and empty cache folders still occupy blocks.
+     * Counts as cleared: nothing left, at most 5 % of the old size, or a residue of at most 1 MiB.
+     */
+    const val RESIDUE_BYTES = 1L shl 20
     fun clearedAfterTimeout(before: Long?, now: Long?): Boolean =
-        now == 0L || (now != null && before != null && before > 0 && now <= before / 20)
+        now != null && (now == 0L || now <= RESIDUE_BYTES || (before != null && before > 0 && now <= before / 20))
 
     fun inScope(groups: List<CacheGroup>, scope: CacheScope): List<CacheGroup> = groups.filter(scope::includes)
 

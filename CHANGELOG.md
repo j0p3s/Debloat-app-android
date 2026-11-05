@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.12.2 — 2026-11-05
+
+- Settings assistant: read Settings labels in the **phone's** language, not Debloater's own language. With a different in-app language (e.g. Portuguese app on an English phone) the Storage row and Clear cache button were never found.
+- Shizuku cache clearing: after a `pm clear --cache-only` timeout, a residue of at most 1 MiB (empty cache folders) counts as cleared; log the cache size before each clear.
+
+
 ## 1.12.1 — 2026-11-05
 
 - Shizuku cache clearing: when `pm clear --cache-only` times out (seen on RedMagic OS 11 / Android 16), re-check the app's real cache size for up to 60 s. Android keeps deleting after the command is stopped; a cleared cache now counts as success and the batch continues.

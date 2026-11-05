@@ -5,7 +5,6 @@ import android.app.usage.StorageStatsManager
 import android.content.pm.ApplicationInfo
 import android.content.Intent
 import android.content.res.Configuration
-import android.content.res.Resources
 import androidx.compose.runtime.*
 import io.github.j0p3s.debloater.R
 import io.github.j0p3s.debloater.MainActivity
@@ -194,7 +193,7 @@ class CacheController(
                 // Resolve current labels and UIDs rather than trusting a stale scan for identity.
                 val settingsTargets = if(clearMethod == CacheClearMethod.SETTINGS) withContext(Dispatchers.IO) {
                     val systemContext = app.createConfigurationContext(Configuration(app.resources.configuration)
-                        .apply { setLocales(Resources.getSystem().configuration.locales) })
+                        .apply { setLocales(io.github.j0p3s.debloater.cache.SystemLocales.get(app)) })
                     val pm = systemContext.packageManager
                     @Suppress("DEPRECATION")
                     val installed = pm.getInstalledApplications(0)
@@ -229,6 +228,7 @@ class CacheController(
                     changedPackages += pkg
                     if(clearMethod == CacheClearMethod.SHIZUKU) {
                         val command = CachePolicy.clearCommand(repo.userId, pkg)
+                        log += "START $pkg: cache before ${targets.first { pkg in it.packages }.bytes ?: "unknown"} bytes"
                         val result = ShizukuManager.execCache(command)
                         var success = CachePolicy.succeeded(result)
                         log += "${if(success) "OK" else if(result.exitCode == 124) "WAIT" else "FAIL"}  $command\n${result.output}"
