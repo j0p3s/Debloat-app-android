@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.12.3 — 2026-11-05
+
+- Cache cleaner debug log: record each app's cache size before and right after clearing, for both the Shizuku and the Settings method. Diagnostic only; success is decided exactly as in 1.12.2, because an open app can refill its cache at once.
+
+
 ## 1.12.2 — 2026-11-05
 
 - Settings assistant: read Settings labels in the **phone's** language, not Debloater's own language. With a different in-app language (e.g. Portuguese app on an English phone) the Storage row and Clear cache button were never found.

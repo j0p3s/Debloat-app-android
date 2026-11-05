@@ -125,6 +125,18 @@ class CacheController(
     }
 
     /** Polls this group's cache size after a timed-out clear. Returns the last size, 0 when cleared, null if unreadable. */
+    /**
+     * Diagnostic only: records the measured size right after a clear. It never decides success,
+     * because an app that is open (or reopened) can rebuild its cache at once.
+     */
+    private suspend fun logSizeAfter(pkg: String, group: CacheGroup) {
+        if(!repo.hasUsageAccess()) return
+        val stats = app.getSystemService(StorageStatsManager::class.java)
+        val now = runCatching { reader.read { stats.queryStatsForUid(group.volume, group.uid).cacheBytes.coerceAtLeast(0) } }
+            .getOrElse { if(it is CancellationException && it !is TimeoutCancellationException) throw it; null }
+        log += "SIZE $pkg: cache before ${group.bytes ?: "unknown"} bytes, right after ${now ?: "unreadable"} bytes (an open app can refill its cache)"
+    }
+
     private suspend fun awaitCacheCleared(group: CacheGroup): Long? {
         if(!repo.hasUsageAccess()) return null
         val stats = app.getSystemService(StorageStatsManager::class.java)
@@ -241,9 +253,10 @@ class CacheController(
                                 else "UNKNOWN $pkg: cache still ${remaining?.let { "$it bytes" } ?: "unreadable"} ${CachePolicy.TIMEOUT_GRACE_MS / 1000} s after the timeout; batch stopped."
                             if(!success) { failures++; stopRequested = true; break }
                         }
+                        logSizeAfter(pkg, targets.first { pkg in it.packages })
                         if(success) successes++ else failures++
                     } else {
-                        log += "START Settings UI: $pkg → Storage → Clear cache (no shell command)"
+                        log += "START Settings UI: $pkg → Storage → Clear cache (no shell command); cache before ${targets.first { pkg in it.packages }.bytes ?: "unknown"} bytes"
                         val result = settingsTargets[pkg]?.let { SettingsCacheService.clear(it, index, packages.size) { detail -> log += "$pkg: $detail" } } ?: SettingsCacheResult.SKIPPED
                         when(result) {
                             SettingsCacheResult.CONFIRMED -> { successes++; log += "OK $pkg: Settings disabled Clear cache after the press; rescan checks the size." }
@@ -251,6 +264,7 @@ class CacheController(
                             SettingsCacheResult.UNAVAILABLE -> { failures++; log += "SKIP $pkg: cache control could not be identified safely; no cache button was pressed. Continuing with the next app." }
                             SettingsCacheResult.UNKNOWN -> { failures++; log += "UNKNOWN $pkg: screen changed, cache outcome unverified or timed out; batch stopped." }
                         }
+                        logSizeAfter(pkg, targets.first { pkg in it.packages })
                         if(result == SettingsCacheResult.UNKNOWN) { stopRequested = true; break }
                     }
                 }
