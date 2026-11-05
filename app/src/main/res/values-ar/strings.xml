@@ -430,4 +430,8 @@
     <string name="ota_current">You have the latest version.</string>
     <string name="ota_error">Update check or download failed. Check your connection and try again.</string>
     <string name="ota_done">Download complete. Open the Android download notification or the APK in a file manager to install.</string>
+
+    <string name="permissions_auto">إعداد الوصول عبر Shizuku</string>
+    <string name="permissions_auto_help">بعد التأكيد يمنح الوصول إلى الاستخدام ويحاول تفعيل مساعد ذاكرة التخزين المؤقت فقط. تبقى خدمات إمكانية الوصول الحالية محفوظة. قد يتطلب Android إعداداً يدوياً. لا يبدأ التنظيف.</string>
+    <string name="permissions_auto_result">النتائج (قد تكون التفاصيل التقنية بالإنجليزية)</string>
 </resources>

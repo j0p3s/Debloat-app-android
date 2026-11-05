@@ -430,4 +430,8 @@
     <string name="ota_current">You have the latest version.</string>
     <string name="ota_error">Update check or download failed. Check your connection and try again.</string>
     <string name="ota_done">Download complete. Open the Android download notification or the APK in a file manager to install.</string>
+
+    <string name="permissions_auto">Shizuku से ऐक्सेस सेट करें</string>
+    <string name="permissions_auto_help">पुष्टि के बाद उपयोग का ऐक्सेस देता है और केवल कैश सहायक चालू करने का प्रयास करता है। मौजूदा सुलभता सेवाएँ बनी रहती हैं। Android में मैन्युअल सेटअप की ज़रूरत हो सकती है। सफ़ाई शुरू नहीं होती।</string>
+    <string name="permissions_auto_result">परिणाम (तकनीकी विवरण अंग्रेज़ी में हो सकते हैं)</string>
 </resources>

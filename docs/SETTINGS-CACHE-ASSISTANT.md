@@ -26,3 +26,5 @@ Before treating a cache control as unavailable, the assistant follows App info â
 If no cache button was pressed and Settings remains open, an unavailable control is logged and skipped. The batch continues with the next app. Short fragment transitions are tolerated without clicks. Uncertain outcomes after a cache press, screen lock or leaving Settings still stop the sequence. This behavior applies to user and system apps.
 
 From 1.11.5, Settings assistant is the default cache clearing method. Users can explicitly switch to Shizuku. Manual permission enablement and batch confirmation remain required.
+
+From 1.11.5, Permissions offers **Set up access with Shizuku** after an explicit disclosure/confirmation. It grants Usage Access and tries enabling only the cache assistant while preserving other services. Runtime connection and access checks determine the results; manual setup remains available when blocked. Setup never starts cache cleaning.

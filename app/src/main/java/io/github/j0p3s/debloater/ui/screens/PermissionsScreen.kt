@@ -30,6 +30,7 @@ fun PermissionsScreen(vm: MainViewModel) {
     val lifecycle = LocalLifecycleOwner.current.lifecycle
     var revision by remember { mutableIntStateOf(0) }
     var disclosure by remember { mutableStateOf(false) }
+    var autoDisclosure by remember { mutableStateOf(false) }
     val shizuku by vm.shizukuStatus.collectAsStateWithLifecycle()
     val accessibility by SettingsCacheService.available.collectAsStateWithLifecycle()
     fun refresh() { ShizukuManager.refresh(); revision++ }
@@ -39,11 +40,19 @@ fun PermissionsScreen(vm: MainViewModel) {
         lifecycle.addObserver(observer)
         onDispose { lifecycle.removeObserver(observer) }
     }
-    val usage = remember(revision) { vm.repo.hasUsageAccess() }
+    val usage = remember(revision, vm.accessSetupRevision) { vm.repo.hasUsageAccess() }
     fun granted(permission: String) = context.checkSelfPermission(permission) == PackageManager.PERMISSION_GRANTED
     Scaffold(topBar = { BackTopBar(stringResource(R.string.permissions_title), onBack = { vm.back() }) }) { padding ->
         Column(Modifier.padding(padding).fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
             OutlinedButton(onClick = ::refresh) { Text(stringResource(R.string.permissions_validate)) }
+            Button(onClick = { autoDisclosure = true }, enabled = shizuku == ShizukuStatus.READY && !vm.configuringAccess && !vm.cache.busy && !vm.leftovers.busy && !vm.engine.isRunning) {
+                Text(stringResource(R.string.permissions_auto))
+            }
+            if(vm.configuringAccess) LinearProgressIndicator(Modifier.fillMaxWidth())
+            if(vm.accessSetupLog.isNotEmpty()) {
+                Text(stringResource(R.string.permissions_auto_result))
+                vm.accessSetupLog.forEach { Text(it, style = MaterialTheme.typography.bodySmall) }
+            }
             PermissionCard("Shizuku", shizuku == ShizukuStatus.READY, stringResource(R.string.leftovers_needs_shizuku)) {
                 Text(shizuku.name, style = MaterialTheme.typography.bodySmall)
                 OutlinedButton(onClick = { ShizukuManager.requestPermission(); refresh() }, enabled = shizuku == ShizukuStatus.PERMISSION_REQUIRED || shizuku == ShizukuStatus.PERMISSION_DENIED) { Text(stringResource(R.string.grant_shizuku)) }
@@ -64,6 +73,14 @@ fun PermissionsScreen(vm: MainViewModel) {
         text = { Text(stringResource(R.string.cache_settings_disclosure), Modifier.heightIn(max = 360.dp).verticalScroll(rememberScrollState())) },
         confirmButton = { TextButton(onClick = { disclosure = false; open(SettingsCacheService.settingsIntent()) }) { Text(stringResource(R.string.open_settings)) } },
         dismissButton = { TextButton(onClick = { disclosure = false }) { Text(stringResource(R.string.cancel)) } })
+    if(autoDisclosure) AlertDialog(onDismissRequest = { autoDisclosure = false },
+        title = { Text(stringResource(R.string.permissions_auto)) },
+        text = { Column(Modifier.heightIn(max = 360.dp).verticalScroll(rememberScrollState()), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            Text(stringResource(R.string.permissions_auto_help))
+            Text(stringResource(R.string.cache_settings_disclosure))
+        } },
+        confirmButton = { TextButton(onClick = { autoDisclosure = false; vm.configureAccessWithShizuku() }, enabled = !vm.configuringAccess) { Text(stringResource(R.string.permissions_auto)) } },
+        dismissButton = { TextButton(onClick = { autoDisclosure = false }) { Text(stringResource(R.string.cancel)) } })
 }
 
 @Composable

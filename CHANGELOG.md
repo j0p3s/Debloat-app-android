@@ -2,6 +2,9 @@
 
 ## 1.11.5 — 2026-11-05
 
+- Add confirmed Shizuku-assisted permission setup, preserving existing Accessibility services and validating results.
+- Translate setup guidance across supported locales and test safe service-list merging.
+
 - Default cache cleaning to Settings assistant (Accessibility), for user and system apps.
 - Keep Shizuku selectable, with existing consent and permission checks unchanged.
 

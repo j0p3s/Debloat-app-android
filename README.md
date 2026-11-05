@@ -244,3 +244,5 @@ Update checks fall back to the official public latest-release page if the GitHub
 The Accessibility cleaner skips unavailable cache controls when no cache button was pressed, logs the skip and continues. Uncertain results after a press, leaving Settings or locking the screen still stop the batch safely. Settings transitions receive a short grace period. GitHub releases must be publicly accessible for unauthenticated OTA checks; the official repository is now public.
 
 The cache cleaner defaults to Settings assistant (Accessibility). Shizuku remains available through the clearing-method selector. Accessibility still needs manual enablement and per-batch confirmation.
+
+From 1.11.5, Permissions offers **Set up access with Shizuku** after an explicit disclosure/confirmation. It grants Usage Access and tries enabling only the cache assistant while preserving other services. Runtime connection and access checks determine the results; manual setup remains available when blocked. Setup never starts cache cleaning.
