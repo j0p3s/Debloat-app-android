@@ -4,6 +4,8 @@ import android.app.Application
 import android.app.usage.StorageStatsManager
 import android.content.pm.ApplicationInfo
 import android.content.Intent
+import android.content.res.Configuration
+import android.content.res.Resources
 import androidx.compose.runtime.*
 import io.github.j0p3s.debloater.R
 import io.github.j0p3s.debloater.MainActivity
@@ -176,10 +178,13 @@ class CacheController(
                 }
                 // Resolve current labels and UIDs rather than trusting a stale scan for identity.
                 val settingsTargets = if(clearMethod == CacheClearMethod.SETTINGS) withContext(Dispatchers.IO) {
+                    val systemContext = app.createConfigurationContext(Configuration(app.resources.configuration)
+                        .apply { setLocales(Resources.getSystem().configuration.locales) })
+                    val pm = systemContext.packageManager
                     @Suppress("DEPRECATION")
-                    val installed = app.packageManager.getInstalledApplications(0)
+                    val installed = pm.getInstalledApplications(0)
                         .filter { it.flags and ApplicationInfo.FLAG_INSTALLED != 0 }
-                    val labels = installed.associate { info -> info.packageName to info.loadLabel(app.packageManager).toString() }
+                    val labels = installed.associate { info -> info.packageName to info.loadLabel(pm).toString() }
                     val counts = labels.values.groupingBy(SettingsCachePolicy::normalize).eachCount()
                     installed.filter { info -> targets.any { it.uid == info.uid && info.packageName in it.packages } }
                         .associate { info ->

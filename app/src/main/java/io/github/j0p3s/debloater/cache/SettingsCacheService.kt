@@ -78,6 +78,10 @@ class SettingsCacheService : AccessibilityService() {
 
     private fun snapshot(): Snapshot? {
         val root = rootInActiveWindow ?: return null
+        if(root.packageName?.toString() != SettingsCachePolicy.SETTINGS_PACKAGE) {
+            // Do not traverse or collect the contents of any other app's window.
+            return Snapshot(SettingsCachePolicy.Page(root.packageName?.toString().orEmpty(), emptyList()), listOf(root))
+        }
         val nodes = mutableListOf<AccessibilityNodeInfo>()
         val descriptors = mutableListOf<SettingsCachePolicy.Node>()
         val queue = ArrayDeque<Pair<AccessibilityNodeInfo, Int?>>()
@@ -136,11 +140,11 @@ class SettingsCacheService : AccessibilityService() {
         activeJob = currentCoroutineContext()[Job]
         try {
             val labels = labels()
-            if (labels.clearCache.isEmpty() || labels.storage.isEmpty()) return SettingsCacheResult.SKIPPED
+            if (labels.clearCache.isEmpty() || labels.storage.isEmpty()) return SettingsCacheResult.UNKNOWN
             val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:${target.packageName}"))
                 .setPackage(SettingsCachePolicy.SETTINGS_PACKAGE).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-            val activity = packageManager.resolveActivity(intent, 0)?.activityInfo ?: return SettingsCacheResult.SKIPPED
-            if (activity.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM == 0) return SettingsCacheResult.SKIPPED
+            val activity = packageManager.resolveActivity(intent, 0)?.activityInfo ?: return SettingsCacheResult.UNKNOWN
+            if (activity.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM == 0) return SettingsCacheResult.UNKNOWN
             showStopControl(target.label) // If Stop cannot be shown, do not start automation.
             startActivity(intent)
             var navigated = false
