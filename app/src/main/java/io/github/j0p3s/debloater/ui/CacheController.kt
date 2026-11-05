@@ -3,8 +3,15 @@ package io.github.j0p3s.debloater.ui
 import android.app.Application
 import android.app.usage.StorageStatsManager
 import android.content.pm.ApplicationInfo
+import android.content.Intent
+import android.content.res.Configuration
+import android.content.res.Resources
 import androidx.compose.runtime.*
 import io.github.j0p3s.debloater.R
+import io.github.j0p3s.debloater.MainActivity
+import io.github.j0p3s.debloater.cache.SettingsCachePolicy
+import io.github.j0p3s.debloater.cache.SettingsCacheResult
+import io.github.j0p3s.debloater.cache.SettingsCacheService
 import io.github.j0p3s.debloater.data.*
 import io.github.j0p3s.debloater.shizuku.ShizukuManager
 import io.github.j0p3s.debloater.shizuku.ShizukuStatus
@@ -38,6 +45,9 @@ class CacheController(
     var nonzeroOnly by mutableStateOf(false)
     var supported by mutableStateOf<Boolean?>(null); private set
     var pending by mutableStateOf<List<CacheGroup>?>(null)
+    var method by mutableStateOf(CacheClearMethod.SHIZUKU)
+    var pendingMethod by mutableStateOf(CacheClearMethod.SHIZUKU); private set
+    private var activeMethod: CacheClearMethod? = null
     var notice by mutableStateOf<UiMessage?>(null); private set
     val log = mutableStateListOf<String>()
     private val reader = BoundedCacheReader()
@@ -48,7 +58,7 @@ class CacheController(
 
     fun cancel() {
         stopRequested = true
-        if (phase != R.string.cache_clear) job?.cancel()
+        if (phase != R.string.cache_clear || activeMethod == CacheClearMethod.SETTINGS) job?.cancel()
     }
 
     fun visible(category: CacheScope): List<CacheGroup> = CachePolicy.sorted(CachePolicy.inScope(groups, category).filter { group ->
@@ -59,11 +69,13 @@ class CacheController(
     fun selectShown(category: CacheScope) { if(!busy) selected = selected + visible(category).map { it.key } }
     fun deselect(category: CacheScope) { if(!busy) selected = selected - CachePolicy.inScope(groups, category).map { it.key }.toSet() }
     fun requestClear(category: CacheScope) {
-        if(!busy && canRun()) pending = CachePolicy.selectedInScope(groups, selected, category).takeIf { it.isNotEmpty() }
+        if(!busy && canRun()) {
+            pendingMethod = method
+            pending = CachePolicy.selectedInScope(groups, selected, category).takeIf { it.isNotEmpty() }
+        }
     }
 
     private suspend fun readGroups(category: CacheScope = CacheScope.BOTH, keys: Set<String>? = null) {
-        check(repo.hasUsageAccess()) { app.getString(R.string.cache_usage_help) }
         val pm = app.packageManager
         val stats = app.getSystemService(StorageStatsManager::class.java)
         val inventory = withContext(Dispatchers.IO) {
@@ -87,6 +99,8 @@ class CacheController(
         scannedAt = System.currentTimeMillis()
         partial = true
         progress = 0 to applications.size
+        // Inventory remains selectable for Settings UI clearing without Usage Access.
+        check(repo.hasUsageAccess()) { app.getString(R.string.cache_usage_help) }
         for(batch in applications.chunked(2)) {
             if(stopRequested) break
             currentApp = batch.joinToString(" / ") { it.label }
@@ -117,9 +131,10 @@ class CacheController(
         notice = null
         stopRequested = false
         phase = R.string.cache_scanner
+        activeMethod = null
         job = scope.launch {
             try {
-                supported = if(ShizukuManager.status.value == ShizukuStatus.READY)
+                supported = if(method == CacheClearMethod.SHIZUKU && ShizukuManager.status.value == ShizukuStatus.READY)
                     CachePolicy.supportsCacheOnly(ShizukuManager.execCache("pm help")) else null
                 readGroups(category)
                 notice = UiMessage(R.string.cache_scan_done, listOf(CachePolicy.inScope(groups, category).count { it.bytes == null }))
@@ -130,11 +145,23 @@ class CacheController(
         }
     }
 
+    private fun returnFromSettings() {
+        runCatching { app.startActivity(Intent(app, MainActivity::class.java)
+            .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)) }
+    }
+
     fun confirmClear() {
         val targets = pending ?: return
+        val clearMethod = pendingMethod
         pending = null
-        if(busy || !canRun() || ShizukuManager.status.value != ShizukuStatus.READY) return
+        if(busy || !canRun()) return
+        if(clearMethod == CacheClearMethod.SHIZUKU && ShizukuManager.status.value != ShizukuStatus.READY) return
+        if(clearMethod == CacheClearMethod.SETTINGS && !SettingsCacheService.available.value) {
+            notice = UiMessage(R.string.cache_settings_enable_help)
+            return
+        }
         busy = true
+        activeMethod = clearMethod
         notice = null
         stopRequested = false
         phase = R.string.cache_clear
@@ -142,11 +169,30 @@ class CacheController(
             val changedPackages = mutableSetOf<String>()
             try {
                 // No fallback to plain pm clear, global trim-caches or raw directory deletion.
-                supported = CachePolicy.supportsCacheOnly(ShizukuManager.execCache("pm help"))
-                if(supported != true) {
-                    notice = UiMessage(R.string.cache_unsupported)
-                    return@launch
+                if(clearMethod == CacheClearMethod.SHIZUKU) {
+                    supported = CachePolicy.supportsCacheOnly(ShizukuManager.execCache("pm help"))
+                    if(supported != true) {
+                        notice = UiMessage(R.string.cache_unsupported)
+                        return@launch
+                    }
                 }
+                // Resolve current labels and UIDs rather than trusting a stale scan for identity.
+                val settingsTargets = if(clearMethod == CacheClearMethod.SETTINGS) withContext(Dispatchers.IO) {
+                    val systemContext = app.createConfigurationContext(Configuration(app.resources.configuration)
+                        .apply { setLocales(Resources.getSystem().configuration.locales) })
+                    val pm = systemContext.packageManager
+                    @Suppress("DEPRECATION")
+                    val installed = pm.getInstalledApplications(0)
+                        .filter { it.flags and ApplicationInfo.FLAG_INSTALLED != 0 }
+                    val labels = installed.associate { info -> info.packageName to info.loadLabel(pm).toString() }
+                    val counts = labels.values.groupingBy(SettingsCachePolicy::normalize).eachCount()
+                    installed.filter { info -> targets.any { it.uid == info.uid && info.packageName in it.packages } }
+                        .associate { info ->
+                            val label = labels.getValue(info.packageName)
+                            info.packageName to SettingsCachePolicy.Target(info.packageName, label,
+                                counts[SettingsCachePolicy.normalize(label)] == 1)
+                        }
+                } else emptyMap()
                 var successes = 0
                 var failures = 0
                 val packages = targets.filter { it.bytes != 0L }.flatMap { it.packages }.distinct()
@@ -155,22 +201,34 @@ class CacheController(
                     if(stopRequested) break
                     currentApp = pkg
                     progress = index + 1 to packages.size
-                    val command = CachePolicy.clearCommand(repo.userId, pkg)
                     // Invalidate first: cancellation or timeout must not leave stale successful-looking sizes.
                     groups = groups.map { if(pkg in it.packages) it.copy(bytes = null, error = null) else it }
                     scannedAt = null
                     changedPackages += pkg
-                    val result = ShizukuManager.execCache(command)
-                    val success = CachePolicy.succeeded(result)
-                    if(success) successes++ else failures++
-                    log += "${if(success) "OK" else "FAIL"}  $command\n${result.output}"
-                    if(result.exitCode == 124) { stopRequested = true; break }
+                    if(clearMethod == CacheClearMethod.SHIZUKU) {
+                        val command = CachePolicy.clearCommand(repo.userId, pkg)
+                        val result = ShizukuManager.execCache(command)
+                        val success = CachePolicy.succeeded(result)
+                        if(success) successes++ else failures++
+                        log += "${if(success) "OK" else "FAIL"}  $command\n${result.output}"
+                        if(result.exitCode == 124) { stopRequested = true; break }
+                    } else {
+                        log += "START Settings UI: $pkg → Storage → Clear cache (no shell command)"
+                        val result = settingsTargets[pkg]?.let { SettingsCacheService.clear(it) } ?: SettingsCacheResult.SKIPPED
+                        when(result) {
+                            SettingsCacheResult.CONFIRMED -> { successes++; log += "OK $pkg: Settings disabled Clear cache after the press; rescan checks the size." }
+                            SettingsCacheResult.SKIPPED -> { failures++; log += "SKIP $pkg: unavailable, empty, protected assistant package or unsupported Settings layout." }
+                            SettingsCacheResult.UNKNOWN -> { failures++; log += "UNKNOWN $pkg: screen changed, cache outcome unverified or timed out; batch stopped." }
+                        }
+                        if(result == SettingsCacheResult.UNKNOWN) { stopRequested = true; break }
+                    }
                 }
                 selected = selected - targets.map { it.key }.toSet()
                 // Never leave pre-clean measurements on screen as if they were current.
                 scannedAt = null
                 if(stopRequested) { notice = UiMessage(R.string.cache_stopped); return@launch }
                 phase = R.string.cache_refreshing
+                if(clearMethod == CacheClearMethod.SETTINGS) returnFromSettings()
                 try {
                     readGroups(keys = targets.filter { it.bytes != 0L }.map { it.key }.toSet())
                     notice = UiMessage(R.string.cache_clear_done, listOf(successes, failures))
@@ -184,7 +242,12 @@ class CacheController(
                 scannedAt = null
                 notice = UiMessage(R.string.cache_error, listOf(e.message.orEmpty()))
             } finally {
+                if(clearMethod == CacheClearMethod.SETTINGS) {
+                    log += "Settings UI session ended; completed actions are not undone."
+                    returnFromSettings()
+                }
                 busy = false
+                activeMethod = null
                 currentApp = ""
                 if(changedPackages.isNotEmpty()) afterClear(changedPackages)
             }

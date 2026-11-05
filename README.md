@@ -1,6 +1,6 @@
 # Debloater (Shizuku)
 
-**Current release: [1.10.3](https://github.com/j0p3s/Debloat-app-android/releases/tag/v1.10.3)** · [Download APK](https://github.com/j0p3s/Debloat-app-android/releases/download/v1.10.3/Debloater-v1.10.3.apk) · [Release notes](docs/RELEASE-1.10.3.md) · [Changelog](CHANGELOG.md)
+**Current release: [1.11.0](https://github.com/j0p3s/Debloat-app-android/releases/tag/v1.11.0)** · [Download APK](https://github.com/j0p3s/Debloat-app-android/releases/download/v1.11.0/Debloater-v1.11.0.apk) · [Release notes](docs/RELEASE-1.11.0.md) · [Changelog](CHANGELOG.md)
 
 An Android app that debloats **any Android version from Android 11 to Android 17** without root, using
 [Shizuku](https://shizuku.rikka.app/). It also works as a normal app manager, so you can remove any user app.
@@ -96,8 +96,15 @@ An Android app that debloats **any Android version from Android 11 to Android 17
     back with `install-existing`, deleted user apps are reinstalled from the APK backup (`pm install-create/write/commit`).
   - Export/import all backups as a zip.
 - **Protected packages** (System UI, Settings, telephony, package installer, permission controller, WebView,
-  Shizuku, your current launcher and keyboard, …) can never be modified, even in expert mode.
+  Shizuku, your current launcher and keyboard, …) can never be disabled or removed, even in expert mode.
 - Logs of every run and test are saved and can be shared.
+
+## App leftovers
+
+Open **App leftovers** to find package-named folders left by uninstalled apps in primary `Android/data`, `Android/obb` and `Android/media` storage.
+Shizuku verifies package ownership; installed, disabled and retained packages are protected. Review paths and sizes before moving selected folders to recovery.
+Recovery is persistent and can restore folders without overwriting existing data. Moving does not free space; a separately confirmed permanent deletion does.
+See [scope, recovery and limitations](docs/APP-LEFTOVERS.md). Unrecognized folders and private/OS storage are outside scope.
 
 ## Cache cleaner
 
@@ -115,7 +122,14 @@ Sort by largest/smallest cache or app name A–Z/Z–A, search app/package names
 Select shown results or individual groups, then **Clear selected caches** and review the confirmation.
 Filtering does not deselect hidden selections; the confirmation lists every targeted app.
 
-Clearing requires Shizuku and a successful `pm help` capability check for `clear --cache-only`.
+Choose **Clearing method**: **Shizuku** or **Settings assistant (Accessibility)** for either user or system app caches.
+The optional Settings assistant opens each selected app's Android settings and presses **Clear cache**, like manual cleaning.
+It requires a permission disclosure, manual Accessibility enablement and a warning/target confirmation before every batch.
+A floating **Cancel** button stops the assistant. Unrecognized screens or uncertain outcomes stop safely; manufacturer compatibility varies.
+It does not need Shizuku. Without Usage Access you can select apps, but cache sizes remain unknown.
+See [Settings assistant setup, limitations and validation](docs/SETTINGS-CACHE-ASSISTANT.md).
+
+The Shizuku method requires a successful `pm help` capability check for `clear --cache-only`.
 Every command keeps the `--cache-only` flag and current user scope. Unsupported Android versions are blocked,
 and ROM permission failures appear in the cache log. App data and accounts remain intact.
 Cache deletion is permanent and cannot be restored from debloat backups. Only targeted non-empty/unknown cache groups are refreshed afterwards;
@@ -135,7 +149,8 @@ On-device performance and cache behavior remain untested; no numeric speed impro
 ## Requirements
 
 - Android 11 (API 30) up to Android 17 (API 37). Newer versions run but show an "untested" warning.
-- Shizuku, started with Wireless debugging (no PC needed on Android 11+) or with root.
+- Shizuku, started with Wireless debugging (no PC needed on Android 11+) or with root, for debloating and App leftovers.
+- The Settings cache assistant instead requires manually enabled Accessibility access. Usage Access is needed for cache measurements.
 
 ## Usage
 
@@ -201,7 +216,9 @@ Debloat lists); `tools/update_uad_list.sh` and `tools/update_adl_list.sh` update
 
 | Path | What it does |
 | --- | --- |
-| `shizuku/ShellService.kt` | Shizuku UserService (runs as shell/root): commands, APK install sessions, file copy |
+| `shizuku/ShellService.kt` | Shizuku UserService: commands, APK sessions, file copy and validated leftovers actions |
+| `cache/SettingsCacheService.kt`, `cache/SettingsCachePolicy.kt` | Opt-in Settings UI assistance and conservative control/identity checks |
+| `leftovers/LeftoverStore.kt`, `ui/LeftoverController.kt` | Ownership checks, recovery moves, restore/delete and operation state |
 | `shizuku/ShizukuManager.kt` | Shizuku status, permission, binding, command execution |
 | `data/` | Package listing, debloat list loader, protected packages, settings |
 | `backup/` | Restore points, APK backups, export/import |

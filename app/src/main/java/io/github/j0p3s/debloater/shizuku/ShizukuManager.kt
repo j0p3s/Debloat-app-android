@@ -156,6 +156,14 @@ object ShizukuManager {
     suspend fun exec(command: String): ShellResult = execInternal(command, false)
     suspend fun execCache(command: String): ShellResult = execInternal(command, true)
 
+    suspend fun leftovers(action: String, userId: Int, argument: String = ""): ShellResult = withContext(Dispatchers.IO) {
+        try {
+            val result = getService().leftovers(action, userId, argument)
+            ShellResult(result.getInt(ShellService.KEY_EXIT, -1), result.getString(ShellService.KEY_STDOUT).orEmpty(), result.getString(ShellService.KEY_STDERR).orEmpty())
+        } catch (error: kotlinx.coroutines.CancellationException) { throw error }
+        catch (error: Exception) { ShellResult(-1, "", error.message.orEmpty()) }
+    }
+
     private suspend fun execInternal(command: String, cache: Boolean): ShellResult = withContext(Dispatchers.IO) {
         try {
             val s = getService()

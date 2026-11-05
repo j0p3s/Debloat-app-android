@@ -382,4 +382,36 @@
     <string name="cache_refreshing">A atualizar as apps limpas</string>
     <string name="cache_stopped">Parado. Os resultados podem ser parciais. As limpezas feitas não são anuladas; uma limpeza em curso pode ainda terminar.</string>
     <string name="cache_partial">Medições parciais; os tamanhos indisponíveis não entram no total.</string>
+
+    <!-- Optional Settings UI cache clearing -->
+    <string name="cache_clear_method">Método de limpeza</string>
+    <string name="cache_shizuku_method">Shizuku (comando só de cache)</string>
+    <string name="cache_settings_method">Assistente das Definições (Acessibilidade)</string>
+    <string name="cache_settings_help">Abre as definições Android e prime Limpar cache nas apps do utilizador ou do sistema selecionadas, como faria manualmente. Não precisa de Shizuku. Para em segurança em ecrãs desconhecidos.</string>
+    <string name="cache_settings_enable">Ativar assistente das Definições</string>
+    <string name="cache_settings_enable_help">Ative o assistente nas definições de Acessibilidade do Android, regresse e confirme a limpeza. Ativar o acesso não inicia a limpeza.</string>
+    <string name="cache_settings_warning">O assistente controlará as Definições para as apps abaixo e premirá apenas Limpar cache. Mantenha o ecrã desbloqueado e evite tocar nas Definições. Use Cancelar na barra flutuante para parar. As apps e contas são mantidas, mas a cache limpa não pode ser guardada nem restaurada. Ecrãs incompatíveis ou resultados incertos param o lote. Continuar?</string>
+    <string name="cache_settings_disclosure">O acesso opcional de Acessibilidade permite ao Debloater ler os controlos visíveis das Definições do Android e premir Armazenamento e Limpar cache, apenas para as apps que selecionar e confirmar. O conteúdo do ecrã não é guardado nem enviado. O botão flutuante Cancelar fica visível durante a limpeza. Pode desativar o serviço na Acessibilidade a qualquer momento.</string>
+    <string name="cache_settings_running">A limpar cache: %1$s</string>
+
+    <!-- Reviewed app leftovers and recovery -->
+    <string name="leftovers_title">Resíduos de aplicações</string>
+    <string name="leftovers_nav_help">Encontrar pastas de apps desinstaladas</string>
+    <string name="leftovers_help">Encontre possíveis resíduos, reveja os caminhos e mova as pastas selecionadas para recuperação. Nada é selecionado ou eliminado automaticamente.</string>
+    <string name="leftovers_scope">Só o armazenamento principal do utilizador atual: Android/data, Android/obb e Android/media. As apps instaladas, desativadas e com registos mantidos estão protegidas. Pastas desconhecidas e áreas inacessíveis são ignoradas.</string>
+    <string name="leftovers_scan">Procurar resíduos</string>
+    <string name="leftovers_needs_shizuku">O Shizuku tem de estar ativo e autorizado para análise e recuperação.</string>
+    <string name="leftovers_scan_done">Possíveis pastas residuais: %1$d</string>
+    <string name="leftovers_stop_help">Cancelar para após a operação de ficheiros atual. As ações concluídas não são anuladas.</string>
+    <string name="leftovers_partial">Análise parcial: alguns locais ou pastas não puderam ser verificados.</string>
+    <string name="leftovers_move">Mover para recuperação</string>
+    <string name="leftovers_recovery">Recuperação de resíduos</string>
+    <string name="leftovers_recovery_help">A recuperação mantém os ficheiros no armazenamento partilhado e não liberta espaço. Restaure-os ou elimine os registos individualmente após revisão.</string>
+    <string name="leftovers_load_recovery">Carregar registos de recuperação</string>
+    <string name="leftovers_restore">Restaurar pasta</string>
+    <string name="leftovers_delete">Eliminar permanentemente</string>
+    <string name="leftovers_restore_warning">Restaurar esta pasta para o local original? As pastas existentes nunca são substituídas nem unidas. Suspenda outras operações de ficheiros.</string>
+    <string name="leftovers_delete_warning">Eliminar permanentemente estes ficheiros para libertar espaço? Podem conter ficheiros pessoais. Esta ação é irreversível e não ficará nenhuma cópia de segurança.</string>
+    <string name="leftovers_move_warning">Estas pastas podem conter ficheiros pessoais. Reveja cada caminho. As pastas selecionadas serão movidas para .DebloaterRecovery no armazenamento partilhado, com os locais originais registados. Podem ser recuperadas, mas só a eliminação permanente liberta espaço. Evite instalar ou desinstalar apps durante a operação. Continuar?</string>
+    <string name="leftovers_action_done">Concluídas: %1$d · Falhadas: %2$d</string>
 </resources>
