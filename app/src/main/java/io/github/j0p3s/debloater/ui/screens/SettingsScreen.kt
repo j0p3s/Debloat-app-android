@@ -75,6 +75,7 @@ fun SettingsScreen(vm: MainViewModel) {
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             io.github.j0p3s.debloater.ui.components.LanguageSetting()
+            io.github.j0p3s.debloater.ui.components.AppUpdateSetting()
             OutlinedButton(onClick = { vm.navigate(io.github.j0p3s.debloater.ui.Screen.PERMISSIONS) }, modifier = Modifier.fillMaxWidth()) {
                 Text(stringResource(R.string.permissions_title))
             }

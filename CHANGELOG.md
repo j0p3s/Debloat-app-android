@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.11.2 — 2026-11-05
+
+- Add on-demand GitHub app update checks, APK download progress/cancellation and Android-managed downloads.
+- Keep installation user-confirmed; add numeric version comparison tests.
+
+
 ## 1.11.1 — 2026-11-05
 
 - Add Settings → Permissions with live access validation and setup links.
