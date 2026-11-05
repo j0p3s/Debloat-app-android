@@ -5,6 +5,21 @@ import org.junit.Assert.*
 import org.junit.Test
 
 class SettingsCachePolicyTest {
+    @Test fun allSupportedLanguagesFollowStorageThenCacheWithoutSelectingData() {
+        for(language in listOf("en","pt","es","fr","de","it","ru","zh","hi","ar","id","in")) {
+            val translated = Policy.fallbackLabels(language)
+            val storageText = translated.storage.single()
+            val infoTitle = translated.pageTitles.first { it != storageText }
+            val details = page(Policy.Node(text = infoTitle), Policy.Node(text = target.label),
+                Policy.Node(clickable = true), Policy.Node(text = storageText, parent = 2))
+            assertEquals(language, 2, Policy.storageRow(details, target, translated))
+            val storage = page(Policy.Node(text = storageText), Policy.Node(text = target.label),
+                button(translated.destructive.single(), "oem_data"), button(translated.clearCache.single(), "oem_cache"))
+            assertEquals(language, 3, Policy.clearButton(storage, target, translated))
+            assertNull(language, Policy.clearButton(storage, target.copy(label = "Other"), translated))
+        }
+        assertTrue(Policy.fallbackLabels("unsupported").clearCache.isEmpty())
+    }
     @Test fun portugueseOemScreensNavigateToStorageThenSelectCacheOnly() {
         val target = Policy.Target("com.supercell.clashofclans", "Clash of Clans", true)
         val labels = Policy.Labels(setOf("Armazenamento e cache"), setOf("Limpar cache"),

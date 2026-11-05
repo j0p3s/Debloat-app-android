@@ -64,16 +64,16 @@ class SettingsCacheService : AccessibilityService() {
             val id = resources.getIdentifier(name, "string", SettingsCachePolicy.SETTINGS_PACKAGE)
             if (id == 0) null else runCatching { resources.getString(id) }.getOrNull()
         }.toSet()
-        val portuguese = Resources.getSystem().configuration.locales[0].language == "pt"
+        val fallback = SettingsCachePolicy.fallbackLabels(Resources.getSystem().configuration.locales[0].language)
         return SettingsCachePolicy.Labels(
             strings("storage_settings_for_app", "storage_settings", "storage_use", "storage_label") +
-                if(portuguese) setOf("Armazenamento e cache") else emptySet(),
+                fallback.storage,
             strings("clear_cache_btn_text", "clear_cache", "clear_cache_label") +
-                if(portuguese) setOf("Limpar cache") else emptySet(),
+                fallback.clearCache,
             strings("clear_user_data_text", "clear_data_btn_text", "manage_space_text") +
-                if(portuguese) setOf("Limpar armazenamento", "Limpar dados") else emptySet(),
+                fallback.destructive,
             strings("application_info_label", "app_info_label", "storage_settings_for_app", "storage_label") +
-                if(portuguese) setOf("Info da app", "Armazenamento e cache") else emptySet(),
+                fallback.pageTitles,
         )
     }
 

@@ -17,6 +17,24 @@ object SettingsCachePolicy {
     )
     data class Page(val packageName: String, val nodes: List<Node>, val complete: Boolean = true)
     data class Labels(val storage: Set<String>, val clearCache: Set<String>, val destructive: Set<String>, val pageTitles: Set<String> = emptySet())
+    /** OEM fallback labels, selected by Android Settings language, never by Debloater's UI language. */
+    fun fallbackLabels(language: String): Labels {
+        val words = when(language) {
+            "en" -> listOf("Storage & cache", "Clear cache", "Clear storage", "App info")
+            "pt" -> listOf("Armazenamento e cache", "Limpar cache", "Limpar armazenamento", "Info da app")
+            "es" -> listOf("Almacenamiento y caché", "Borrar caché", "Borrar almacenamiento", "Información de la aplicación")
+            "fr" -> listOf("Espace de stockage et cache", "Vider le cache", "Effacer le stockage", "Infos sur l’appli")
+            "de" -> listOf("Speicher und Cache", "Cache leeren", "Speicherinhalt löschen", "App-Info")
+            "it" -> listOf("Spazio di archiviazione e cache", "Svuota cache", "Cancella spazio di archiviazione", "Informazioni app")
+            "ru" -> listOf("Хранилище и кеш", "Очистить кеш", "Очистить хранилище", "О приложении")
+            "zh" -> listOf("存储和缓存", "清除缓存", "清除存储空间", "应用信息")
+            "hi" -> listOf("स्टोरेज और कैश", "कैश मेमोरी मिटाएं", "स्टोरेज खाली करें", "ऐप्लिकेशन की जानकारी")
+            "ar" -> listOf("مساحة التخزين وذاكرة التخزين المؤقت", "محو ذاكرة التخزين المؤقت", "محو بيانات التخزين", "معلومات التطبيق")
+            "id", "in" -> listOf("Penyimpanan & cache", "Hapus cache", "Hapus penyimpanan", "Info aplikasi")
+            else -> return Labels(emptySet(), emptySet(), emptySet())
+        }
+        return Labels(setOf(words[0]), setOf(words[1]), setOf(words[2]), setOf(words[0], words[3]))
+    }
 
     fun normalize(value: String): String = value.replace(Regex("[\\u200e\\u200f\\u202a-\\u202e\\u2066-\\u2069]"), "")
         .replace('\u00a0', ' ').trim().replace(Regex("\\s+"), " ").lowercase(Locale.ROOT)
