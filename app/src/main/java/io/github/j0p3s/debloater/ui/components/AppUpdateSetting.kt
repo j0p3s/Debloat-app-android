@@ -22,8 +22,10 @@ import java.net.HttpURLConnection
 import java.net.URL
 
 internal object AppReleasePolicy {
-    fun version(value: String): List<Int>? = Regex("^v?(\\d+)\\.(\\d+)\\.(\\d+)$").matchEntire(value)
-        ?.groupValues?.drop(1)?.map { it.toIntOrNull() ?: return null }
+    fun version(value: String): List<Int>? {
+        val parts = Regex("^v?(\\d+)\\.(\\d+)\\.(\\d+)$").matchEntire(value)?.groupValues?.drop(1) ?: return null
+        return parts.map { it.toIntOrNull() ?: return null }
+    }
     fun newer(remote: String, local: String): Boolean {
         val a = version(remote) ?: return false
         val b = version(local) ?: return false
