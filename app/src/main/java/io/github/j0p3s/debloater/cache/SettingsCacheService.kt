@@ -64,10 +64,16 @@ class SettingsCacheService : AccessibilityService() {
             val id = resources.getIdentifier(name, "string", SettingsCachePolicy.SETTINGS_PACKAGE)
             if (id == 0) null else runCatching { resources.getString(id) }.getOrNull()
         }.toSet()
+        val fallback = SettingsCachePolicy.fallbackLabels(Resources.getSystem().configuration.locales[0].language)
         return SettingsCachePolicy.Labels(
-            strings("storage_settings_for_app", "storage_settings", "storage_use", "storage_label"),
-            strings("clear_cache_btn_text", "clear_cache", "clear_cache_label"),
-            strings("clear_user_data_text", "clear_data_btn_text", "manage_space_text"),
+            strings("storage_settings_for_app", "storage_settings", "storage_use", "storage_label") +
+                fallback.storage,
+            strings("clear_cache_btn_text", "clear_cache", "clear_cache_label") +
+                fallback.clearCache,
+            strings("clear_user_data_text", "clear_data_btn_text", "manage_space_text") +
+                fallback.destructive,
+            strings("application_info_label", "app_info_label", "storage_settings_for_app", "storage_label") +
+                fallback.pageTitles,
         )
     }
 
@@ -168,7 +174,7 @@ class SettingsCacheService : AccessibilityService() {
                         val page = snapshot.page
                         lastPageWasSettings = page.packageName == SettingsCachePolicy.SETTINGS_PACKAGE
                         if(!lastPageWasSettings) return@withTimeoutOrNull SettingsCacheResult.UNKNOWN
-                        if (!SettingsCachePolicy.isTarget(page, target)) {
+                        if (!SettingsCachePolicy.isTarget(page, target, labels)) {
                             stableTargetPolls = 0
                             // Give Settings fragment transitions time to settle, but never click during them.
                             transitionPolls++
