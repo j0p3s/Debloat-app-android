@@ -452,4 +452,7 @@
     <string name="cache_fallback_untried">आज़माए नहीं गए: इस फ़ोन पर Android ने Shizuku को अनदेखा किया</string>
     <string name="cache_fallback_use_settings">सेटिंग्स तरीका इस्तेमाल करें</string>
     <string name="cache_fallback_not_now">अभी नहीं</string>
+    <string name="cache_residue">पिछली सफ़ाई के बाद %1$s बचा रहा। Android इसे कैश गिनता है, लेकिन कैश साफ़ करने से यह नहीं हटा (या ऐप ने तुरंत फिर भर दिया)। आमतौर पर सिर्फ़ ऐप का स्टोरेज साफ़ करने या दोबारा इंस्टॉल करने से यह जगह खाली होती है।</string>
+    <string name="cache_residue_folder">शेयर्ड स्टोरेज में उसके कैश फ़ोल्डर की असली सामग्री (Shizuku से मापी गई): %1$s</string>
+    <string name="cache_residue_total">पिछली सफ़ाई के बाद भी गिना जा रहा, शायद कैश साफ़ करके नहीं हटेगा: %1$s</string>
 </resources>

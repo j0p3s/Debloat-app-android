@@ -85,6 +85,9 @@ fun CacheScreen(vm: MainViewModel, system: Boolean) {
                             if(category == CacheScope.BOTH) Text(stringResource(R.string.cache_totals,
                                 formatSize(cache.groups.filter { !it.isSystem }.sumOf { it.bytes ?: 0 }),
                                 formatSize(cache.groups.filter { it.isSystem }.sumOf { it.bytes ?: 0 })))
+                            categoryGroups.mapNotNull { g -> cache.residueFor(g)?.let { minOf(it.bytes, g.bytes ?: 0) } }.sum().takeIf { it > 0 }?.let {
+                                Text(stringResource(R.string.cache_residue_total, formatSize(it)), style = MaterialTheme.typography.bodySmall)
+                            }
                             Text(stringResource(R.string.cache_timestamp, DateFormat.getDateTimeInstance().format(Date(time))), style = MaterialTheme.typography.bodySmall)
                             Text(stringResource(R.string.cache_unknown_count, categoryGroups.count { it.bytes == null }), style = MaterialTheme.typography.bodySmall)
                         } ?: Text(stringResource(R.string.cache_not_scanned))
@@ -168,6 +171,11 @@ fun CacheScreen(vm: MainViewModel, system: Boolean) {
                             Text(group.bytes?.let { formatSize(it) } ?: stringResource(R.string.cache_unknown))
                             if(group.packages.size > 1) Text(stringResource(R.string.cache_shared), style = MaterialTheme.typography.bodySmall)
                             group.error?.let { Text(it, style = MaterialTheme.typography.bodySmall) }
+                            cache.residueFor(group)?.let { residue ->
+                                Text(stringResource(R.string.cache_residue, formatSize(residue.bytes)),
+                                    style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.tertiary)
+                                residue.sharedFolderBytes?.let { Text(stringResource(R.string.cache_residue_folder, formatSize(it)), style = MaterialTheme.typography.bodySmall) }
+                            }
                         }
                     }
                 }

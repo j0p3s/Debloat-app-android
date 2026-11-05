@@ -452,4 +452,7 @@
     <string name="cache_fallback_untried">لم تُجرَّب: تجاهل Android ‏Shizuku على هذا الهاتف</string>
     <string name="cache_fallback_use_settings">استخدام طريقة الإعدادات</string>
     <string name="cache_fallback_not_now">ليس الآن</string>
+    <string name="cache_residue">ترك آخر مسح %1$s. يحتسب Android هذا كذاكرة تخزين مؤقت، لكن «محو ذاكرة التخزين المؤقت» لم يحذفه (أو أعاد التطبيق ملأها فورًا). عادةً لا يحرر هذه المساحة إلا محو بيانات تخزين التطبيق أو إعادة تثبيته.</string>
+    <string name="cache_residue_folder">المحتوى الفعلي لمجلد ذاكرة التخزين المؤقت في التخزين المشترك (مقيس عبر Shizuku): %1$s</string>
+    <string name="cache_residue_total">ما زال محتسبًا بعد آخر مسح، وغالبًا لا يُزال بمحو ذاكرة التخزين المؤقت: %1$s</string>
 </resources>

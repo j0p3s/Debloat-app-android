@@ -452,4 +452,7 @@
     <string name="cache_fallback_untried">Non essayées : Android a ignoré Shizuku sur ce téléphone</string>
     <string name="cache_fallback_use_settings">Utiliser la méthode Paramètres</string>
     <string name="cache_fallback_not_now">Pas maintenant</string>
+    <string name="cache_residue">Le dernier nettoyage a laissé %1$s. Android le compte comme cache, mais Vider le cache ne l’a pas supprimé (ou l’appli l’a rempli aussitôt). En général, seul l’effacement du stockage de l’appli ou sa réinstallation libère cet espace.</string>
+    <string name="cache_residue_folder">Contenu réel de son dossier cache sur le stockage partagé (mesuré avec Shizuku) : %1$s</string>
+    <string name="cache_residue_total">Encore signalé après le dernier nettoyage, probablement impossible à supprimer avec Vider le cache : %1$s</string>
 </resources>

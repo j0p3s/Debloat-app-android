@@ -452,4 +452,7 @@
     <string name="cache_fallback_untried">Non provate: Android ha ignorato Shizuku su questo telefono</string>
     <string name="cache_fallback_use_settings">Usa metodo Impostazioni</string>
     <string name="cache_fallback_not_now">Non ora</string>
+    <string name="cache_residue">L’ultima pulizia ha lasciato %1$s. Android lo conta come cache, ma Svuota cache non l’ha rimosso (oppure l’app l’ha riempita subito). Di solito solo cancellare lo spazio dell’app o reinstallarla libera questo spazio.</string>
+    <string name="cache_residue_folder">Contenuto reale della sua cartella cache nella memoria condivisa (misurato con Shizuku): %1$s</string>
+    <string name="cache_residue_total">Ancora indicato dopo l’ultima pulizia, probabilmente non rimovibile con Svuota cache: %1$s</string>
 </resources>

@@ -452,4 +452,7 @@
     <string name="cache_fallback_untried">Не обработаны: Android проигнорировал Shizuku на этом телефоне</string>
     <string name="cache_fallback_use_settings">Очистить через Настройки</string>
     <string name="cache_fallback_not_now">Не сейчас</string>
+    <string name="cache_residue">После последней очистки осталось %1$s. Android считает это кешем, но «Очистить кеш» его не удалил (или приложение сразу заполнило кеш снова). Обычно освободить место помогает только очистка хранилища приложения или переустановка.</string>
+    <string name="cache_residue_folder">Фактическое содержимое папки кеша в общем хранилище (измерено через Shizuku): %1$s</string>
+    <string name="cache_residue_total">Всё ещё учитывается после последней очистки, вероятно не удаляется через «Очистить кеш»: %1$s</string>
 </resources>

@@ -452,4 +452,7 @@
     <string name="cache_fallback_untried">Nicht versucht: Android hat Shizuku auf diesem Telefon ignoriert</string>
     <string name="cache_fallback_use_settings">Einstellungen-Methode verwenden</string>
     <string name="cache_fallback_not_now">Nicht jetzt</string>
+    <string name="cache_residue">Die letzte Bereinigung hat %1$s übrig gelassen. Android zählt das als Cache, aber Cache leeren hat es nicht entfernt (oder die App hat ihn sofort wieder gefüllt). Meist gibt nur das Löschen des App-Speichers oder eine Neuinstallation den Platz frei.</string>
+    <string name="cache_residue_folder">Tatsächlicher Inhalt ihres Cache-Ordners im gemeinsamen Speicher (mit Shizuku gemessen): %1$s</string>
+    <string name="cache_residue_total">Nach der letzten Bereinigung noch gemeldet, wahrscheinlich nicht mit Cache leeren entfernbar: %1$s</string>
 </resources>

@@ -452,4 +452,7 @@
     <string name="cache_fallback_untried">No intentadas: Android ignoró Shizuku en este teléfono</string>
     <string name="cache_fallback_use_settings">Usar método de Ajustes</string>
     <string name="cache_fallback_not_now">Ahora no</string>
+    <string name="cache_residue">La última limpieza dejó %1$s. Android lo cuenta como caché, pero Borrar caché no lo eliminó (o la app volvió a llenarla al momento). Normalmente solo borrar el almacenamiento de la app o reinstalarla libera este espacio.</string>
+    <string name="cache_residue_folder">Contenido real de su carpeta de caché en el almacenamiento compartido (medido con Shizuku): %1$s</string>
+    <string name="cache_residue_total">Aún indicado tras la última limpieza, probablemente no se puede quitar con Borrar caché: %1$s</string>
 </resources>

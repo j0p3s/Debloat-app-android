@@ -37,10 +37,51 @@ enum class CacheClearMethod(@param:StringRes @get:StringRes val titleRes: Int) {
     SHIZUKU(R.string.cache_shizuku_method), SETTINGS(R.string.cache_settings_method);
 }
 
+/**
+ * Cache Android still reported after a confirmed clear. Typically files Android counts as cache that are not in a
+ * cache folder (e.g. moved out after download), which Clear cache cannot remove; or an app that refilled at once.
+ * [sharedFolderBytes]: measured content of Android/data/<pkg>/cache via Shizuku, null if not measured.
+ */
+data class CacheResidue(val bytes: Long, val at: Long, val sharedFolderBytes: Long? = null) {
+    fun encode(): String = "$bytes|$at|${sharedFolderBytes ?: ""}"
+    companion object {
+        fun decode(value: String): CacheResidue? = value.split('|').takeIf { it.size == 3 }?.let { p ->
+            val bytes = p[0].toLongOrNull() ?: return null
+            val at = p[1].toLongOrNull() ?: return null
+            CacheResidue(bytes, at, p[2].toLongOrNull())
+        }
+    }
+}
+
 /** Groups Shizuku failed to clear, and groups not tried because Android ignored Shizuku. */
 data class CacheFallback(val failed: List<CacheGroup>, val untried: List<CacheGroup>)
 
 object CachePolicy {
+    /** Residues smaller than this are ignored: empty folders and quick refills are normal. */
+    const val RESIDUE_MIN_BYTES = 8L shl 20
+
+    /** After a confirmed clear: most of the cache is still reported, so mark it as a residue. */
+    fun residueAfterClear(before: Long?, after: Long?): Long? =
+        after?.takeIf { before != null && before > 0 && it >= RESIDUE_MIN_BYTES && it >= before / 2 }
+
+    /** The residue still explains the current size (it has not grown with new, clearable cache). */
+    fun residueApplies(residue: CacheResidue?, now: Long?): Boolean =
+        residue != null && now != null && now >= RESIDUE_MIN_BYTES && now <= residue.bytes + maxOf(1L shl 20, residue.bytes / 20)
+
+    /** Shell path of an app's cache folder on primary shared storage. */
+    fun sharedCacheDir(userId: Int, packageName: String): String {
+        require(userId >= 0)
+        require(PackageRepository.isValidPackageName(packageName))
+        return "/storage/emulated/$userId/Android/data/$packageName/cache"
+    }
+
+    /** KiB from `du -sk` → bytes; a missing folder (no output) counts as empty. */
+    fun parseDuKb(result: ShellResult): Long? {
+        val first = result.stdout.lineSequence().map { it.trim() }.firstOrNull { it.isNotEmpty() }
+        if (first == null) return if (result.stderr.contains("No such file")) 0L else null
+        return first.split(Regex("\\s+")).firstOrNull()?.toLongOrNull()?.times(1024)
+    }
+
     /** After a timed-out shell clear, an unchanged size for this long ends the wait early. */
     const val IGNORED_AFTER_MS = 20_000L
 

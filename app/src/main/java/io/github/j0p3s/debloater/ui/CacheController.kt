@@ -6,6 +6,7 @@ import android.content.pm.ApplicationInfo
 import android.content.Intent
 import android.content.res.Configuration
 import androidx.compose.runtime.*
+import androidx.core.content.edit
 import io.github.j0p3s.debloater.R
 import io.github.j0p3s.debloater.MainActivity
 import io.github.j0p3s.debloater.cache.SettingsCachePolicy
@@ -50,6 +51,32 @@ class CacheController(
     var notice by mutableStateOf<UiMessage?>(null); private set
     /** Apps Shizuku could not clear (and, when Android ignored it, apps not tried), offered for the Settings method. */
     var fallback by mutableStateOf<CacheFallback?>(null)
+    private val residuePrefs = app.getSharedPreferences("cache_residue", android.content.Context.MODE_PRIVATE)
+    /** Per group key: cache still reported after the last confirmed clear (see [CacheResidue]). */
+    var residues by mutableStateOf(residuePrefs.all.mapNotNull { (k, v) -> (v as? String)?.let(CacheResidue::decode)?.let { k to it } }.toMap())
+        private set
+    fun residueFor(group: CacheGroup): CacheResidue? = residues[group.key]?.takeIf { CachePolicy.residueApplies(it, group.bytes) }
+
+    private suspend fun recordResidues(cleared: List<CacheGroup>) {
+        val now = System.currentTimeMillis()
+        val updated = residues.toMutableMap()
+        for(target in cleared) {
+            val after = groups.firstOrNull { it.key == target.key }?.bytes
+            val residue = CachePolicy.residueAfterClear(target.bytes, after)
+            if(residue == null) { updated.remove(target.key); continue }
+            // Shell can read shared storage: measure what is really inside the app's cache folders there.
+            val folder = if(ShizukuManager.isReady()) target.packages.fold(0L as Long?) { sum, pkg ->
+                val measured = CachePolicy.parseDuKb(ShizukuManager.execCache("du -sk '${CachePolicy.sharedCacheDir(repo.userId, pkg)}'"))
+                if(sum == null || measured == null) null else sum + measured
+            } else null
+            updated[target.key] = CacheResidue(residue, now, folder)
+            log += "RESIDUE ${target.packages.joinToString()}: before ${target.bytes} bytes, after $residue bytes; " +
+                "shared-storage cache folder ${folder?.let { "$it bytes" } ?: "not measured"}; internal cache folder cannot be read without root. " +
+                "Android counts this as cache, but Clear cache did not remove it (or the app refilled it at once)."
+        }
+        residuePrefs.edit { clear(); updated.forEach { (k, v) -> putString(k, v.encode()) } }
+        residues = updated
+    }
     val log = io.github.j0p3s.debloater.debug.DebugLog.Mirror("cache")
     private val reader = BoundedCacheReader()
     private var job: Job? = null
@@ -210,6 +237,7 @@ class CacheController(
         job = scope.launch {
             val changedPackages = mutableSetOf<String>()
             var stopNotice: UiMessage? = null
+            val clearedPackages = mutableSetOf<String>()
             val shellFailed = mutableListOf<String>()
             var shellIgnoredAt: Int? = null
             var shellPackages = emptyList<String>()
@@ -286,12 +314,12 @@ class CacheController(
                         }
                         logSizeAfter(pkg, targets.first { pkg in it.packages })
                         if(!success) shellFailed += pkg
-                        if(success) successes++ else failures++
+                        if(success) { successes++; clearedPackages += pkg } else failures++
                     } else {
                         log += "START Settings UI: $pkg → Storage → Clear cache (no shell command); cache before ${targets.first { pkg in it.packages }.bytes ?: "unknown"} bytes"
                         val result = settingsTargets[pkg]?.let { SettingsCacheService.clear(it, index, packages.size) { detail -> log += "$pkg: $detail" } } ?: SettingsCacheResult.SKIPPED
                         when(result) {
-                            SettingsCacheResult.CONFIRMED -> { successes++; log += "OK $pkg: Settings disabled Clear cache after the press; rescan checks the size." }
+                            SettingsCacheResult.CONFIRMED -> { successes++; clearedPackages += pkg; log += "OK $pkg: Settings disabled Clear cache after the press; rescan checks the size." }
                             SettingsCacheResult.SKIPPED -> { failures++; log += "SKIP $pkg: unavailable, empty, protected assistant package or unsupported Settings layout." }
                             SettingsCacheResult.UNAVAILABLE -> { failures++; log += "SKIP $pkg: cache control could not be identified safely; no cache button was pressed. Continuing with the next app." }
                             SettingsCacheResult.UNKNOWN -> { failures++; log += "UNKNOWN $pkg: screen changed, cache outcome unverified or timed out; batch stopped." }
@@ -308,6 +336,7 @@ class CacheController(
                 if(clearMethod == CacheClearMethod.SETTINGS) returnFromSettings()
                 try {
                     readGroups(keys = targets.filter { it.bytes != 0L }.map { it.key }.toSet())
+                    recordResidues(targets.filter { g -> g.bytes != 0L && g.packages.any { it in clearedPackages } })
                     notice = UiMessage(R.string.cache_clear_done, listOf(successes, failures))
                 } catch(e: Exception) {
                     if(e is CancellationException) { notice = UiMessage(R.string.cache_stopped); return@launch }

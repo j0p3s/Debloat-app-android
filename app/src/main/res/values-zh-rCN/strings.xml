@@ -452,4 +452,7 @@
     <string name="cache_fallback_untried">未尝试：此手机上 Android 忽略了 Shizuku</string>
     <string name="cache_fallback_use_settings">使用“设置”方式</string>
     <string name="cache_fallback_not_now">暂不</string>
+    <string name="cache_residue">上次清除后仍剩 %1$s。Android 将其计为缓存，但“清除缓存”没有删除它（或应用立即重新写入）。通常只有清除该应用的存储空间或重新安装才能释放。</string>
+    <string name="cache_residue_folder">共享存储中其缓存文件夹的实际内容（通过 Shizuku 测量）：%1$s</string>
+    <string name="cache_residue_total">上次清除后仍被计入，可能无法通过“清除缓存”删除：%1$s</string>
 </resources>

@@ -452,4 +452,7 @@
     <string name="cache_fallback_untried">Tidak dicoba: Android mengabaikan Shizuku di ponsel ini</string>
     <string name="cache_fallback_use_settings">Gunakan metode Setelan</string>
     <string name="cache_fallback_not_now">Nanti saja</string>
+    <string name="cache_residue">Pembersihan terakhir menyisakan %1$s. Android menghitungnya sebagai cache, tetapi Hapus cache tidak menghapusnya (atau aplikasi langsung mengisinya lagi). Biasanya hanya menghapus penyimpanan aplikasi atau memasang ulang yang membebaskan ruang ini.</string>
+    <string name="cache_residue_folder">Isi sebenarnya folder cache di penyimpanan bersama (diukur dengan Shizuku): %1$s</string>
+    <string name="cache_residue_total">Masih dihitung setelah pembersihan terakhir, kemungkinan tidak bisa dihapus dengan Hapus cache: %1$s</string>
 </resources>

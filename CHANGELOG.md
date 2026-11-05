@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.12.6 — 2026-11-05
+
+- Cache cleaner: when Android still reports most of an app's cache (8 MB or more) after a confirmed clear, mark that app with the leftover size and explain that Clear cache probably cannot remove it. The total line shows how much of the reported cache is such leftover. The mark disappears once the app has new, clearable cache or a later clear works.
+- With Shizuku, measure the real content of the app's cache folder on shared storage (`Android/data/<app>/cache`) and show it next to the leftover. The internal cache folder cannot be read without root.
+
+
 ## 1.12.5 — 2026-11-05
 
 - Shizuku cache clearing: after a run, a dialog lists the apps Shizuku could not clear. If Android ignored Shizuku entirely, it also lists the apps that were not tried. Tick the apps to clear with the Settings method instead; the usual Settings assistant confirmation follows. Nothing switches methods without this choice.

@@ -454,4 +454,7 @@
     <string name="cache_fallback_untried">Not tried: Android ignored Shizuku on this phone</string>
     <string name="cache_fallback_use_settings">Use Settings method</string>
     <string name="cache_fallback_not_now">Not now</string>
+    <string name="cache_residue">Last clear left %1$s. Android counts this as cache, but Clear cache did not remove it (or the app refilled it at once). Usually only clearing the app’s storage or reinstalling frees it.</string>
+    <string name="cache_residue_folder">Real content of its cache folder on shared storage (measured with Shizuku): %1$s</string>
+    <string name="cache_residue_total">Still reported after the last clear, likely not removable with Clear cache: %1$s</string>
 </resources>
