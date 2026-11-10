@@ -294,6 +294,7 @@
     <string name="cache_shared">Grupo de cache partilhado. Todas as apps listadas são selecionadas em conjunto.</string>
     <string name="cache_log">Registo de comandos de cache</string>
     <string name="cache_copy_log">Copiar o registo de cache</string>
+    <string name="copy_log">Copiar o registo</string>
     <string name="cache_confirm_title">Limpar a cache de %1$d app(s)?</string>
     <string name="cache_confirm_help">Apaga só caches temporárias. Os dados das apps e as contas são mantidos. A eliminação da cache não pode ser desfeita nem restaurada a partir das cópias de debloat. As apps podem reconstruir as caches e abrir mais devagar da próxima vez. Cache medida: %1$s; o espaço realmente libertado pode ser diferente.</string>
     <string name="cache_scan_done">Análise concluída. %1$d grupo(s) de cache não puderam ser medidos.</string>
@@ -321,7 +322,7 @@
     <string name="guide_cleanup_uninstall_instead">Desinstalar em vez disso</string>
     <string name="guide_finish">Vamos lá</string>
     <string name="guide_help_a_disable_remove">Desativar: a app fica no telefone mas não pode ser executada. É o mais seguro e totalmente reversível, mas não liberta espaço.\nRemover: a app é desinstalada para si. Com \"Manter os dados\" pode voltar exatamente como estava; com \"Apagar os dados\" liberta mais espaço, mas os dados desaparecem.</string>
-    <string name="guide_help_a_privacy">Não precisa de root. A internet só é usada quando pede para atualizar as listas de debloat (Definições), e nunca nada é enviado.</string>
+    <string name="guide_help_a_privacy">Não precisa de root. A internet só é usada quando o pede: para atualizar as listas de debloat ou procurar uma atualização da app (Definições). Nunca nada é enviado.</string>
     <string name="guide_help_a_problem">Abra \"Cópias e restauro\", encontre a cópia mais recente e toque em Restaurar. Se não tem a certeza de qual app foi a causa, use \"Restaurar tudo\".</string>
     <string name="guide_help_a_reboot">É normal sem root: abra o Shizuku e toque novamente em Iniciar (o Wi-Fi tem de estar ligado). As suas alterações não são afetadas; só as novas alterações precisam do Shizuku.</string>
     <string name="guide_help_a_safe">Sim, se ficar pelas apps \"Recomendado\" e usar \"Desativar\". Antes de cada alteração a app guarda uma cópia de segurança, e as partes críticas do sistema estão bloqueadas para nunca poderem ser removidas. Tudo pode ser desfeito.</string>

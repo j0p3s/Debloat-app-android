@@ -294,6 +294,7 @@
     <string name="cache_shared">Gemeinsame Cache-Gruppe. Alle aufgeführten Apps werden zusammen ausgewählt.</string>
     <string name="cache_log">Cache-Befehlsprotokoll</string>
     <string name="cache_copy_log">Cache-Protokoll kopieren</string>
+    <string name="copy_log">Protokoll kopieren</string>
     <string name="cache_confirm_title">Caches von %1$d App(s) leeren?</string>
     <string name="cache_confirm_help">Nur temporäre Caches werden gelöscht. App-Daten und Konten bleiben erhalten. Das Leeren ist nicht rückgängig zu machen; Debloat-Sicherungen stellen keine Caches wieder her. Apps können Caches neu aufbauen und langsamer starten. Gemessener Cache: %1$s; freigegebener Speicher kann abweichen.</string>
     <string name="cache_scan_done">Scan abgeschlossen. %1$d Cache-Gruppe(n) konnten nicht gemessen werden.</string>
@@ -321,7 +322,7 @@
     <string name="guide_cleanup_uninstall_instead">Stattdessen deinstallieren</string>
     <string name="guide_finish">Los geht\'s</string>
     <string name="guide_help_a_disable_remove">Deaktivieren: Die App bleibt auf dem Handy, kann aber nicht laufen. Am sichersten und vollständig umkehrbar, gibt aber keinen Speicher frei.\nEntfernen: Die App wird für Sie deinstalliert. Mit „App-Daten behalten“ kann sie genau wie vorher zurückkommen; mit „App-Daten löschen“ geben Sie mehr Speicher frei, aber die Daten sind weg.</string>
-    <string name="guide_help_a_privacy">Kein Root. Das Internet wird nur genutzt, wenn Sie die Debloat-Listen aktualisieren (Einstellungen), und es wird nie etwas hochgeladen.</string>
+    <string name="guide_help_a_privacy">Kein Root. Das Internet wird nur genutzt, wenn Sie es verlangen: zum Aktualisieren der Debloat-Listen oder zur Suche nach einem App-Update (Einstellungen). Es wird nie etwas hochgeladen.</string>
     <string name="guide_help_a_problem">Öffnen Sie „Sichern und wiederherstellen“, suchen Sie die neueste Sicherung und tippen Sie auf Wiederherstellen. Wenn Sie nicht wissen, welche App die Ursache war, verwenden Sie „Alles wiederherstellen“.</string>
     <string name="guide_help_a_reboot">Das ist ohne Root normal: Öffnen Sie Shizuku und tippen Sie erneut auf Starten (WLAN muss an sein). Ihre Änderungen sind nicht betroffen; nur neue Änderungen brauchen Shizuku.</string>
     <string name="guide_help_a_safe">Ja, wenn Sie bei den „Empfohlen“-Apps bleiben und „Deaktivieren“ verwenden. Vor jeder Änderung erstellt die App eine Sicherung, und kritische Systemteile sind gesperrt, damit sie nie entfernt werden können. Alles lässt sich rückgängig machen.</string>

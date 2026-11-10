@@ -76,7 +76,7 @@ fun OperationScreen(vm: MainViewModel) {
     ) { pad ->
         Column(Modifier.padding(pad).fillMaxSize().padding(12.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             if (s.dryRun) {
-                Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer)) {
+                Card(Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.tertiaryContainer)) {
                     Text(stringResource(R.string.test_mode), Modifier.padding(12.dp), fontWeight = FontWeight.SemiBold)
                 }
             }
@@ -127,7 +127,7 @@ fun OperationScreen(vm: MainViewModel) {
                 OutlinedButton(onClick = vm::cancelOperation, modifier = Modifier.fillMaxWidth()) { Text(stringResource(R.string.cancel_after)) }
             } else {
                 val passed = s.failed == 0
-                Card(colors = CardDefaults.cardColors(containerColor = (if (passed) OkColor else ErrorColor).copy(alpha = 0.15f))) {
+                Card(Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = (if (passed) OkColor else ErrorColor).copy(alpha = 0.15f))) {
                     Column(Modifier.padding(12.dp)) {
                         Text(
                             when {
@@ -168,7 +168,7 @@ fun OperationScreen(vm: MainViewModel) {
                         Button(
                             onClick = vm::runTestedForReal,
                             modifier = Modifier.weight(1f),
-                            colors = if (s.failed > 0) ButtonDefaults.buttonColors(containerColor = Color(0xFFEF8F00)) else ButtonDefaults.buttonColors(),
+                            colors = if (s.failed > 0) ButtonDefaults.buttonColors(containerColor = Color(0xFFB45F06), contentColor = Color.White) else ButtonDefaults.buttonColors(),
                         ) { Text(label) }
                     }
                 }

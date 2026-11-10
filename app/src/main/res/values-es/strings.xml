@@ -294,6 +294,7 @@
     <string name="cache_shared">Grupo de caché compartida. Todas las apps indicadas se seleccionan juntas.</string>
     <string name="cache_log">Registro de comandos de caché</string>
     <string name="cache_copy_log">Copiar registro de caché</string>
+    <string name="copy_log">Copiar registro</string>
     <string name="cache_confirm_title">¿Borrar las cachés de %1$d apps?</string>
     <string name="cache_confirm_help">Se borra solo la caché temporal. Los datos y las cuentas se conservan. La caché borrada no se puede recuperar desde las copias de seguridad. Las apps pueden regenerarla y abrirse más despacio. Caché medida: %1$s; el espacio liberado puede variar.</string>
     <string name="cache_scan_done">Análisis completado. No se pudieron medir %1$d grupos de caché.</string>
@@ -321,7 +322,7 @@
     <string name="guide_cleanup_uninstall_instead">Desinstalar en su lugar</string>
     <string name="guide_finish">Vamos</string>
     <string name="guide_help_a_disable_remove">Desactivar: la app se queda en el teléfono pero no puede ejecutarse. Es lo más seguro y totalmente reversible, pero no libera espacio.\nEliminar: la app se desinstala para ti. Con \"Conservar datos\" puede volver tal como estaba; con \"Borrar datos\" liberas más espacio, pero los datos se pierden.</string>
-    <string name="guide_help_a_privacy">No necesita root. Internet solo se usa cuando pides actualizar las listas de debloat (Ajustes), y nunca se envía nada.</string>
+    <string name="guide_help_a_privacy">No necesita root. Internet solo se usa cuando tú lo pides: para actualizar las listas de debloat o buscar una actualización de la app (Ajustes). Nunca se envía nada.</string>
     <string name="guide_help_a_problem">Abre \"Copias y restauración\", busca la copia más reciente y toca Restaurar. Si no sabes qué app lo causó, usa \"Restaurar todo\".</string>
     <string name="guide_help_a_reboot">Es normal sin root: abre Shizuku y vuelve a tocar Iniciar (el Wi-Fi debe estar activado). Tus cambios no se ven afectados; solo los cambios nuevos necesitan Shizuku.</string>
     <string name="guide_help_a_safe">Sí, si te limitas a las apps \"Recomendadas\" y usas \"Desactivar\". Antes de cada cambio la app guarda una copia, y las partes críticas del sistema están bloqueadas para que nunca se puedan eliminar. Todo se puede deshacer.</string>

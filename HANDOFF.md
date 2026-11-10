@@ -1,10 +1,11 @@
-# Project handoff — 2026-11-06
+# Project handoff — 2026-11-10
 
 ## Goal
 - Maintain Debloater (Shizuku debloating with backups). Recent work: make app cache clearing actually work on the user's phone (RedMagic OS 11 / Android 16) and add a Debug log tool.
 
 ## Current status
-- **1.12.8 / versionCode 33 is published** (release v1.12.8, APK `Debloater-v1.12.8.apk`). Working tree clean at `00e2675` on `ccr-d8c5609f-bq6ov9`.
+- **1.12.9 / versionCode 34** (text and layout review, no behaviour change) was pushed and the release workflow triggered on 2026-11-10; confirm with `get_release_by_tag v1.12.9`.
+- 1.12.9 layout changes were compiled, linted and unit-tested only. **Nobody has looked at them on a device**: ask the user for screenshots of Home, Cache scanner, App leftovers and a dark-mode operation result.
 - Done and confirmed by user reports: Debug section in Options (1.12.0), Settings-assistant cache clearing (Telegram 1 GB→4 KB etc.), Shizuku-failure fallback dialog (1.12.5), leftover-cache marking (1.12.6), Select shown skips leftovers (1.12.7).
 - 1.12.8 (fallback dialog leaves leftover-cache apps unticked) is **not yet tested on the phone**.
 - Nothing in progress.
@@ -47,12 +48,14 @@
 3. For a new release:
    - bump `versionCode`/`versionName`;
    - add `docs/RELEASE-x.md` and a CHANGELOG entry;
-   - run `sed -i '3s/1.12.8/x/g' README.md`;
+   - run `sed -i '3s/1.12.9/x/g' README.md`;
    - run `python3 tools/check_translations.py` and the unit tests;
    - commit, push and trigger the workflow;
    - verify with `get_release_by_tag`.
 
 ## Open questions / gotchas
+- `OkColor`/`WarnColor`/`ErrorColor` (`ui/theme/Theme.kt`) are now `@Composable` getters (lighter in dark mode), so they only work inside composables. `OkBadgeColor` is the fixed one for white-on-green badges.
+- `FlowRow(itemVerticalAlignment = Alignment.CenterVertically)` is how text is centred against buttons in wrapping rows.
 - The user writes in Portuguese (pt-PT). Reply in pt-PT; code and docs stay in English.
 - Every new string must go into all 11 locales.
 - The residue rule is a heuristic: a leftover is ≥ 8 MiB and ≥ half of the size before. If an app's real cache grows back to a similar size, it may be wrongly marked. The user can still tick it by hand.

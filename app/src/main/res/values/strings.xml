@@ -296,6 +296,7 @@
     <string name="cache_shared">Shared cache group. All listed apps are selected together.</string>
     <string name="cache_log">Cache command log</string>
     <string name="cache_copy_log">Copy cache log</string>
+    <string name="copy_log">Copy log</string>
     <string name="cache_confirm_title">Clear caches of %1$d app(s)?</string>
     <string name="cache_confirm_help">Delete temporary caches only. App data and accounts are kept. Cache deletion cannot be undone or restored from debloat backups. Apps may rebuild caches and open more slowly next time. Measured cache: %1$s; actual space freed may differ.</string>
     <string name="cache_scan_done">Scan complete. %1$d cache group(s) could not be measured.</string>
@@ -323,7 +324,7 @@
     <string name="guide_cleanup_uninstall_instead">Uninstall instead</string>
     <string name="guide_finish">Let\'s go</string>
     <string name="guide_help_a_disable_remove">Disable: the app stays on the phone but can\'t run. Safest, and fully reversible, but frees no space.\nRemove: the app is uninstalled for you. With \"Keep app data\" it can come back exactly as it was; with \"Delete app data\" you free more space, but the data is gone.</string>
-    <string name="guide_help_a_privacy">No root. The internet is only used when you ask to update the debloat lists (Settings), and nothing is ever uploaded.</string>
+    <string name="guide_help_a_privacy">No root. The internet is only used when you ask for it: to update the debloat lists or to check for an app update (Settings). Nothing is ever uploaded.</string>
     <string name="guide_help_a_problem">Open \"Backups &amp; restore\", find the most recent backup and tap Restore. If you are not sure which app caused it, use \"Restore everything\".</string>
     <string name="guide_help_a_reboot">That\'s normal without root: open Shizuku and tap Start again (Wi-Fi must be on). Your changes are not affected; only new changes need Shizuku.</string>
     <string name="guide_help_a_safe">Yes, if you stick to \"Recommended\" apps and use \"Disable\". Before every change the app saves a backup, and critical system parts are locked so they can never be removed. Everything can be undone.</string>

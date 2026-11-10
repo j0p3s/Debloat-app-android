@@ -294,6 +294,7 @@
     <string name="cache_shared">Grup cache bersama. Semua aplikasi yang tercantum dipilih bersama.</string>
     <string name="cache_log">Log perintah cache</string>
     <string name="cache_copy_log">Salin log cache</string>
+    <string name="copy_log">Salin log</string>
     <string name="cache_confirm_title">Hapus cache %1$d aplikasi?</string>
     <string name="cache_confirm_help">Hanya menghapus cache sementara. Data aplikasi dan akun tetap disimpan. Penghapusan cache tidak bisa diurungkan atau dipulihkan dari cadangan debloat. Aplikasi bisa membangun ulang cache dan terbuka lebih lambat lain kali. Cache terukur: %1$s; ruang yang benar-benar dikosongkan bisa berbeda.</string>
     <string name="cache_scan_done">Pemindaian selesai. %1$d grup cache tidak bisa diukur.</string>
@@ -321,7 +322,7 @@
     <string name="guide_cleanup_uninstall_instead">Uninstall saja</string>
     <string name="guide_finish">Ayo mulai</string>
     <string name="guide_help_a_disable_remove">Nonaktifkan: aplikasi tetap di ponsel tetapi tidak bisa berjalan. Paling aman dan sepenuhnya bisa dikembalikan, tetapi tidak mengosongkan ruang.\nHapus: aplikasi di-uninstall untuk Anda. Dengan \"Simpan data\" aplikasi bisa kembali persis seperti semula; dengan \"Hapus data\" Anda mengosongkan lebih banyak ruang, tetapi datanya hilang.</string>
-    <string name="guide_help_a_privacy">Tidak perlu root. Internet hanya dipakai saat Anda meminta pembaruan daftar debloat (Setelan), dan tidak ada yang pernah diunggah.</string>
+    <string name="guide_help_a_privacy">Tidak perlu root. Internet hanya dipakai saat Anda memintanya: untuk memperbarui daftar debloat atau memeriksa pembaruan aplikasi (Setelan). Tidak ada yang pernah diunggah.</string>
     <string name="guide_help_a_problem">Buka \"Cadangan &amp; pemulihan\", cari cadangan terbaru, dan ketuk Pulihkan. Jika tidak yakin aplikasi mana penyebabnya, gunakan \"Pulihkan semua\".</string>
     <string name="guide_help_a_reboot">Itu normal tanpa root: buka Shizuku dan ketuk Mulai lagi (Wi-Fi harus aktif). Perubahan Anda tidak terpengaruh; hanya perubahan baru yang memerlukan Shizuku.</string>
     <string name="guide_help_a_safe">Ya, jika Anda hanya memilih aplikasi \"Disarankan\" dan memakai \"Nonaktifkan\". Sebelum setiap perubahan, aplikasi menyimpan cadangan, dan bagian penting sistem dikunci sehingga tidak pernah bisa dihapus. Semuanya bisa diurungkan.</string>

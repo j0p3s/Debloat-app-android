@@ -137,7 +137,7 @@ fun SettingsScreen(vm: MainViewModel) {
                         }
                         is ListUpdateState.Done -> {
                             Text(
-                                if (u.report.anyUpdated) stringResource(R.string.lists_updated) else stringResource(R.string.lists_current),
+                                (if (u.report.anyUpdated) stringResource(R.string.lists_updated) else stringResource(R.string.lists_current)).trim(),
                                 style = MaterialTheme.typography.bodySmall,
                             )
                             u.report.results.forEach { result ->

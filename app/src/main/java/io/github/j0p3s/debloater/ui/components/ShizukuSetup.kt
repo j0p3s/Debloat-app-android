@@ -51,7 +51,7 @@ import io.github.j0p3s.debloater.ui.theme.OkColor
 fun ShizukuSetupCard(status: ShizukuStatus, uid: Int, onRefresh: () -> Unit, modifier: Modifier = Modifier) {
     val ctx = LocalContext.current
     if (status == ShizukuStatus.READY) {
-        Card(modifier, colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)) {
+        Card(modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)) {
             Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
                 Icon(Icons.Default.CheckCircle, null, tint = OkColor, modifier = Modifier.size(28.dp))
                 Spacer(Modifier.width(12.dp))
@@ -78,7 +78,7 @@ fun ShizukuSetupCard(status: ShizukuStatus, uid: Int, onRefresh: () -> Unit, mod
         !running -> 2
         else -> 4
     }
-    Card(modifier, colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.5f))) {
+    Card(modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.errorContainer.copy(alpha = 0.5f))) {
         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             Text(stringResource(R.string.guide_shizuku_title), style = MaterialTheme.typography.titleLarge)
             Text(stringResource(R.string.guide_shizuku_why), style = MaterialTheme.typography.bodyMedium)
@@ -130,7 +130,7 @@ private fun SetupStep(
                 .clip(CircleShape)
                 .background(
                     when {
-                        done -> OkColor
+                        done -> io.github.j0p3s.debloater.ui.theme.OkBadgeColor
                         active -> MaterialTheme.colorScheme.primary
                         else -> MaterialTheme.colorScheme.outline.copy(alpha = 0.4f)
                     },

@@ -294,6 +294,7 @@
     <string name="cache_shared">共享缓存组。列出的所有应用会一起被选中。</string>
     <string name="cache_log">缓存命令日志</string>
     <string name="cache_copy_log">复制缓存日志</string>
+    <string name="copy_log">复制日志</string>
     <string name="cache_confirm_title">清除 %1$d 个应用的缓存？</string>
     <string name="cache_confirm_help">只删除临时缓存。应用数据和账号会保留。缓存删除无法撤销，也无法从精简备份中恢复。应用可能会重新生成缓存，下次打开会更慢。已测量缓存：%1$s；实际释放的空间可能不同。</string>
     <string name="cache_scan_done">扫描完成。有 %1$d 个缓存组无法测量。</string>
@@ -321,7 +322,7 @@
     <string name="guide_cleanup_uninstall_instead">改为卸载</string>
     <string name="guide_finish">开始使用</string>
     <string name="guide_help_a_disable_remove">停用：应用留在手机上但无法运行。最安全且完全可逆，但不会释放空间。\n移除：为你卸载该应用。选择“保留数据”时可以原样恢复；选择“删除数据”可以释放更多空间，但数据会丢失。</string>
-    <string name="guide_help_a_privacy">不需要 root。只有在你要求更新精简列表时（设置）才会联网，而且绝不会上传任何内容。</string>
+    <string name="guide_help_a_privacy">不需要 root。只有在你要求时才会联网：更新精简列表或检查应用更新（设置）。绝不会上传任何内容。</string>
     <string name="guide_help_a_problem">打开“备份与恢复”，找到最近的备份并点按“恢复”。如果不确定是哪个应用导致的，请使用“全部恢复”。</string>
     <string name="guide_help_a_reboot">没有 root 时这是正常的：打开 Shizuku 并再次点按“启动”（需要开启 Wi-Fi）。你之前的更改不受影响；只有新的更改才需要 Shizuku。</string>
     <string name="guide_help_a_safe">安全，只要你只处理“推荐”应用并使用“停用”。每次更改前，应用都会保存备份，而关键的系统部分被锁定，永远无法移除。一切都可以撤销。</string>

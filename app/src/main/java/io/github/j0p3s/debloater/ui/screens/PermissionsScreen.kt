@@ -54,7 +54,7 @@ fun PermissionsScreen(vm: MainViewModel) {
                 vm.accessSetupLog.forEach { Text(it, style = MaterialTheme.typography.bodySmall) }
             }
             PermissionCard("Shizuku", shizuku == ShizukuStatus.READY, stringResource(R.string.leftovers_needs_shizuku)) {
-                Text(shizuku.name, style = MaterialTheme.typography.bodySmall)
+                Text(stringResource(R.string.shizuku_status, shizukuStatusText(shizuku)), style = MaterialTheme.typography.bodySmall)
                 OutlinedButton(onClick = { ShizukuManager.requestPermission(); refresh() }, enabled = shizuku == ShizukuStatus.PERMISSION_REQUIRED || shizuku == ShizukuStatus.PERMISSION_DENIED) { Text(stringResource(R.string.grant_shizuku)) }
                 TextButton(onClick = { open(context.packageManager.getLaunchIntentForPackage("moe.shizuku.privileged.api") ?: Intent(Intent.ACTION_VIEW, Uri.parse("https://shizuku.rikka.app/"))) }) { Text("Shizuku") }
             }

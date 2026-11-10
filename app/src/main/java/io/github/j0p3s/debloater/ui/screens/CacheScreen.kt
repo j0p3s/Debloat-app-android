@@ -9,7 +9,11 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Sort
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.foundation.selection.toggleable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.semantics.Role
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.Modifier
@@ -51,14 +55,14 @@ fun CacheScreen(vm: MainViewModel, system: Boolean) {
 
     Scaffold(topBar = { BackTopBar(stringResource(R.string.cache_scanner), onBack = { vm.back() }) }) { padding ->
         LazyColumn(Modifier.padding(padding).fillMaxSize(), contentPadding = PaddingValues(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            item {
+            item { Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(stringResource(when(category) {
                     CacheScope.USER -> R.string.cache_user_help
                     CacheScope.SYSTEM -> R.string.cache_system_help
                     CacheScope.BOTH -> R.string.cache_both_help
                 }))
-                Text(stringResource(R.string.cache_scope), style = MaterialTheme.typography.bodySmall)
-            }
+                Text(stringResource(R.string.cache_scope), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+            } }
             item {
                 Card(Modifier.fillMaxWidth()) {
                     Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -102,15 +106,19 @@ fun CacheScreen(vm: MainViewModel, system: Boolean) {
                     }
                 }
             }
-            if(cache.busy) item {
-                Text(stringResource(cache.phase))
+            if(cache.busy) item { Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text(stringResource(cache.phase), style = MaterialTheme.typography.titleSmall)
                 LinearProgressIndicator(progress = { if(cache.progress.second > 0) cache.progress.first.toFloat() / cache.progress.second else 0f }, modifier = Modifier.fillMaxWidth())
                 Text(stringResource(R.string.cache_progress, cache.progress.first, cache.progress.second))
                 Text(cache.currentApp, style = MaterialTheme.typography.bodySmall)
                 OutlinedButton(onClick = cache::cancel, enabled = !cache.stopRequested) { Text(stringResource(R.string.cancel)) }
-            }
-            cache.notice?.let { message -> item { Text(stringResource(message.resource, *message.args.toTypedArray())) } }
-            item {
+            } }
+            cache.notice?.let { message -> item {
+                Card(Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)) {
+                    Text(stringResource(message.resource, *message.args.toTypedArray()), Modifier.padding(12.dp), style = MaterialTheme.typography.bodyMedium)
+                }
+            } }
+            item { Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 Text(stringResource(R.string.cache_clear_method), style = MaterialTheme.typography.titleMedium)
                 var methodMenu by remember { mutableStateOf(false) }
                 Box {
@@ -126,40 +134,45 @@ fun CacheScreen(vm: MainViewModel, system: Boolean) {
                     }
                 }
                 if(cache.method == CacheClearMethod.SETTINGS) {
-                    Text(stringResource(R.string.cache_settings_help))
+                    Text(stringResource(R.string.cache_settings_help), style = MaterialTheme.typography.bodySmall)
                     if(!settingsAvailable) {
-                        Text(stringResource(R.string.cache_settings_enable_help))
+                        Text(stringResource(R.string.cache_settings_enable_help), style = MaterialTheme.typography.bodySmall)
                         OutlinedButton(onClick = { showAccessDisclosure = true }, enabled = free) {
                             Text(stringResource(R.string.cache_settings_enable))
                         }
                     }
                 } else {
-                    if(status != ShizukuStatus.READY) Text(stringResource(R.string.cache_needs_shizuku))
-                    if(cache.supported == false) Text(stringResource(R.string.cache_unsupported))
+                    if(status != ShizukuStatus.READY) Text(stringResource(R.string.cache_needs_shizuku), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.error)
+                    if(cache.supported == false) Text(stringResource(R.string.cache_unsupported), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.error)
                 }
-            }
-            item {
+            } }
+            item { Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 OutlinedTextField(value = cache.query, onValueChange = { cache.query = it }, label = { Text(stringResource(R.string.cache_search)) }, singleLine = true, modifier = Modifier.fillMaxWidth())
                 var menu by remember { mutableStateOf(false) }
                 Box {
-                    OutlinedButton(onClick = { menu = true }) { Text(stringResource(cache.sort.titleRes)) }
+                    TextButton(onClick = { menu = true }) {
+                        Icon(Icons.AutoMirrored.Filled.Sort, contentDescription = null, modifier = Modifier.size(18.dp))
+                        Spacer(Modifier.width(4.dp))
+                        Text(stringResource(cache.sort.titleRes))
+                    }
                     DropdownMenu(expanded = menu, onDismissRequest = { menu = false }) {
                         CacheSort.entries.forEach { order -> DropdownMenuItem(text = { Text(stringResource(order.titleRes)) }, onClick = { cache.sort = order; menu = false }) }
                     }
                 }
-                Row {
-                    Checkbox(checked = cache.nonzeroOnly, onCheckedChange = { cache.nonzeroOnly = it })
-                    Text(stringResource(R.string.cache_nonzero), modifier = Modifier.padding(top = 12.dp))
+                Row(Modifier.fillMaxWidth().toggleable(cache.nonzeroOnly, role = Role.Checkbox) { cache.nonzeroOnly = it },
+                    verticalAlignment = Alignment.CenterVertically) {
+                    Checkbox(checked = cache.nonzeroOnly, onCheckedChange = null, modifier = Modifier.padding(12.dp))
+                    Text(stringResource(R.string.cache_nonzero))
                 }
                 FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     TextButton(onClick = { cache.selectShown(category) }, enabled = free) { Text(stringResource(R.string.cache_select_shown)) }
                     TextButton(onClick = { cache.deselect(category) }, enabled = free) { Text(stringResource(R.string.cache_deselect)) }
                 }
-                Text(stringResource(R.string.cache_selection, chosen.size, formatSize(chosen.sumOf { it.bytes ?: 0 })))
-                Text(stringResource(R.string.cache_hidden_selection), style = MaterialTheme.typography.bodySmall)
+                Text(stringResource(R.string.cache_selection, chosen.size, formatSize(chosen.sumOf { it.bytes ?: 0 })), style = MaterialTheme.typography.labelLarge)
+                Text(stringResource(R.string.cache_hidden_selection), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Button(onClick = { cache.requestClear(category) }, enabled = free && chosen.isNotEmpty() &&
                     (if(cache.method == CacheClearMethod.SETTINGS) settingsAvailable else status == ShizukuStatus.READY && cache.supported != false)) { Text(stringResource(R.string.cache_clear)) }
-            }
+            } }
             if(visible.isEmpty() && cache.scannedAt != null) item { Text(stringResource(R.string.cache_empty)) }
             items(visible, key = { it.key }) { group ->
                 Card(Modifier.fillMaxWidth()) {
@@ -167,10 +180,10 @@ fun CacheScreen(vm: MainViewModel, system: Boolean) {
                         Checkbox(checked = group.key in cache.selected, onCheckedChange = { cache.toggle(group.key) }, enabled = free)
                         Column(Modifier.weight(1f).padding(vertical = 6.dp), verticalArrangement = Arrangement.spacedBy(3.dp)) {
                             Text(group.label, style = MaterialTheme.typography.titleSmall)
-                            Text(group.packages.joinToString("\n"), style = MaterialTheme.typography.bodySmall)
-                            Text(group.bytes?.let { formatSize(it) } ?: stringResource(R.string.cache_unknown))
+                            Text(group.packages.joinToString("\n"), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                            Text(group.bytes?.let { formatSize(it) } ?: stringResource(R.string.cache_unknown), style = MaterialTheme.typography.labelLarge)
                             if(group.packages.size > 1) Text(stringResource(R.string.cache_shared), style = MaterialTheme.typography.bodySmall)
-                            group.error?.let { Text(it, style = MaterialTheme.typography.bodySmall) }
+                            group.error?.let { Text(it, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.error) }
                             cache.residueFor(group)?.let { residue ->
                                 Text(stringResource(R.string.cache_residue, formatSize(residue.bytes)),
                                     style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.tertiary)
@@ -181,10 +194,12 @@ fun CacheScreen(vm: MainViewModel, system: Boolean) {
                 }
             }
             if(cache.log.isNotEmpty()) item {
-                Text(stringResource(R.string.cache_log), style = MaterialTheme.typography.titleMedium)
-                TextButton(onClick = { clipboard.setText(AnnotatedString(cache.log.joinToString("\n\n"))) }) { Text(stringResource(R.string.cache_copy_log)) }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(stringResource(R.string.cache_log), Modifier.weight(1f), style = MaterialTheme.typography.titleMedium)
+                    TextButton(onClick = { clipboard.setText(AnnotatedString(cache.log.joinToString("\n\n"))) }) { Text(stringResource(R.string.cache_copy_log)) }
+                }
                 Column(Modifier.heightIn(max = 240.dp).verticalScroll(rememberScrollState())) {
-                    cache.log.asReversed().forEach { Text(it, style = MaterialTheme.typography.bodySmall); HorizontalDivider() }
+                    cache.log.asReversed().forEach { Text(it, Modifier.padding(vertical = 4.dp), style = MaterialTheme.typography.bodySmall); HorizontalDivider() }
                 }
             }
         }
@@ -218,7 +233,7 @@ fun CacheScreen(vm: MainViewModel, system: Boolean) {
                         if(items.isEmpty()) return
                         Text(stringResource(title), style = MaterialTheme.typography.titleSmall)
                         items.forEach { group ->
-                            Row(verticalAlignment = androidx.compose.ui.Alignment.CenterVertically) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
                                 Checkbox(checked = group.key in chosen, onCheckedChange = { on -> chosen = if(on) chosen + group.key else chosen - group.key })
                                 Column(Modifier.weight(1f)) {
                                     Text(group.label)

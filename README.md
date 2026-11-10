@@ -1,6 +1,6 @@
 # Debloater (Shizuku)
 
-**Current release: [1.12.8](https://github.com/j0p3s/Debloat-app-android/releases/tag/v1.12.8)** · [Download APK](https://github.com/j0p3s/Debloat-app-android/releases/download/v1.12.8/Debloater-v1.12.8.apk) · [Release notes](docs/RELEASE-1.12.8.md) · [Changelog](CHANGELOG.md)
+**Current release: [1.12.9](https://github.com/j0p3s/Debloat-app-android/releases/tag/v1.12.9)** · [Download APK](https://github.com/j0p3s/Debloat-app-android/releases/download/v1.12.9/Debloater-v1.12.9.apk) · [Release notes](docs/RELEASE-1.12.9.md) · [Changelog](CHANGELOG.md)
 
 An Android app that debloats **any Android version from Android 11 to Android 17** without root, using
 [Shizuku](https://shizuku.rikka.app/). It also works as a normal app manager, so you can remove any user app.

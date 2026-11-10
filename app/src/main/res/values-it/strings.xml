@@ -294,6 +294,7 @@
     <string name="cache_shared">Gruppo di cache condiviso. Tutte le app elencate vengono selezionate insieme.</string>
     <string name="cache_log">Log dei comandi della cache</string>
     <string name="cache_copy_log">Copia il log della cache</string>
+    <string name="copy_log">Copia il log</string>
     <string name="cache_confirm_title">Svuotare la cache di %1$d app?</string>
     <string name="cache_confirm_help">Elimina solo le cache temporanee. Dati delle app e account vengono mantenuti. L\'eliminazione della cache non si può annullare né ripristinare dai backup di debloat. Le app potrebbero ricreare le cache e aprirsi più lentamente la prossima volta. Cache misurata: %1$s; lo spazio realmente liberato può essere diverso.</string>
     <string name="cache_scan_done">Analisi completata. %1$d gruppi di cache non sono stati misurati.</string>
@@ -321,7 +322,7 @@
     <string name="guide_cleanup_uninstall_instead">Disinstalla invece</string>
     <string name="guide_finish">Iniziamo</string>
     <string name="guide_help_a_disable_remove">Disattiva: l\'app resta sul telefono ma non può funzionare. È la scelta più sicura e del tutto reversibile, ma non libera spazio.\nRimuovi: l\'app viene disinstallata per te. Con \"Mantieni i dati\" può tornare esattamente com\'era; con \"Elimina i dati\" liberi più spazio, ma i dati si perdono.</string>
-    <string name="guide_help_a_privacy">Niente root. Internet si usa solo quando chiedi di aggiornare le liste di debloat (Impostazioni), e non viene mai inviato nulla.</string>
+    <string name="guide_help_a_privacy">Niente root. Internet si usa solo quando lo chiedi: per aggiornare le liste di debloat o cercare un aggiornamento dell\'app (Impostazioni). Non viene mai inviato nulla.</string>
     <string name="guide_help_a_problem">Apri \"Backup e ripristino\", trova il backup più recente e tocca Ripristina. Se non sai quale app l\'ha causato, usa \"Ripristina tutto\".</string>
     <string name="guide_help_a_reboot">Senza root è normale: apri Shizuku e tocca di nuovo Avvia (il Wi-Fi deve essere attivo). Le tue modifiche non ne risentono; solo le nuove modifiche hanno bisogno di Shizuku.</string>
     <string name="guide_help_a_safe">Sì, se resti sulle app \"Consigliato\" e usi \"Disattiva\". Prima di ogni modifica l\'app salva un backup, e le parti critiche del sistema sono bloccate così non possono mai essere rimosse. Tutto si può annullare.</string>

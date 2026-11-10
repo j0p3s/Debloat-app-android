@@ -97,7 +97,7 @@ fun LevelPill(level: SafetyLevel) = Pill(stringResource(level.titleRes), levelCo
 fun StatePill(state: AppState) {
     val c = when (state) {
         AppState.ENABLED -> MaterialTheme.colorScheme.primary
-        AppState.DISABLED -> Color(0xFFEF8F00)
+        AppState.DISABLED -> io.github.j0p3s.debloater.ui.theme.WarnColor
         AppState.UNINSTALLED -> MaterialTheme.colorScheme.error
     }
     Pill(stringResource(state.titleRes), c)
@@ -166,11 +166,9 @@ fun AppRow(
 @Composable
 fun WarningText(text: String) {
     Row(Modifier.padding(top = 4.dp), verticalAlignment = Alignment.Top) {
-        Icon(Icons.Default.Warning, null, tint = Color(0xFFEF8F00), modifier = Modifier.size(16.dp).padding(top = 2.dp))
+        Icon(Icons.Default.Warning, null, tint = io.github.j0p3s.debloater.ui.theme.WarnColor, modifier = Modifier.padding(top = 2.dp).size(16.dp))
         Spacer(Modifier.width(4.dp))
-        Text(text, style = MaterialTheme.typography.bodySmall, color = Color(0xFFB45F06).let {
-            if (isSystemInDarkTheme()) Color(0xFFFFB74D) else it
-        })
+        Text(text, style = MaterialTheme.typography.bodySmall, color = io.github.j0p3s.debloater.ui.theme.WarnColor)
     }
 }
 

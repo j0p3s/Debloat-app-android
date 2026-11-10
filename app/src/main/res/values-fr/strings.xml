@@ -294,6 +294,7 @@
     <string name="cache_shared">Cache partagé. Toutes les applications listées sont sélectionnées ensemble.</string>
     <string name="cache_log">Journal des commandes de cache</string>
     <string name="cache_copy_log">Copier le journal du cache</string>
+    <string name="copy_log">Copier le journal</string>
     <string name="cache_confirm_title">Vider les caches de %1$d application(s) ?</string>
     <string name="cache_confirm_help">Seuls les caches temporaires sont supprimés. Les données et les comptes sont conservés. Cette suppression est irréversible et les sauvegardes ne restaurent pas le cache. Les applications peuvent le recréer et démarrer plus lentement. Cache mesuré : %1$s ; l’espace libéré peut varier.</string>
     <string name="cache_scan_done">Analyse terminée. %1$d groupe(s) de cache non mesuré(s).</string>
@@ -321,7 +322,7 @@
     <string name="guide_cleanup_uninstall_instead">Désinstaller plutôt</string>
     <string name="guide_finish">C\'est parti</string>
     <string name="guide_help_a_disable_remove">Désactiver : l\'appli reste sur le téléphone mais ne peut pas s\'exécuter. C\'est le plus sûr et entièrement réversible, mais cela ne libère pas d\'espace.\nSupprimer : l\'appli est désinstallée pour vous. Avec « Conserver les données », elle peut revenir exactement comme avant ; avec « Supprimer les données », vous libérez plus d\'espace, mais les données sont perdues.</string>
-    <string name="guide_help_a_privacy">Pas de root. Internet n\'est utilisé que si vous demandez la mise à jour des listes de debloat (Paramètres), et rien n\'est jamais envoyé.</string>
+    <string name="guide_help_a_privacy">Pas de root. Internet n\'est utilisé que si vous le demandez : pour mettre à jour les listes de debloat ou rechercher une mise à jour de l\'application (Paramètres). Rien n\'est jamais envoyé.</string>
     <string name="guide_help_a_problem">Ouvrez « Sauvegarde et restauration », trouvez la sauvegarde la plus récente et touchez Restaurer. Si vous ne savez pas quelle appli en est la cause, utilisez « Tout restaurer ».</string>
     <string name="guide_help_a_reboot">C\'est normal sans root : ouvrez Shizuku et touchez à nouveau Démarrer (le Wi-Fi doit être activé). Vos modifications ne sont pas affectées ; seules les nouvelles modifications ont besoin de Shizuku.</string>
     <string name="guide_help_a_safe">Oui, si vous vous limitez aux applis « Recommandées » et utilisez « Désactiver ». Avant chaque modification, l\'appli fait une sauvegarde, et les parties critiques du système sont verrouillées pour ne jamais pouvoir être supprimées. Tout peut être annulé.</string>

@@ -74,10 +74,10 @@ fun AppUpdateSetting() {
     }
     val active = downloadId >= 0 && status !in setOf(DownloadManager.STATUS_SUCCESSFUL, DownloadManager.STATUS_FAILED)
     Card(Modifier.fillMaxWidth()) {
-        Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Column(Modifier.padding(14.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
             Text(stringResource(R.string.ota_title), style = MaterialTheme.typography.titleMedium)
-            Text(stringResource(R.string.ota_help))
-            Text(BuildConfig.VERSION_NAME)
+            Text(stringResource(R.string.ota_help), style = MaterialTheme.typography.bodySmall)
+            Text("Debloater ${BuildConfig.VERSION_NAME}", style = MaterialTheme.typography.bodySmall, fontWeight = androidx.compose.ui.text.font.FontWeight.SemiBold)
             OutlinedButton(enabled = !checking && !active, onClick = {
                 checking = true; failed = false; detail = ""; remote = null
                 if(status == DownloadManager.STATUS_FAILED) { status = 0; downloadId = -1; prefs.edit().remove("download").apply() }
@@ -132,7 +132,7 @@ fun AppUpdateSetting() {
             }) { Text(stringResource(R.string.ota_check)) }
             if(checking) LinearProgressIndicator(Modifier.fillMaxWidth())
             if(failed || status == DownloadManager.STATUS_FAILED) {
-                Text(stringResource(R.string.ota_error))
+                Text(stringResource(R.string.ota_error), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.error)
                 if(detail.isNotBlank()) Text(detail, style = MaterialTheme.typography.bodySmall)
                 TextButton(onClick = { runCatching { context.startActivity(android.content.Intent(android.content.Intent.ACTION_VIEW,
                     Uri.parse("https://github.com/j0p3s/Debloat-app-android/releases/latest"))) } }) { Text("GitHub") }
@@ -151,13 +151,13 @@ fun AppUpdateSetting() {
                             prefs.edit().putLong("download", downloadId).apply()
                         } catch(error: Exception) { failed = true; detail = error.message.orEmpty() }
                     }) { Text(stringResource(R.string.ota_download)) }
-                } else Text(stringResource(R.string.ota_current))
+                } else Text(stringResource(R.string.ota_current), style = MaterialTheme.typography.bodySmall)
             }
             if(active) {
                 Text("$percent %")
                 TextButton(onClick = { manager.remove(downloadId); prefs.edit().remove("download").apply(); downloadId = -1; status = 0 }) { Text(stringResource(R.string.cancel)) }
             }
-            if(status == DownloadManager.STATUS_SUCCESSFUL) Text(stringResource(R.string.ota_done))
+            if(status == DownloadManager.STATUS_SUCCESSFUL) Text(stringResource(R.string.ota_done), style = MaterialTheme.typography.bodySmall)
         }
     }
 }
