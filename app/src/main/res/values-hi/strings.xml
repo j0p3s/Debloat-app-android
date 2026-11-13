@@ -294,6 +294,7 @@
     <string name="cache_shared">साझा कैश समूह। सूची के सभी ऐप एक साथ चुने जाते हैं।</string>
     <string name="cache_log">कैश कमांड लॉग</string>
     <string name="cache_copy_log">कैश लॉग कॉपी करें</string>
+    <string name="copy_log">लॉग कॉपी करें</string>
     <string name="cache_confirm_title">%1$d ऐप के कैश साफ़ करें?</string>
     <string name="cache_confirm_help">सिर्फ़ अस्थायी कैश मिटाता है। ऐप डेटा और अकाउंट रहते हैं। कैश मिटाना पलटा नहीं जा सकता और डीब्लोट बैकअप से वापस नहीं आता। ऐप फिर से कैश बना सकते हैं और अगली बार धीरे खुल सकते हैं। मापा गया कैश: %1$s; असल में खाली हुई जगह अलग हो सकती है।</string>
     <string name="cache_scan_done">स्कैन पूरा हुआ। %1$d कैश समूह मापे नहीं जा सके।</string>
@@ -321,7 +322,7 @@
     <string name="guide_cleanup_uninstall_instead">इसकी जगह अनइंस्टॉल करें</string>
     <string name="guide_finish">चलिए शुरू करें</string>
     <string name="guide_help_a_disable_remove">बंद करें: ऐप फ़ोन पर रहता है लेकिन चल नहीं सकता। सबसे सुरक्षित और पूरी तरह पलटा जा सकता है, लेकिन जगह खाली नहीं होती।\nहटाएँ: ऐप आपके लिए अनइंस्टॉल होता है। \"डेटा रखें\" के साथ यह ठीक पहले जैसा वापस आ सकता है; \"डेटा मिटाएँ\" के साथ ज़्यादा जगह खाली होती है, लेकिन डेटा चला जाता है।</string>
-    <string name="guide_help_a_privacy">root नहीं चाहिए। इंटरनेट सिर्फ़ तब इस्तेमाल होता है जब आप डीब्लोट सूचियाँ अपडेट करने को कहते हैं (सेटिंग), और कभी कुछ अपलोड नहीं होता।</string>
+    <string name="guide_help_a_privacy">root नहीं चाहिए। इंटरनेट सिर्फ़ तब इस्तेमाल होता है जब आप कहते हैं: डीब्लोट सूचियाँ अपडेट करने या ऐप अपडेट जाँचने के लिए (सेटिंग)। कभी कुछ अपलोड नहीं होता।</string>
     <string name="guide_help_a_problem">\"बैकअप और रिस्टोर\" खोलें, सबसे नया बैकअप ढूँढें और वापस लाएँ पर टैप करें। अगर पता न हो कि किस ऐप से हुआ, तो \"सब वापस लाएँ\" इस्तेमाल करें।</string>
     <string name="guide_help_a_reboot">बिना root यह सामान्य है: Shizuku खोलें और फिर से शुरू करें पर टैप करें (Wi-Fi चालू होना चाहिए)। आपके बदलावों पर असर नहीं पड़ता; सिर्फ़ नए बदलावों के लिए Shizuku चाहिए।</string>
     <string name="guide_help_a_safe">हाँ, अगर आप \"सुझाया गया\" ऐप तक ही रहें और \"बंद करें\" इस्तेमाल करें। हर बदलाव से पहले ऐप बैकअप सेव करता है, और सिस्टम के ज़रूरी हिस्से लॉक रहते हैं ताकि उन्हें कभी हटाया न जा सके। सब कुछ पलटा जा सकता है।</string>
@@ -382,4 +383,77 @@
     <string name="cache_refreshing">साफ किए गए ऐप अपडेट हो रहे हैं</string>
     <string name="cache_stopped">रोका गया। परिणाम आंशिक हो सकते हैं। पूरी हुई सफाई वापस नहीं होती; जारी सफाई अभी पूरी हो सकती है।</string>
     <string name="cache_partial">आंशिक माप; अनुपलब्ध आकार शामिल नहीं हैं।</string>
+
+    <!-- Optional Settings UI cache clearing -->
+    <string name="cache_clear_method">साफ़ करने का तरीका</string>
+    <string name="cache_shizuku_method">Shizuku (केवल कैश का कमांड)</string>
+    <string name="cache_settings_method">सेटिंग सहायक (सुलभता)</string>
+    <string name="cache_settings_help">Android की ऐप सेटिंग खोलकर चुने हुए उपयोगकर्ता या सिस्टम ऐप के लिए कैश साफ़ करें दबाता है, जैसे आप खुद करते हैं। Shizuku की ज़रूरत नहीं है। अनजान स्क्रीन पर सुरक्षित रूप से रुक जाता है।</string>
+    <string name="cache_settings_enable">सेटिंग सहायक चालू करें</string>
+    <string name="cache_settings_enable_help">Android की सुलभता सेटिंग में सहायक चालू करें, यहाँ लौटें और सफ़ाई की पुष्टि करें। अनुमति देने से सफ़ाई शुरू नहीं होती।</string>
+    <string name="cache_settings_warning">सहायक नीचे दिए ऐप की सेटिंग नियंत्रित करेगा और केवल कैश साफ़ करें दबाएगा। स्क्रीन अनलॉक रखें और सेटिंग को न छुएँ। रोकने के लिए तैरती पट्टी पर रद्द करें दबाएँ। ऐप और खाते सुरक्षित रहते हैं, लेकिन साफ़ किया हुआ कैश बैकअप या पुनर्स्थापित नहीं हो सकता। असमर्थित स्क्रीन या अनिश्चित परिणाम पर पूरा बैच रुक जाता है। जारी रखें?</string>
+    <string name="cache_settings_disclosure">वैकल्पिक सुलभता अनुमति से Debloater Android सेटिंग के दिखने वाले नियंत्रण पढ़ सकता है और केवल आपके चुने व पुष्टि किए ऐप के लिए स्टोरेज और कैश साफ़ करें दबा सकता है। स्क्रीन की सामग्री सहेजी या भेजी नहीं जाती। सफ़ाई के दौरान तैरता रद्द करें बटन दिखता रहता है। आप सुलभता सेटिंग में सेवा कभी भी बंद कर सकते हैं।</string>
+    <string name="cache_settings_running">कैश साफ़ हो रहा है: %1$s</string>
+
+    <!-- Reviewed app leftovers and recovery -->
+    <string name="leftovers_title">ऐप के बचे हुए फ़ाइल</string>
+    <string name="leftovers_nav_help">हटाए गए ऐप के बचे फ़ोल्डर खोजें</string>
+    <string name="leftovers_help">संभावित बचे फ़ोल्डर खोजें, उनके पथ जाँचें और चुने हुए फ़ोल्डर पुनर्प्राप्ति में ले जाएँ। कुछ भी अपने आप चुना या हटाया नहीं जाता।</string>
+    <string name="leftovers_scope">केवल मौजूदा उपयोगकर्ता का मुख्य स्टोरेज: Android/data, Android/obb और Android/media। इंस्टॉल, बंद और रिकॉर्ड रखे गए पैकेज सुरक्षित हैं। अनजान फ़ोल्डर और पहुँच से बाहर स्थान छोड़ दिए जाते हैं।</string>
+    <string name="leftovers_scan">बचे फ़ोल्डर स्कैन करें</string>
+    <string name="leftovers_needs_shizuku">स्कैन और पुनर्प्राप्ति के लिए Shizuku चालू और अधिकृत होना चाहिए।</string>
+    <string name="leftovers_scan_done">संभावित बचे फ़ोल्डर: %1$d</string>
+    <string name="leftovers_stop_help">रद्द करने पर मौजूदा सीमित फ़ाइल कार्रवाई पूरी होने के बाद रुकता है। पूरी हुई कार्रवाइयाँ वापस नहीं होतीं।</string>
+    <string name="leftovers_partial">अधूरा स्कैन: कुछ स्थान या फ़ोल्डर जाँचे नहीं जा सके।</string>
+    <string name="leftovers_move">पुनर्प्राप्ति में ले जाएँ</string>
+    <string name="leftovers_recovery">बचे फ़ाइलों की पुनर्प्राप्ति</string>
+    <string name="leftovers_recovery_help">पुनर्प्राप्ति फ़ाइलों को साझा स्टोरेज में रखती है और जगह खाली नहीं करती। उन्हें वापस लाएँ या जाँच के बाद अलग-अलग रिकॉर्ड हमेशा के लिए हटाएँ।</string>
+    <string name="leftovers_load_recovery">पुनर्प्राप्ति रिकॉर्ड लोड करें</string>
+    <string name="leftovers_restore">फ़ोल्डर वापस लाएँ</string>
+    <string name="leftovers_delete">हमेशा के लिए हटाएँ</string>
+    <string name="leftovers_restore_warning">इस फ़ोल्डर को मूल स्थान पर वापस लाएँ? मौजूद फ़ोल्डर न बदले जाएँगे, न मिलाए जाएँगे। दूसरी फ़ाइल कार्रवाइयाँ रोकें।</string>
+    <string name="leftovers_delete_warning">जगह खाली करने के लिए ये फ़ाइल हमेशा के लिए हटाएँ? इनमें निजी फ़ाइल हो सकती हैं। इसे वापस नहीं किया जा सकता और कोई बैकअप नहीं रहेगा।</string>
+    <string name="leftovers_move_warning">इन फ़ोल्डर में निजी फ़ाइल हो सकती हैं। हर पथ जाँचें। चुने फ़ोल्डर मूल स्थान दर्ज करके साझा स्टोरेज के .DebloaterRecovery में जाएँगे। उन्हें वापस लाया जा सकता है, लेकिन स्थायी रूप से हटाने तक जगह खाली नहीं होगी। कार्रवाई के दौरान ऐप इंस्टॉल या अनइंस्टॉल न करें। जारी रखें?</string>
+    <string name="leftovers_action_done">पूरी हुईं: %1$d · विफल: %2$d</string>
+
+    <string name="permissions_ready">Available</string>
+    <string name="permissions_automatic">Granted by Android at installation; no separate permission prompt. This checks authorization, not network connectivity.</string>
+    <string name="permissions_missing">Not available — review setup</string>
+    <string name="permissions_title">Permissions</string>
+    <string name="permissions_usage">Usage Access (optional measurements)</string>
+    <string name="permissions_validate">Validate access</string>
+    <string name="cache_settings_remaining">प्रक्रिया पूरी: %1$d / %2$d · शेष (मौजूदा सहित): %3$d</string>
+
+    <string name="ota_title">App updates</string>
+    <string name="ota_help">Check official GitHub releases. Downloads use your connection and continue in Android Downloads. Installation requires Android confirmation; no automatic installation.</string>
+    <string name="ota_check">Check for updates</string>
+    <string name="ota_download">Download update</string>
+    <string name="ota_current">You have the latest version.</string>
+    <string name="ota_error">Update check or download failed. Check your connection and try again.</string>
+    <string name="ota_done">Download complete. Open the Android download notification or the APK in a file manager to install.</string>
+
+    <string name="permissions_auto">Shizuku से ऐक्सेस सेट करें</string>
+    <string name="permissions_auto_help">पुष्टि के बाद उपयोग का ऐक्सेस देता है और केवल कैश सहायक चालू करने का प्रयास करता है। मौजूदा सुलभता सेवाएँ बनी रहती हैं। Android में मैन्युअल सेटअप की ज़रूरत हो सकती है। सफ़ाई शुरू नहीं होती।</string>
+    <string name="permissions_auto_result">परिणाम (तकनीकी विवरण अंग्रेज़ी में हो सकते हैं)</string>
+    <string name="debug_title">डीबग</string>
+    <string name="debug_help">Debloater इस फ़ोन पर सभी टूल (डीब्लोट, रिस्टोर, कैश, बचे हुए फ़ोल्डर, अनुमति सेटअप) के लॉग, हर Shizuku कमांड, संदेश, त्रुटियाँ और क्रैश रिकॉर्ड करता है। जब तक आप रिपोर्ट सेव या शेयर नहीं करते, कुछ भी नहीं भेजा जाता। रिपोर्ट में पैकेज नाम और डिवाइस की जानकारी होती है।</string>
+    <string name="debug_log_size">डीबग लॉग का आकार: %1$s</string>
+    <string name="debug_save_folder">फ़ोल्डर में सेव करें</string>
+    <string name="debug_choose_folder">फ़ोल्डर चुनें</string>
+    <string name="debug_folder">फ़ोल्डर: %1$s</string>
+    <string name="debug_share">एक्सपोर्ट / शेयर करें</string>
+    <string name="debug_clear">डीबग लॉग मिटाएँ</string>
+    <string name="debug_saved">रिपोर्ट बनाई गई: %1$s</string>
+    <string name="debug_failed">रिपोर्ट सेव नहीं हो सकी: %1$s</string>
+    <string name="debug_working">लॉग इकट्ठा किए जा रहे हैं…</string>
+    <string name="cache_shell_ignored">Android ने शायद Shizuku से भेजी गई कैश कमांड को अनदेखा कर दिया: कैश का आकार बिल्कुल नहीं बदला। कुछ फ़ोन पर shell उपयोगकर्ता कैश साफ़ नहीं कर सकता। इसकी जगह सेटिंग्स तरीका इस्तेमाल करें। (अगर ऐप खुला था, तो हो सकता है उसने कैश फिर से भर दिया हो।)</string>
+    <string name="cache_fallback_title">Shizuku %1$d ऐप साफ़ नहीं कर सका</string>
+    <string name="cache_fallback_help">Android ने Shizuku के ज़रिए ये कैश साफ़ नहीं किए। इसकी जगह सेटिंग्स तरीके से साफ़ करने के लिए ऐप चुनें। शुरू होने से पहले सेटिंग्स सहायक की सामान्य चेतावनी दिखेगी।</string>
+    <string name="cache_fallback_failed">Shizuku से विफल</string>
+    <string name="cache_fallback_untried">आज़माए नहीं गए: इस फ़ोन पर Android ने Shizuku को अनदेखा किया</string>
+    <string name="cache_fallback_use_settings">सेटिंग्स तरीका इस्तेमाल करें</string>
+    <string name="cache_fallback_not_now">अभी नहीं</string>
+    <string name="cache_residue">पिछली सफ़ाई के बाद %1$s बचा रहा। Android इसे कैश गिनता है, लेकिन कैश साफ़ करने से यह नहीं हटा (या ऐप ने तुरंत फिर भर दिया)। आमतौर पर सिर्फ़ ऐप का स्टोरेज साफ़ करने या दोबारा इंस्टॉल करने से यह जगह खाली होती है।</string>
+    <string name="cache_residue_folder">शेयर्ड स्टोरेज में उसके कैश फ़ोल्डर की असली सामग्री (Shizuku से मापी गई): %1$s</string>
+    <string name="cache_residue_total">पिछली सफ़ाई के बाद भी गिना जा रहा, शायद कैश साफ़ करके नहीं हटेगा: %1$s</string>
 </resources>

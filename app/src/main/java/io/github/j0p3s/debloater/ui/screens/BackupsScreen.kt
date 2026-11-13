@@ -91,7 +91,7 @@ fun BackupsScreen(vm: MainViewModel) {
     Scaffold(topBar = { BackTopBar(stringResource(R.string.backups_restore), onBack = { vm.back() }) }) { pad ->
         LazyColumn(Modifier.padding(pad).fillMaxSize(), contentPadding = androidx.compose.foundation.layout.PaddingValues(12.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
             item {
-                Card {
+                Card(Modifier.fillMaxWidth()) {
                     Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                         Text(stringResource(R.string.auto_backups), style = MaterialTheme.typography.titleMedium)
                         Text(
@@ -113,7 +113,7 @@ fun BackupsScreen(vm: MainViewModel) {
                 }
             }
             item {
-                Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)) {
+                Card(Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)) {
                     Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                         Text(stringResource(R.string.undo_all), style = MaterialTheme.typography.titleMedium)
                         Text(
@@ -165,7 +165,7 @@ private fun SessionCard(s: BackupSession, vm: MainViewModel, onDelete: () -> Uni
     val done = s.entries.count { it.status == EntryStatus.DONE }
     val failed = s.entries.count { it.status == EntryStatus.FAILED || it.status == EntryStatus.RESTORE_FAILED }
     val restored = s.entries.count { it.status == EntryStatus.RESTORED }
-    Card {
+    Card(Modifier.fillMaxWidth()) {
         Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
             Row(Modifier.fillMaxWidth().clickable { expanded = !expanded }, verticalAlignment = Alignment.CenterVertically) {
                 Column(Modifier.weight(1f)) {

@@ -296,6 +296,7 @@
     <string name="cache_shared">Shared cache group. All listed apps are selected together.</string>
     <string name="cache_log">Cache command log</string>
     <string name="cache_copy_log">Copy cache log</string>
+    <string name="copy_log">Copy log</string>
     <string name="cache_confirm_title">Clear caches of %1$d app(s)?</string>
     <string name="cache_confirm_help">Delete temporary caches only. App data and accounts are kept. Cache deletion cannot be undone or restored from debloat backups. Apps may rebuild caches and open more slowly next time. Measured cache: %1$s; actual space freed may differ.</string>
     <string name="cache_scan_done">Scan complete. %1$d cache group(s) could not be measured.</string>
@@ -323,7 +324,7 @@
     <string name="guide_cleanup_uninstall_instead">Uninstall instead</string>
     <string name="guide_finish">Let\'s go</string>
     <string name="guide_help_a_disable_remove">Disable: the app stays on the phone but can\'t run. Safest, and fully reversible, but frees no space.\nRemove: the app is uninstalled for you. With \"Keep app data\" it can come back exactly as it was; with \"Delete app data\" you free more space, but the data is gone.</string>
-    <string name="guide_help_a_privacy">No root. The internet is only used when you ask to update the debloat lists (Settings), and nothing is ever uploaded.</string>
+    <string name="guide_help_a_privacy">No root. The internet is only used when you ask for it: to update the debloat lists or to check for an app update (Settings). Nothing is ever uploaded.</string>
     <string name="guide_help_a_problem">Open \"Backups &amp; restore\", find the most recent backup and tap Restore. If you are not sure which app caused it, use \"Restore everything\".</string>
     <string name="guide_help_a_reboot">That\'s normal without root: open Shizuku and tap Start again (Wi-Fi must be on). Your changes are not affected; only new changes need Shizuku.</string>
     <string name="guide_help_a_safe">Yes, if you stick to \"Recommended\" apps and use \"Disable\". Before every change the app saves a backup, and critical system parts are locked so they can never be removed. Everything can be undone.</string>
@@ -384,4 +385,77 @@
     <string name="cache_refreshing">Refreshing cleared apps</string>
     <string name="cache_stopped">Stopped. Results may be partial. Completed clears are not undone; an in-flight clear may still finish.</string>
     <string name="cache_partial">Partial measurements; unavailable sizes are excluded.</string>
+
+    <!-- Optional Settings UI cache clearing -->
+    <string name="cache_clear_method">Clearing method</string>
+    <string name="cache_shizuku_method">Shizuku (cache-only command)</string>
+    <string name="cache_settings_method">Settings assistant (Accessibility)</string>
+    <string name="cache_settings_help">Opens Android app settings and presses Clear cache for selected user or system apps, like you would. No Shizuku needed. Unrecognized screens are stopped safely.</string>
+    <string name="cache_settings_enable">Enable Settings assistant</string>
+    <string name="cache_settings_enable_help">Enable the assistant in Android Accessibility settings, return here and confirm clearing. Enabling access does not start cleaning.</string>
+    <string name="cache_settings_warning">The assistant will control Settings for the apps listed below and press only Clear cache. Keep the screen unlocked and avoid touching Settings. Use Cancel on the floating bar to stop. Apps and accounts are kept, but cleared cache cannot be backed up or restored. Unsupported screens or uncertain results stop the batch. Continue?</string>
+    <string name="cache_settings_disclosure">Optional Accessibility access lets Debloater read visible Android Settings controls and press Storage and Clear cache, only for apps you select and confirm. Screen contents are not saved or sent. A floating Cancel button stays visible while cleaning. You can disable the service in Accessibility settings at any time.</string>
+    <string name="cache_settings_running">Clearing cache: %1$s</string>
+
+    <!-- Reviewed app leftovers and recovery -->
+    <string name="leftovers_title">App leftovers</string>
+    <string name="leftovers_nav_help">Find folders left by uninstalled apps</string>
+    <string name="leftovers_help">Find possible leftovers, review their paths, then move selected folders to recovery. Nothing is selected or deleted automatically.</string>
+    <string name="leftovers_scope">Current user’s primary storage only: Android/data, Android/obb and Android/media. Installed, disabled and retained package owners are protected. Unrecognized folders and inaccessible areas are skipped.</string>
+    <string name="leftovers_scan">Scan app leftovers</string>
+    <string name="leftovers_needs_shizuku">Shizuku must be running and authorized for scanning and recovery.</string>
+    <string name="leftovers_scan_done">Possible leftover folders: %1$d</string>
+    <string name="leftovers_stop_help">Cancel stops after the current bounded file operation. Completed actions are not undone.</string>
+    <string name="leftovers_partial">Partial scan: some locations or folders could not be checked.</string>
+    <string name="leftovers_move">Move to recovery</string>
+    <string name="leftovers_recovery">Leftover recovery</string>
+    <string name="leftovers_recovery_help">Recovery keeps the files in shared storage and does not free space. Restore them or permanently delete individual records after review.</string>
+    <string name="leftovers_load_recovery">Load recovery records</string>
+    <string name="leftovers_restore">Restore folder</string>
+    <string name="leftovers_delete">Permanently delete</string>
+    <string name="leftovers_restore_warning">Restore this recovery folder to its original location? Existing folders are never overwritten or merged. Keep other file operations paused.</string>
+    <string name="leftovers_delete_warning">Permanently delete these recovery files to free space? They may contain personal files. This cannot be undone and no backup will remain.</string>
+    <string name="leftovers_move_warning">These folders may contain personal files. Review every path. Selected folders will move to .DebloaterRecovery in shared storage with their original locations recorded. This is recoverable but does not free space until permanent deletion. Avoid installing or uninstalling apps during this operation. Continue?</string>
+    <string name="leftovers_action_done">Completed: %1$d · Failed: %2$d</string>
+
+    <string name="permissions_ready">Available</string>
+    <string name="permissions_automatic">Granted by Android at installation; no separate permission prompt. This checks authorization, not network connectivity.</string>
+    <string name="permissions_missing">Not available — review setup</string>
+    <string name="permissions_title">Permissions</string>
+    <string name="permissions_usage">Usage Access (optional measurements)</string>
+    <string name="permissions_validate">Validate access</string>
+    <string name="cache_settings_remaining">Processed: %1$d / %2$d · Remaining (including current): %3$d</string>
+
+    <string name="ota_title">App updates</string>
+    <string name="ota_help">Check official GitHub releases. Downloads use your connection and continue in Android Downloads. Installation requires Android confirmation; no automatic installation.</string>
+    <string name="ota_check">Check for updates</string>
+    <string name="ota_download">Download update</string>
+    <string name="ota_current">You have the latest version.</string>
+    <string name="ota_error">Update check or download failed. Check your connection and try again.</string>
+    <string name="ota_done">Download complete. Open the Android download notification or the APK in a file manager to install.</string>
+
+    <string name="permissions_auto">Set up access with Shizuku</string>
+    <string name="permissions_auto_help">After confirmation, grant Usage Access and try enabling only the cache assistant. Existing Accessibility services are preserved. Android may require manual setup. This does not start cleaning.</string>
+    <string name="permissions_auto_result">Setup results (technical details may be in English)</string>
+    <string name="debug_title">Debug</string>
+    <string name="debug_help">Debloater records logs from every tool (debloat, restore, cache, leftovers, permission setup), every Shizuku command, messages, errors and crashes on this phone. Nothing is sent anywhere unless you save or share a report. Reports include package names and device details.</string>
+    <string name="debug_log_size">Debug log size: %1$s</string>
+    <string name="debug_save_folder">Save to folder</string>
+    <string name="debug_choose_folder">Choose folder</string>
+    <string name="debug_folder">Folder: %1$s</string>
+    <string name="debug_share">Export / share</string>
+    <string name="debug_clear">Clear debug log</string>
+    <string name="debug_saved">Report created: %1$s</string>
+    <string name="debug_failed">Could not save the report: %1$s</string>
+    <string name="debug_working">Collecting logs…</string>
+    <string name="cache_shell_ignored">Android probably ignored the cache command sent through Shizuku: the cache size did not change at all. On some phones the shell user is not allowed to clear caches. Use the Settings method instead. (If the app was open, it may also have refilled its cache.)</string>
+    <string name="cache_fallback_title">Shizuku could not clear %1$d app(s)</string>
+    <string name="cache_fallback_help">Android did not clear these caches through Shizuku. Select the apps to clear with the Settings method instead. The usual Settings assistant warning follows before anything starts.</string>
+    <string name="cache_fallback_failed">Failed with Shizuku</string>
+    <string name="cache_fallback_untried">Not tried: Android ignored Shizuku on this phone</string>
+    <string name="cache_fallback_use_settings">Use Settings method</string>
+    <string name="cache_fallback_not_now">Not now</string>
+    <string name="cache_residue">Last clear left %1$s. Android counts this as cache, but Clear cache did not remove it (or the app refilled it at once). Usually only clearing the app’s storage or reinstalling frees it.</string>
+    <string name="cache_residue_folder">Real content of its cache folder on shared storage (measured with Shizuku): %1$s</string>
+    <string name="cache_residue_total">Still reported after the last clear, likely not removable with Clear cache: %1$s</string>
 </resources>

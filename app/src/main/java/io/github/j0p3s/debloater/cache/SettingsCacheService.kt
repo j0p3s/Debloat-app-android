@@ -1,0 +1,259 @@
+package io.github.j0p3s.debloater.cache
+
+import android.accessibilityservice.AccessibilityService
+import android.app.KeyguardManager
+import android.content.Intent
+import android.content.pm.ApplicationInfo
+import android.content.res.Configuration
+import android.graphics.PixelFormat
+import android.net.Uri
+import android.os.PowerManager
+import android.os.SystemClock
+import android.provider.Settings
+import android.view.Gravity
+import android.view.WindowManager
+import android.view.accessibility.AccessibilityEvent
+import android.view.accessibility.AccessibilityNodeInfo
+import android.widget.Button
+import android.widget.LinearLayout
+import android.widget.TextView
+import io.github.j0p3s.debloater.R
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.currentCoroutineContext
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.ensureActive
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.withTimeoutOrNull
+
+
+/** Opt-in, foreground Settings UI assistance; never runs from accessibility events alone. */
+class SettingsCacheService : AccessibilityService() {
+    companion object {
+        private var instance: SettingsCacheService? = null
+        private val connected = MutableStateFlow(false)
+        val available = connected.asStateFlow()
+
+        fun settingsIntent(): Intent = Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)
+
+        suspend fun clear(target: SettingsCachePolicy.Target, completed: Int, total: Int, diagnostic: (String) -> Unit = {}): SettingsCacheResult =
+            instance?.clearOne(target, completed, total, diagnostic) ?: SettingsCacheResult.SKIPPED
+    }
+
+    private var activeJob: Job? = null
+    private var stopView: LinearLayout? = null
+
+    override fun onServiceConnected() { instance = this; connected.value = true }
+    override fun onAccessibilityEvent(event: AccessibilityEvent?) = Unit
+    override fun onInterrupt() { activeJob?.cancel() }
+    override fun onUnbind(intent: Intent?): Boolean { disconnect(); return super.onUnbind(intent) }
+    override fun onDestroy() { disconnect(); super.onDestroy() }
+    private fun disconnect() {
+        activeJob?.cancel()
+        removeStopControl()
+        if (instance === this) { instance = null; connected.value = false }
+    }
+
+    @Suppress("DiscouragedApi") // Read the installed Settings app's own labels in the system locale.
+    private fun labels(): SettingsCachePolicy.Labels {
+        val settings = createPackageContext(SettingsCachePolicy.SETTINGS_PACKAGE, 0)
+        val config = Configuration(settings.resources.configuration).apply { setLocales(SystemLocales.get(this@SettingsCacheService)) }
+        val resources = settings.createConfigurationContext(config).resources
+        fun strings(vararg names: String): Set<String> = names.mapNotNull { name ->
+            val id = resources.getIdentifier(name, "string", SettingsCachePolicy.SETTINGS_PACKAGE)
+            if (id == 0) null else runCatching { resources.getString(id) }.getOrNull()
+        }.toSet()
+        val fallback = SettingsCachePolicy.fallbackLabels(SystemLocales.get(this).get(0).language)
+        return SettingsCachePolicy.Labels(
+            strings("storage_settings_for_app", "storage_settings", "storage_use", "storage_label") +
+                fallback.storage,
+            strings("clear_cache_btn_text", "clear_cache", "clear_cache_label") +
+                fallback.clearCache,
+            strings("clear_user_data_text", "clear_data_btn_text", "manage_space_text") +
+                fallback.destructive,
+            strings("application_info_label", "app_info_label", "storage_settings_for_app", "storage_label") +
+                fallback.pageTitles,
+        )
+    }
+
+    private data class Snapshot(val page: SettingsCachePolicy.Page, val nodes: List<AccessibilityNodeInfo>) {
+        @Suppress("DEPRECATION") fun close() { nodes.forEach { it.recycle() } }
+    }
+
+    private fun snapshot(): Snapshot? {
+        val root = rootInActiveWindow ?: return null
+        if(root.packageName?.toString() != SettingsCachePolicy.SETTINGS_PACKAGE) {
+            // Do not traverse or collect the contents of any other app's window.
+            return Snapshot(SettingsCachePolicy.Page(root.packageName?.toString().orEmpty(), emptyList()), listOf(root))
+        }
+        val nodes = mutableListOf<AccessibilityNodeInfo>()
+        val descriptors = mutableListOf<SettingsCachePolicy.Node>()
+        val queue = ArrayDeque<Pair<AccessibilityNodeInfo, Int?>>()
+        queue.add(root to null)
+        try {
+            while (queue.isNotEmpty() && nodes.size < 600) {
+                val (node, parent) = queue.removeFirst()
+                val index = nodes.size
+                nodes += node
+                descriptors += SettingsCachePolicy.Node(node.viewIdResourceName.orEmpty(), node.text?.toString().orEmpty(),
+                    node.contentDescription?.toString().orEmpty(), parent, node.isClickable, node.isEnabled, node.isVisibleToUser)
+                repeat(node.childCount) { child -> node.getChild(child)?.let { queue.add(it to index) } }
+            }
+            return Snapshot(SettingsCachePolicy.Page(root.packageName?.toString().orEmpty(), descriptors, queue.isEmpty()), nodes)
+        } catch (error: Exception) {
+            @Suppress("DEPRECATION") nodes.forEach { it.recycle() }
+            throw error
+        } finally {
+            @Suppress("DEPRECATION") queue.forEach { it.first.recycle() }
+        }
+    }
+
+    private fun showStopControl(label: String, completed: Int, total: Int) {
+        val manager = getSystemService(WindowManager::class.java)
+        val dp = resources.displayMetrics.density
+        val bar = LinearLayout(this).apply {
+            orientation = LinearLayout.HORIZONTAL
+            gravity = Gravity.CENTER_VERTICAL
+            setPadding((12 * dp).toInt(), (6 * dp).toInt(), (12 * dp).toInt(), (6 * dp).toInt())
+            setBackgroundColor(0xff20352c.toInt())
+            addView(TextView(context).apply {
+                text = getString(R.string.cache_settings_running, label) + "\n" +
+                    getString(R.string.cache_settings_remaining, completed, total, total - completed)
+                setTextColor(0xffffffff.toInt()); maxLines = 4
+            }, LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f))
+            addView(Button(context).apply {
+                text = getString(R.string.cancel)
+                setOnClickListener { activeJob?.cancel() }
+            })
+        }
+        // A small, non-focusable accessibility overlay keeps Stop reachable while Settings is open.
+        val params = WindowManager.LayoutParams(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT,
+            WindowManager.LayoutParams.TYPE_ACCESSIBILITY_OVERLAY, WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, PixelFormat.TRANSLUCENT)
+            .apply { gravity = Gravity.BOTTOM }
+        manager.addView(bar, params)
+        stopView = bar
+    }
+
+    private fun removeStopControl() {
+        stopView?.let { runCatching { getSystemService(WindowManager::class.java).removeView(it) } }
+        stopView = null
+    }
+
+    private suspend fun clearOne(target: SettingsCachePolicy.Target, completed: Int, total: Int, diagnostic: (String) -> Unit): SettingsCacheResult {
+        check(activeJob == null) { "Settings cache assistant is already busy" }
+        if (target.packageName in setOf(packageName, SettingsCachePolicy.SETTINGS_PACKAGE)) return SettingsCacheResult.SKIPPED
+        activeJob = currentCoroutineContext()[Job]
+        try {
+            val labels = labels()
+            diagnostic("Start: Settings language=${SystemLocales.get(this).toLanguageTags()}; label=${target.label}; aliases=${target.labelAliases}; unique=${target.uniqueLabel}; storage labels=${labels.storage}")
+            if (labels.clearCache.isEmpty() || labels.storage.isEmpty()) return SettingsCacheResult.UNKNOWN
+            val intent = Intent(Settings.ACTION_APPLICATION_DETAILS_SETTINGS, Uri.parse("package:${target.packageName}"))
+                .setPackage(SettingsCachePolicy.SETTINGS_PACKAGE).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            val activity = packageManager.resolveActivity(intent, 0)?.activityInfo ?: return SettingsCacheResult.UNKNOWN
+            if (activity.applicationInfo.flags and ApplicationInfo.FLAG_SYSTEM == 0) return SettingsCacheResult.UNKNOWN
+            showStopControl(target.label, completed, total) // If Stop cannot be shown, do not start automation.
+            startActivity(intent)
+            var navigated = false
+            var clicked = false
+            var disabledPolls = 0
+            var scrolls = 0
+            var stableTargetPolls = 0
+            var clickedAnyCache = false
+            var lastPageWasSettings = false
+            var transitionPolls = 0
+            // Finding the button is bounded tightly; after one press, Android may need much longer
+            // to delete a multi-GB cache before Settings disables the button (e.g. large games).
+            var deadline = SystemClock.elapsedRealtime() + SettingsCachePolicy.FIND_TIMEOUT_MS
+            return withTimeoutOrNull(SettingsCachePolicy.FIND_TIMEOUT_MS + SettingsCachePolicy.CLEAR_TIMEOUT_MS) {
+                // Let the explicit package URI replace the previously visible Settings page.
+                delay(600)
+                while (SystemClock.elapsedRealtime() < deadline) {
+                    currentCoroutineContext().ensureActive()
+                    if (instance !== this@SettingsCacheService ||
+                        getSystemService(KeyguardManager::class.java).isKeyguardLocked ||
+                        !getSystemService(PowerManager::class.java).isInteractive) {
+                        diagnostic("Stop: assistant disconnected, screen locked or screen off")
+                        return@withTimeoutOrNull SettingsCacheResult.UNKNOWN
+                    }
+                    val snapshot = snapshot()
+                    if (snapshot != null) try {
+                        val page = snapshot.page
+                        if(stableTargetPolls == 0 && transitionPolls == 0) diagnostic("Window=${page.packageName}; nodes=${page.nodes.size}; complete=${page.complete}; target=${SettingsCachePolicy.isTarget(page, target, labels)}")
+                        lastPageWasSettings = page.packageName == SettingsCachePolicy.SETTINGS_PACKAGE
+                        if(!lastPageWasSettings) {
+                            diagnostic("Stop: active window is ${page.packageName.ifBlank { "unknown" }}, not Settings")
+                            return@withTimeoutOrNull SettingsCacheResult.UNKNOWN
+                        }
+                        if (!SettingsCachePolicy.isTarget(page, target, labels)) {
+                            stableTargetPolls = 0
+                            // Give Settings fragment transitions time to settle, but never click during them.
+                            transitionPolls++
+                            if(clicked) {
+                                diagnostic("Stop: Settings left the target app page after the press\n${SettingsCachePolicy.describe(page)}")
+                                return@withTimeoutOrNull SettingsCacheResult.UNKNOWN
+                            }
+                            if(navigated && transitionPolls >= 6) {
+                                diagnostic("Unavailable: storage page did not identify the app\n${SettingsCachePolicy.describe(page)}")
+                                return@withTimeoutOrNull SettingsCacheResult.UNAVAILABLE
+                            }
+                        } else {
+                            transitionPolls = 0
+                            stableTargetPolls++
+                            if (stableTargetPolls >= 2) {
+                                val clear = SettingsCachePolicy.clearButton(page, target, labels)
+                                if(stableTargetPolls == 2) {
+                                    val storage = SettingsCachePolicy.storageRow(page, target, labels)
+                                    diagnostic("Selectors: storage=$storage; clear=$clear; navigated=$navigated; clicked=$clicked; clear labels=${labels.clearCache}")
+                                    if(storage == null && clear == null) diagnostic("Visible Settings nodes:\n${SettingsCachePolicy.describe(page)}")
+                                }
+                                if (clear != null) {
+                                    val enabled = SettingsCachePolicy.controlEnabled(page.nodes, clear)
+                                    if (clicked) {
+                                        disabledPolls = if (!enabled) disabledPolls + 1 else 0
+                                        if (disabledPolls >= 3) return@withTimeoutOrNull SettingsCacheResult.CONFIRMED
+                                    } else if (!enabled) {
+                                        diagnostic("Skip: Clear cache is disabled; no click sent; continue to next app")
+                                        return@withTimeoutOrNull SettingsCacheResult.SKIPPED
+                                    } else {
+                                        // Exactly one press; no dialog confirmation, gestures or blind key navigation.
+                                        clicked = snapshot.nodes[clear].performAction(AccessibilityNodeInfo.ACTION_CLICK)
+                                        clickedAnyCache = clicked
+                                        if (!clicked) return@withTimeoutOrNull SettingsCacheResult.UNKNOWN
+                                        deadline = SettingsCachePolicy.deadlineAfterPress(SystemClock.elapsedRealtime(), deadline)
+                                        diagnostic("Pressed Clear cache; waiting up to ${SettingsCachePolicy.CLEAR_TIMEOUT_MS / 1000} s for Settings to finish")
+                                    }
+                                } else if (!navigated && !clicked) {
+                                    val storage = SettingsCachePolicy.storageRow(page, target, labels)
+                                    if (storage != null) {
+                                        if (!snapshot.nodes[storage].performAction(AccessibilityNodeInfo.ACTION_CLICK))
+                                            return@withTimeoutOrNull SettingsCacheResult.UNKNOWN
+                                        navigated = true
+                                        stableTargetPolls = 0
+                                    } else if (scrolls < 3 && stableTargetPolls % 4 == 0) {
+                                        val scrolled = snapshot.nodes.firstOrNull { it.isScrollable && it.isVisibleToUser }
+                                            ?.performAction(AccessibilityNodeInfo.ACTION_SCROLL_FORWARD)
+                                        scrolls++
+                                        diagnostic("Storage row not found; scroll ${scrolls}/3 (${scrolled ?: "no scrollable list"})\n${SettingsCachePolicy.describe(page)}")
+                                    }
+                                }
+                            }
+                        }
+                    } finally { snapshot.close() }
+                    delay(300)
+                }
+                null
+            } ?: SettingsCachePolicy.timedOutResult(clickedAnyCache, lastPageWasSettings).also {
+                diagnostic("Timed out: pressed=$clickedAnyCache; navigated=$navigated; scrolls=$scrolls; last window Settings=$lastPageWasSettings")
+            }
+        } catch (error: CancellationException) {
+            throw error
+        } catch (error: Exception) {
+            diagnostic("Exception: ${error.javaClass.simpleName}: ${error.message}")
+            return SettingsCacheResult.UNKNOWN
+        } finally {
+            removeStopControl()
+            activeJob = null
+        }
+    }
+}

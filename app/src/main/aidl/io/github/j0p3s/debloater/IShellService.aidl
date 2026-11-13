@@ -17,6 +17,8 @@ interface IShellService {
     Bundle exec(String command) = 2;
     /** Cache operations use a shorter subprocess wait; never changes the command itself. */
     Bundle execCache(String command) = 5;
+    /** Typed, validated leftovers actions; argument is a logical app folder key or recovery UUID. */
+    Bundle leftovers(String action, int userId, String argument) = 6;
 
     /**
      * Installs one or more APK splits through a pm install session.

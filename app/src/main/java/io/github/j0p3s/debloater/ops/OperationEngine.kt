@@ -86,6 +86,9 @@ class OperationEngine(
     // ---------------------------------------------------------------- logging
 
     private fun log(kind: LineKind, text: String, pkg: String? = null) {
+        val tag = "operation"
+        val line = "${kind.name} ${pkg?.let { "[$it] " }.orEmpty()}$text"
+        if (kind == LineKind.ERROR) io.github.j0p3s.debloater.debug.DebugLog.warn(tag, line) else io.github.j0p3s.debloater.debug.DebugLog.info(tag, line)
         _state.update { s -> s?.copy(lines = s.lines + LogLine(System.currentTimeMillis(), kind, text, pkg)) }
     }
 

@@ -294,6 +294,7 @@
     <string name="cache_shared">مجموعة ذاكرة مؤقتة مشتركة. تُحدد كل التطبيقات المدرجة معًا.</string>
     <string name="cache_log">سجل أوامر الذاكرة المؤقتة</string>
     <string name="cache_copy_log">نسخ سجل الذاكرة المؤقتة</string>
+    <string name="copy_log">نسخ السجل</string>
     <string name="cache_confirm_title">مسح الذاكرة المؤقتة لـ %1$d تطبيق؟</string>
     <string name="cache_confirm_help">يحذف الذاكرة المؤقتة فقط. تبقى بيانات التطبيقات والحسابات. لا يمكن التراجع عن حذف الذاكرة المؤقتة أو استعادتها من نسخ التنظيف الاحتياطية. قد تعيد التطبيقات إنشاء الذاكرة المؤقتة وتفتح ببطء أكبر في المرة القادمة. الذاكرة المؤقتة المقاسة: %1$s؛ وقد تختلف المساحة المحررة فعليًا.</string>
     <string name="cache_scan_done">اكتمل الفحص. تعذّر قياس %1$d من مجموعات الذاكرة المؤقتة.</string>
@@ -321,7 +322,7 @@
     <string name="guide_cleanup_uninstall_instead">إلغاء التثبيت بدلًا من ذلك</string>
     <string name="guide_finish">لنبدأ</string>
     <string name="guide_help_a_disable_remove">التعطيل: يبقى التطبيق على الهاتف لكنه لا يعمل. هذا الأكثر أمانًا وقابل للتراجع بالكامل، لكنه لا يحرر مساحة.\nالحذف: يُلغى تثبيت التطبيق لك. مع \"الاحتفاظ بالبيانات\" يمكن أن يعود كما كان تمامًا؛ ومع \"حذف البيانات\" تحرر مساحة أكبر، لكن البيانات تضيع.</string>
-    <string name="guide_help_a_privacy">لا يحتاج إلى روت. يُستخدم الإنترنت فقط عندما تطلب تحديث قوائم التنظيف (الإعدادات)، ولا يتم رفع أي شيء أبدًا.</string>
+    <string name="guide_help_a_privacy">لا يحتاج إلى روت. يُستخدم الإنترنت فقط عندما تطلب ذلك: لتحديث قوائم التنظيف أو للبحث عن تحديث للتطبيق (الإعدادات). لا يتم رفع أي شيء أبدًا.</string>
     <string name="guide_help_a_problem">افتح \"النسخ الاحتياطية والاستعادة\"، وابحث عن أحدث نسخة احتياطية واضغط على استعادة. إذا لم تكن متأكدًا من التطبيق المسبب، فاستخدم \"استعادة الكل\".</string>
     <string name="guide_help_a_reboot">هذا طبيعي دون روت: افتح Shizuku واضغط على بدء مرة أخرى (يجب أن تكون شبكة Wi-Fi مفعلة). تغييراتك لا تتأثر؛ التغييرات الجديدة فقط تحتاج إلى Shizuku.</string>
     <string name="guide_help_a_safe">نعم، إذا اكتفيت بتطبيقات \"موصى به\" واستخدمت \"تعطيل\". قبل كل تغيير يحفظ التطبيق نسخة احتياطية، وأجزاء النظام الأساسية مقفلة فلا يمكن حذفها أبدًا. يمكن التراجع عن كل شيء.</string>
@@ -382,4 +383,77 @@
     <string name="cache_refreshing">تحديث التطبيقات التي تم تنظيفها</string>
     <string name="cache_stopped">تم الإيقاف. قد تكون النتائج جزئية. لا يتم التراجع عن التنظيف المكتمل وقد تكتمل العملية الجارية.</string>
     <string name="cache_partial">قياسات جزئية؛ الأحجام غير المتاحة مستبعدة.</string>
+
+    <!-- Optional Settings UI cache clearing -->
+    <string name="cache_clear_method">طريقة التنظيف</string>
+    <string name="cache_shizuku_method">Shizuku (أمر ذاكرة التخزين المؤقت فقط)</string>
+    <string name="cache_settings_method">مساعد الإعدادات (إمكانية الوصول)</string>
+    <string name="cache_settings_help">يفتح إعدادات تطبيقات Android ويضغط مسح ذاكرة التخزين المؤقت للتطبيقات المحددة، سواء تطبيقات المستخدم أو النظام، كما تفعل يدوياً. لا يحتاج إلى Shizuku. يتوقف بأمان عند الشاشات غير المعروفة.</string>
+    <string name="cache_settings_enable">تفعيل مساعد الإعدادات</string>
+    <string name="cache_settings_enable_help">فعّل المساعد في إعدادات إمكانية الوصول في Android ثم ارجع وأكّد التنظيف. منح الوصول لا يبدأ التنظيف.</string>
+    <string name="cache_settings_warning">سيتحكم المساعد في إعدادات التطبيقات المدرجة أدناه وسيضغط فقط مسح ذاكرة التخزين المؤقت. أبقِ الشاشة مفتوحة ولا تلمس الإعدادات. اضغط إلغاء في الشريط العائم للتوقف. تبقى التطبيقات والحسابات، لكن لا يمكن نسخ ذاكرة التخزين المؤقت المحذوفة احتياطياً أو استعادتها. توقف الشاشات غير المدعومة أو النتائج غير المؤكدة الدفعة. هل تريد المتابعة؟</string>
+    <string name="cache_settings_disclosure">يسمح وصول إمكانية الوصول الاختياري لـ Debloater بقراءة عناصر إعدادات Android الظاهرة والضغط على التخزين ومسح ذاكرة التخزين المؤقت، فقط للتطبيقات التي تحددها وتؤكدها. لا يتم حفظ محتوى الشاشة أو إرساله. يظل زر إلغاء عائم ظاهراً أثناء التنظيف. يمكنك تعطيل الخدمة في إعدادات إمكانية الوصول في أي وقت.</string>
+    <string name="cache_settings_running">جارٍ مسح ذاكرة التخزين المؤقت: %1$s</string>
+
+    <!-- Reviewed app leftovers and recovery -->
+    <string name="leftovers_title">بقايا التطبيقات</string>
+    <string name="leftovers_nav_help">العثور على مجلدات التطبيقات المحذوفة</string>
+    <string name="leftovers_help">ابحث عن البقايا المحتملة وراجع مساراتها ثم انقل المجلدات المحددة إلى الاسترداد. لا يتم تحديد أي شيء أو حذفه تلقائياً.</string>
+    <string name="leftovers_scope">التخزين الأساسي للمستخدم الحالي فقط: Android/data وAndroid/obb وAndroid/media. تتم حماية الحزم المثبتة والمعطلة والسجلات المحتفظ بها. يتم تجاوز المجلدات غير المعروفة والمناطق غير المتاحة.</string>
+    <string name="leftovers_scan">فحص بقايا التطبيقات</string>
+    <string name="leftovers_needs_shizuku">يجب تشغيل Shizuku ومنحه الإذن للفحص والاسترداد.</string>
+    <string name="leftovers_scan_done">المجلدات المتبقية المحتملة: %1$d</string>
+    <string name="leftovers_stop_help">يتوقف الإلغاء بعد عملية الملفات الحالية المحدودة. لا يتم التراجع عن الإجراءات المكتملة.</string>
+    <string name="leftovers_partial">فحص جزئي: تعذر التحقق من بعض المواقع أو المجلدات.</string>
+    <string name="leftovers_move">نقل إلى الاسترداد</string>
+    <string name="leftovers_recovery">استرداد البقايا</string>
+    <string name="leftovers_recovery_help">يحتفظ الاسترداد بالملفات في التخزين المشترك ولا يحرر مساحة. استعدها أو احذف السجلات بشكل دائم كل على حدة بعد المراجعة.</string>
+    <string name="leftovers_load_recovery">تحميل سجلات الاسترداد</string>
+    <string name="leftovers_restore">استعادة المجلد</string>
+    <string name="leftovers_delete">حذف دائم</string>
+    <string name="leftovers_restore_warning">هل تريد استعادة هذا المجلد إلى موقعه الأصلي؟ لا يتم استبدال المجلدات الموجودة أو دمجها أبداً. أوقف عمليات الملفات الأخرى مؤقتاً.</string>
+    <string name="leftovers_delete_warning">هل تريد حذف ملفات الاسترداد هذه نهائياً لتحرير مساحة؟ قد تحتوي على ملفات شخصية. لا يمكن التراجع ولن تبقى نسخة احتياطية.</string>
+    <string name="leftovers_move_warning">قد تحتوي هذه المجلدات على ملفات شخصية. راجع كل مسار. ستنقل المجلدات المحددة إلى .DebloaterRecovery في التخزين المشترك مع تسجيل مواقعها الأصلية. يمكن استردادها لكنها لا تحرر مساحة قبل الحذف الدائم. تجنب تثبيت التطبيقات أو إلغاء تثبيتها أثناء العملية. هل تريد المتابعة؟</string>
+    <string name="leftovers_action_done">مكتملة: %1$d · فاشلة: %2$d</string>
+
+    <string name="permissions_ready">Available</string>
+    <string name="permissions_automatic">Granted by Android at installation; no separate permission prompt. This checks authorization, not network connectivity.</string>
+    <string name="permissions_missing">Not available — review setup</string>
+    <string name="permissions_title">Permissions</string>
+    <string name="permissions_usage">Usage Access (optional measurements)</string>
+    <string name="permissions_validate">Validate access</string>
+    <string name="cache_settings_remaining">تمت المعالجة: %1$d / %2$d · المتبقي (بما فيه الحالي): %3$d</string>
+
+    <string name="ota_title">App updates</string>
+    <string name="ota_help">Check official GitHub releases. Downloads use your connection and continue in Android Downloads. Installation requires Android confirmation; no automatic installation.</string>
+    <string name="ota_check">Check for updates</string>
+    <string name="ota_download">Download update</string>
+    <string name="ota_current">You have the latest version.</string>
+    <string name="ota_error">Update check or download failed. Check your connection and try again.</string>
+    <string name="ota_done">Download complete. Open the Android download notification or the APK in a file manager to install.</string>
+
+    <string name="permissions_auto">إعداد الوصول عبر Shizuku</string>
+    <string name="permissions_auto_help">بعد التأكيد يمنح الوصول إلى الاستخدام ويحاول تفعيل مساعد ذاكرة التخزين المؤقت فقط. تبقى خدمات إمكانية الوصول الحالية محفوظة. قد يتطلب Android إعداداً يدوياً. لا يبدأ التنظيف.</string>
+    <string name="permissions_auto_result">النتائج (قد تكون التفاصيل التقنية بالإنجليزية)</string>
+    <string name="debug_title">تصحيح الأخطاء</string>
+    <string name="debug_help">يسجّل Debloater على هذا الهاتف سجلات جميع الأدوات (الإزالة، الاستعادة، ذاكرة التخزين المؤقت، البقايا، إعداد الأذونات) وكل أوامر Shizuku والرسائل والأخطاء والأعطال. لا يُرسَل أي شيء ما لم تحفظ تقريرًا أو تشاركه. تتضمن التقارير أسماء الحزم وتفاصيل الجهاز.</string>
+    <string name="debug_log_size">حجم سجل تصحيح الأخطاء: %1$s</string>
+    <string name="debug_save_folder">حفظ في المجلد</string>
+    <string name="debug_choose_folder">اختيار مجلد</string>
+    <string name="debug_folder">المجلد: %1$s</string>
+    <string name="debug_share">تصدير / مشاركة</string>
+    <string name="debug_clear">مسح سجل تصحيح الأخطاء</string>
+    <string name="debug_saved">تم إنشاء التقرير: %1$s</string>
+    <string name="debug_failed">تعذّر حفظ التقرير: %1$s</string>
+    <string name="debug_working">جارٍ جمع السجلات…</string>
+    <string name="cache_shell_ignored">على الأرجح تجاهل Android أمر ذاكرة التخزين المؤقت المرسل عبر Shizuku: لم يتغير حجمها إطلاقًا. في بعض الهواتف لا يُسمح لمستخدم shell بمسح ذاكرة التخزين المؤقت. استخدم طريقة الإعدادات بدلاً من ذلك. (إذا كان التطبيق مفتوحًا، فربما أعاد ملء ذاكرة التخزين المؤقت أيضًا.)</string>
+    <string name="cache_fallback_title">تعذّر على Shizuku مسح %1$d من التطبيقات</string>
+    <string name="cache_fallback_help">لم يمسح Android ذاكرة التخزين المؤقت هذه عبر Shizuku. اختر التطبيقات المراد مسحها بطريقة الإعدادات بدلاً من ذلك. سيظهر تحذير مساعد الإعدادات المعتاد قبل البدء.</string>
+    <string name="cache_fallback_failed">فشلت مع Shizuku</string>
+    <string name="cache_fallback_untried">لم تُجرَّب: تجاهل Android ‏Shizuku على هذا الهاتف</string>
+    <string name="cache_fallback_use_settings">استخدام طريقة الإعدادات</string>
+    <string name="cache_fallback_not_now">ليس الآن</string>
+    <string name="cache_residue">ترك آخر مسح %1$s. يحتسب Android هذا كذاكرة تخزين مؤقت، لكن «محو ذاكرة التخزين المؤقت» لم يحذفه (أو أعاد التطبيق ملأها فورًا). عادةً لا يحرر هذه المساحة إلا محو بيانات تخزين التطبيق أو إعادة تثبيته.</string>
+    <string name="cache_residue_folder">المحتوى الفعلي لمجلد ذاكرة التخزين المؤقت في التخزين المشترك (مقيس عبر Shizuku): %1$s</string>
+    <string name="cache_residue_total">ما زال محتسبًا بعد آخر مسح، وغالبًا لا يُزال بمحو ذاكرة التخزين المؤقت: %1$s</string>
 </resources>

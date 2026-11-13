@@ -294,6 +294,7 @@
     <string name="cache_shared">共享缓存组。列出的所有应用会一起被选中。</string>
     <string name="cache_log">缓存命令日志</string>
     <string name="cache_copy_log">复制缓存日志</string>
+    <string name="copy_log">复制日志</string>
     <string name="cache_confirm_title">清除 %1$d 个应用的缓存？</string>
     <string name="cache_confirm_help">只删除临时缓存。应用数据和账号会保留。缓存删除无法撤销，也无法从精简备份中恢复。应用可能会重新生成缓存，下次打开会更慢。已测量缓存：%1$s；实际释放的空间可能不同。</string>
     <string name="cache_scan_done">扫描完成。有 %1$d 个缓存组无法测量。</string>
@@ -321,7 +322,7 @@
     <string name="guide_cleanup_uninstall_instead">改为卸载</string>
     <string name="guide_finish">开始使用</string>
     <string name="guide_help_a_disable_remove">停用：应用留在手机上但无法运行。最安全且完全可逆，但不会释放空间。\n移除：为你卸载该应用。选择“保留数据”时可以原样恢复；选择“删除数据”可以释放更多空间，但数据会丢失。</string>
-    <string name="guide_help_a_privacy">不需要 root。只有在你要求更新精简列表时（设置）才会联网，而且绝不会上传任何内容。</string>
+    <string name="guide_help_a_privacy">不需要 root。只有在你要求时才会联网：更新精简列表或检查应用更新（设置）。绝不会上传任何内容。</string>
     <string name="guide_help_a_problem">打开“备份与恢复”，找到最近的备份并点按“恢复”。如果不确定是哪个应用导致的，请使用“全部恢复”。</string>
     <string name="guide_help_a_reboot">没有 root 时这是正常的：打开 Shizuku 并再次点按“启动”（需要开启 Wi-Fi）。你之前的更改不受影响；只有新的更改才需要 Shizuku。</string>
     <string name="guide_help_a_safe">安全，只要你只处理“推荐”应用并使用“停用”。每次更改前，应用都会保存备份，而关键的系统部分被锁定，永远无法移除。一切都可以撤销。</string>
@@ -382,4 +383,77 @@
     <string name="cache_refreshing">正在更新已清理应用</string>
     <string name="cache_stopped">已停止。结果可能不完整。已完成的清理无法撤销，进行中的清理可能仍会完成。</string>
     <string name="cache_partial">部分测量；不包含无法获取的大小。</string>
+
+    <!-- Optional Settings UI cache clearing -->
+    <string name="cache_clear_method">清理方式</string>
+    <string name="cache_shizuku_method">Shizuku（仅清理缓存命令）</string>
+    <string name="cache_settings_method">设置助手（无障碍）</string>
+    <string name="cache_settings_help">打开 Android 应用设置，像手动操作一样点击所选用户应用或系统应用的清除缓存。无需 Shizuku。遇到无法识别的界面会安全停止。</string>
+    <string name="cache_settings_enable">启用设置助手</string>
+    <string name="cache_settings_enable_help">请在 Android 无障碍设置中启用助手，然后返回并确认清理。启用权限不会开始清理。</string>
+    <string name="cache_settings_warning">助手将控制下列应用的设置，仅点击清除缓存。请保持屏幕解锁，不要触碰设置界面。点击悬浮栏中的取消可停止。应用和账号会保留，但清除的缓存无法备份或恢复。不支持的界面或不确定的结果会停止整批操作。是否继续？</string>
+    <string name="cache_settings_disclosure">可选的无障碍权限允许 Debloater 读取 Android 设置中可见的控件，并仅对您选择且确认的应用点击存储和清除缓存。屏幕内容不会被保存或发送。清理时会一直显示悬浮取消按钮。您可以随时在无障碍设置中禁用此服务。</string>
+    <string name="cache_settings_running">正在清理缓存：%1$s</string>
+
+    <!-- Reviewed app leftovers and recovery -->
+    <string name="leftovers_title">应用残留</string>
+    <string name="leftovers_nav_help">查找已卸载应用留下的文件夹</string>
+    <string name="leftovers_help">查找可能的残留，检查路径后将所选文件夹移到恢复区。不会自动选择或删除任何内容。</string>
+    <string name="leftovers_scope">仅扫描当前用户的主存储空间：Android/data、Android/obb 和 Android/media。已安装、已停用及保留记录的软件包受到保护。跳过未知文件夹和无法访问的区域。</string>
+    <string name="leftovers_scan">扫描应用残留</string>
+    <string name="leftovers_needs_shizuku">扫描和恢复需要 Shizuku 正在运行且已获授权。</string>
+    <string name="leftovers_scan_done">可能的残留文件夹：%1$d</string>
+    <string name="leftovers_stop_help">取消会在当前受限文件操作结束后停止。已完成的操作不会撤销。</string>
+    <string name="leftovers_partial">扫描不完整：部分位置或文件夹无法检查。</string>
+    <string name="leftovers_move">移到恢复区</string>
+    <string name="leftovers_recovery">残留恢复区</string>
+    <string name="leftovers_recovery_help">恢复区将文件保存在共享存储中，不会释放空间。您可以恢复文件，或在检查后逐条永久删除。</string>
+    <string name="leftovers_load_recovery">加载恢复记录</string>
+    <string name="leftovers_restore">恢复文件夹</string>
+    <string name="leftovers_delete">永久删除</string>
+    <string name="leftovers_restore_warning">将此文件夹恢复到原位置？不会覆盖或合并现有文件夹。请暂停其他文件操作。</string>
+    <string name="leftovers_delete_warning">永久删除这些恢复文件以释放空间？其中可能包含个人文件。此操作无法撤销，且不会保留备份。</string>
+    <string name="leftovers_move_warning">这些文件夹可能包含个人文件。请检查所有路径。所选文件夹将移到共享存储中的 .DebloaterRecovery，并记录原位置。可以恢复，但永久删除之前不会释放空间。操作期间请勿安装或卸载应用。是否继续？</string>
+    <string name="leftovers_action_done">已完成：%1$d · 失败：%2$d</string>
+
+    <string name="permissions_ready">Available</string>
+    <string name="permissions_automatic">Granted by Android at installation; no separate permission prompt. This checks authorization, not network connectivity.</string>
+    <string name="permissions_missing">Not available — review setup</string>
+    <string name="permissions_title">Permissions</string>
+    <string name="permissions_usage">Usage Access (optional measurements)</string>
+    <string name="permissions_validate">Validate access</string>
+    <string name="cache_settings_remaining">已处理：%1$d / %2$d · 剩余（含当前）：%3$d</string>
+
+    <string name="ota_title">App updates</string>
+    <string name="ota_help">Check official GitHub releases. Downloads use your connection and continue in Android Downloads. Installation requires Android confirmation; no automatic installation.</string>
+    <string name="ota_check">Check for updates</string>
+    <string name="ota_download">Download update</string>
+    <string name="ota_current">You have the latest version.</string>
+    <string name="ota_error">Update check or download failed. Check your connection and try again.</string>
+    <string name="ota_done">Download complete. Open the Android download notification or the APK in a file manager to install.</string>
+
+    <string name="permissions_auto">通过 Shizuku 配置权限</string>
+    <string name="permissions_auto_help">确认后授予使用情况访问权限，并尝试仅启用缓存助手。保留现有无障碍服务。Android 可能仍要求手动设置。不会开始清理。</string>
+    <string name="permissions_auto_result">设置结果（技术详情可能为英文）</string>
+    <string name="debug_title">调试</string>
+    <string name="debug_help">Debloater 会在本机记录所有工具（精简、恢复、缓存、残留文件、权限设置）的日志、每条 Shizuku 命令、提示消息、错误和崩溃。除非你保存或分享报告，否则不会发送任何内容。报告包含软件包名称和设备信息。</string>
+    <string name="debug_log_size">调试日志大小：%1$s</string>
+    <string name="debug_save_folder">保存到文件夹</string>
+    <string name="debug_choose_folder">选择文件夹</string>
+    <string name="debug_folder">文件夹：%1$s</string>
+    <string name="debug_share">导出 / 分享</string>
+    <string name="debug_clear">清除调试日志</string>
+    <string name="debug_saved">已创建报告：%1$s</string>
+    <string name="debug_failed">无法保存报告：%1$s</string>
+    <string name="debug_working">正在收集日志…</string>
+    <string name="cache_shell_ignored">Android 可能忽略了通过 Shizuku 发送的缓存命令：缓存大小完全没有变化。在部分手机上，shell 用户无权清除缓存。请改用“设置”方式。（如果该应用当时处于打开状态，也可能是它重新写入了缓存。）</string>
+    <string name="cache_fallback_title">Shizuku 未能清除 %1$d 个应用</string>
+    <string name="cache_fallback_help">Android 没有通过 Shizuku 清除这些缓存。请选择改用“设置”方式清除的应用。开始前会显示设置助手的常规警告。</string>
+    <string name="cache_fallback_failed">Shizuku 清除失败</string>
+    <string name="cache_fallback_untried">未尝试：此手机上 Android 忽略了 Shizuku</string>
+    <string name="cache_fallback_use_settings">使用“设置”方式</string>
+    <string name="cache_fallback_not_now">暂不</string>
+    <string name="cache_residue">上次清除后仍剩 %1$s。Android 将其计为缓存，但“清除缓存”没有删除它（或应用立即重新写入）。通常只有清除该应用的存储空间或重新安装才能释放。</string>
+    <string name="cache_residue_folder">共享存储中其缓存文件夹的实际内容（通过 Shizuku 测量）：%1$s</string>
+    <string name="cache_residue_total">上次清除后仍被计入，可能无法通过“清除缓存”删除：%1$s</string>
 </resources>

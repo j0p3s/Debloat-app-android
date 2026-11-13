@@ -294,6 +294,7 @@
     <string name="cache_shared">Общая группа кеша. Все приложения в ней выбираются вместе.</string>
     <string name="cache_log">Журнал команд кеша</string>
     <string name="cache_copy_log">Копировать журнал кеша</string>
+    <string name="copy_log">Копировать журнал</string>
     <string name="cache_confirm_title">Очистить кеш приложений (%1$d)?</string>
     <string name="cache_confirm_help">Удаляется только временный кеш. Данные приложений и аккаунты сохраняются. Очистку кеша нельзя отменить или восстановить из копий. Приложения могут заново создать кеш и в следующий раз открываться медленнее. Измерено кеша: %1$s; реально освобождённый объём может отличаться.</string>
     <string name="cache_scan_done">Сканирование завершено. Не удалось измерить групп кеша: %1$d.</string>
@@ -321,7 +322,7 @@
     <string name="guide_cleanup_uninstall_instead">Удалить вместо этого</string>
     <string name="guide_finish">Начнём</string>
     <string name="guide_help_a_disable_remove">Отключить: приложение остаётся на телефоне, но не может работать. Это безопаснее всего и полностью обратимо, но память не освобождается.\nУдалить: приложение удаляется для вас. С вариантом «Сохранить данные» оно может вернуться точно таким же; с вариантом «Удалить данные» освобождается больше памяти, но данные пропадают.</string>
-    <string name="guide_help_a_privacy">Root не нужен. Интернет используется только когда вы обновляете списки (Настройки), и ничего никуда не отправляется.</string>
+    <string name="guide_help_a_privacy">Root не нужен. Интернет используется только по вашей просьбе: чтобы обновить списки или проверить обновление приложения (Настройки). Ничего никуда не отправляется.</string>
     <string name="guide_help_a_problem">Откройте «Резервные копии и восстановление», найдите последнюю копию и нажмите «Восстановить». Если не знаете, какое приложение виновато, используйте «Восстановить всё».</string>
     <string name="guide_help_a_reboot">Без root это нормально: откройте Shizuku и снова нажмите «Запустить» (Wi-Fi должен быть включён). Ваши изменения не пострадают; Shizuku нужен только для новых изменений.</string>
     <string name="guide_help_a_safe">Да, если ограничиться приложениями «Рекомендуется» и использовать «Отключить». Перед каждым изменением приложение делает резервную копию, а важные части системы заблокированы и не могут быть удалены. Всё можно отменить.</string>
@@ -382,4 +383,77 @@
     <string name="cache_refreshing">Обновление очищенных приложений</string>
     <string name="cache_stopped">Остановлено. Результаты могут быть неполными. Очистка не отменяется; текущая операция может ещё завершиться.</string>
     <string name="cache_partial">Частичные измерения; неизвестные размеры не учитываются.</string>
+
+    <!-- Optional Settings UI cache clearing -->
+    <string name="cache_clear_method">Способ очистки</string>
+    <string name="cache_shizuku_method">Shizuku (только команда очистки кэша)</string>
+    <string name="cache_settings_method">Помощник настроек (спец. возможности)</string>
+    <string name="cache_settings_help">Открывает настройки Android и нажимает Очистить кэш для выбранных пользовательских или системных приложений, как при ручной очистке. Shizuku не нужен. На незнакомом экране работа останавливается.</string>
+    <string name="cache_settings_enable">Включить помощник настроек</string>
+    <string name="cache_settings_enable_help">Включите помощник в специальных возможностях Android, вернитесь и подтвердите очистку. Предоставление доступа не запускает очистку.</string>
+    <string name="cache_settings_warning">Помощник будет управлять настройками перечисленных приложений и нажимать только Очистить кэш. Оставьте экран разблокированным и не трогайте настройки. Для остановки нажмите Отмена на плавающей панели. Приложения и аккаунты сохраняются, но очищенный кэш нельзя скопировать или восстановить. Неизвестные экраны или неопределённые результаты останавливают пакет. Продолжить?</string>
+    <string name="cache_settings_disclosure">Необязательный доступ к специальным возможностям позволяет Debloater читать видимые элементы настроек Android и нажимать Хранилище и Очистить кэш только для выбранных и подтверждённых приложений. Содержимое экрана не сохраняется и не отправляется. При очистке видна плавающая кнопка Отмена. Службу можно отключить в специальных возможностях в любой момент.</string>
+    <string name="cache_settings_running">Очистка кэша: %1$s</string>
+
+    <!-- Reviewed app leftovers and recovery -->
+    <string name="leftovers_title">Остатки приложений</string>
+    <string name="leftovers_nav_help">Найти папки удалённых приложений</string>
+    <string name="leftovers_help">Найдите возможные остатки, проверьте пути и переместите выбранные папки в хранилище восстановления. Автоматического выбора и удаления нет.</string>
+    <string name="leftovers_scope">Только основное хранилище текущего пользователя: Android/data, Android/obb и Android/media. Установленные, отключённые и сохранённые записи пакетов защищены. Неизвестные папки и недоступные области пропускаются.</string>
+    <string name="leftovers_scan">Найти остатки</string>
+    <string name="leftovers_needs_shizuku">Для поиска и восстановления Shizuku должен работать и иметь разрешение.</string>
+    <string name="leftovers_scan_done">Возможных остаточных папок: %1$d</string>
+    <string name="leftovers_stop_help">Отмена останавливает после текущей файловой операции. Выполненные действия не отменяются.</string>
+    <string name="leftovers_partial">Частичное сканирование: некоторые области или папки не удалось проверить.</string>
+    <string name="leftovers_move">Переместить для восстановления</string>
+    <string name="leftovers_recovery">Восстановление остатков</string>
+    <string name="leftovers_recovery_help">Файлы остаются в общем хранилище и не освобождают место. Восстановите их или после проверки удалите отдельные записи навсегда.</string>
+    <string name="leftovers_load_recovery">Загрузить записи восстановления</string>
+    <string name="leftovers_restore">Восстановить папку</string>
+    <string name="leftovers_delete">Удалить навсегда</string>
+    <string name="leftovers_restore_warning">Восстановить папку в исходном месте? Существующие папки не перезаписываются и не объединяются. Приостановите другие файловые операции.</string>
+    <string name="leftovers_delete_warning">Удалить эти файлы навсегда, чтобы освободить место? Они могут содержать личные файлы. Это необратимо, резервной копии не останется.</string>
+    <string name="leftovers_move_warning">В этих папках могут быть личные файлы. Проверьте все пути. Выбранные папки будут перемещены в .DebloaterRecovery в общем хранилище с записью исходных путей. Они восстановимы, но место освободится только после окончательного удаления. Не устанавливайте и не удаляйте приложения во время операции. Продолжить?</string>
+    <string name="leftovers_action_done">Выполнено: %1$d · Ошибок: %2$d</string>
+
+    <string name="permissions_ready">Available</string>
+    <string name="permissions_automatic">Granted by Android at installation; no separate permission prompt. This checks authorization, not network connectivity.</string>
+    <string name="permissions_missing">Not available — review setup</string>
+    <string name="permissions_title">Permissions</string>
+    <string name="permissions_usage">Usage Access (optional measurements)</string>
+    <string name="permissions_validate">Validate access</string>
+    <string name="cache_settings_remaining">Обработано: %1$d / %2$d · Осталось (включая текущее): %3$d</string>
+
+    <string name="ota_title">App updates</string>
+    <string name="ota_help">Check official GitHub releases. Downloads use your connection and continue in Android Downloads. Installation requires Android confirmation; no automatic installation.</string>
+    <string name="ota_check">Check for updates</string>
+    <string name="ota_download">Download update</string>
+    <string name="ota_current">You have the latest version.</string>
+    <string name="ota_error">Update check or download failed. Check your connection and try again.</string>
+    <string name="ota_done">Download complete. Open the Android download notification or the APK in a file manager to install.</string>
+
+    <string name="permissions_auto">Настроить доступ через Shizuku</string>
+    <string name="permissions_auto_help">После подтверждения предоставляет доступ к статистике использования и пытается включить только помощник очистки кэша. Существующие службы специальных возможностей сохраняются. Android может потребовать ручную настройку. Очистка не запускается.</string>
+    <string name="permissions_auto_result">Результаты (технические сведения могут быть на английском)</string>
+    <string name="debug_title">Отладка</string>
+    <string name="debug_help">Debloater записывает на этом телефоне журналы всех инструментов (удаление, восстановление, кеш, остатки, настройка разрешений), все команды Shizuku, сообщения, ошибки и сбои. Ничего не отправляется, пока вы не сохраните отчёт или не поделитесь им. Отчёты содержат имена пакетов и сведения об устройстве.</string>
+    <string name="debug_log_size">Размер журнала отладки: %1$s</string>
+    <string name="debug_save_folder">Сохранить в папку</string>
+    <string name="debug_choose_folder">Выбрать папку</string>
+    <string name="debug_folder">Папка: %1$s</string>
+    <string name="debug_share">Экспорт / поделиться</string>
+    <string name="debug_clear">Очистить журнал отладки</string>
+    <string name="debug_saved">Отчёт создан: %1$s</string>
+    <string name="debug_failed">Не удалось сохранить отчёт: %1$s</string>
+    <string name="debug_working">Сбор журналов…</string>
+    <string name="cache_shell_ignored">Скорее всего, Android проигнорировал команду очистки кеша через Shizuku: размер кеша совсем не изменился. На некоторых телефонах пользователь shell не может очищать кеш. Используйте способ через Настройки. (Если приложение было открыто, оно также могло снова заполнить кеш.)</string>
+    <string name="cache_fallback_title">Shizuku не смог очистить приложений: %1$d</string>
+    <string name="cache_fallback_help">Android не очистил этот кеш через Shizuku. Выберите приложения, которые нужно очистить через Настройки. Перед началом появится обычное предупреждение помощника Настроек.</string>
+    <string name="cache_fallback_failed">Не удалось через Shizuku</string>
+    <string name="cache_fallback_untried">Не обработаны: Android проигнорировал Shizuku на этом телефоне</string>
+    <string name="cache_fallback_use_settings">Очистить через Настройки</string>
+    <string name="cache_fallback_not_now">Не сейчас</string>
+    <string name="cache_residue">После последней очистки осталось %1$s. Android считает это кешем, но «Очистить кеш» его не удалил (или приложение сразу заполнило кеш снова). Обычно освободить место помогает только очистка хранилища приложения или переустановка.</string>
+    <string name="cache_residue_folder">Фактическое содержимое папки кеша в общем хранилище (измерено через Shizuku): %1$s</string>
+    <string name="cache_residue_total">Всё ещё учитывается после последней очистки, вероятно не удаляется через «Очистить кеш»: %1$s</string>
 </resources>

@@ -4,6 +4,9 @@ import android.app.Application
 import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.mutableStateOf
 import io.github.j0p3s.debloater.R
 import io.github.j0p3s.debloater.backup.BackupEntry
 import io.github.j0p3s.debloater.backup.BackupManager
@@ -24,6 +27,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -35,7 +39,7 @@ sealed interface ListUpdateState {
     data class Failed(val message: String) : ListUpdateState
 }
 
-enum class Screen { HOME, DEBLOAT, APP_MANAGER, OPERATION, BACKUPS, SETTINGS, ADL_CHECK, USER_CACHE, SYSTEM_CACHE, CLEANUP, HELP }
+enum class Screen { HOME, DEBLOAT, APP_MANAGER, OPERATION, BACKUPS, SETTINGS, ADL_CHECK, USER_CACHE, SYSTEM_CACHE, CLEANUP, HELP, LEFTOVERS, PERMISSIONS }
 
 /** A request that needs the user's confirmation before it runs. */
 data class PendingOperation(
@@ -54,7 +58,9 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     val repo = PackageRepository(app)
     val backups = BackupManager(app)
     val engine = OperationEngine(repo, backups)
-    val cache = CacheController(app, repo, viewModelScope, { !engine.isRunning }, ::refreshAfterCache)
+    val cache: CacheController = CacheController(app, repo, viewModelScope, ::canRunCache, ::refreshAfterCache)
+    val leftovers: LeftoverController = LeftoverController(repo.userId, viewModelScope) { !engine.isRunning && !cache.busy && !configuringAccess }
+    private fun canRunCache(): Boolean = !engine.isRunning && !leftovers.busy && !configuringAccess
     val prefs = Prefs(app)
     /** Current debloat list (re-read after an in-app update). */
     val database: DebloatDatabase get() = DebloatDatabase.get(getApplication())
@@ -115,6 +121,14 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     fun setManagerSelection(s: Set<String>) { _managerSelection.value = s }
 
     init {
+        // User-visible messages and tool notices are also kept in the debug log (by resource name, language-independent).
+        fun record(tag: String, m: UiMessage?) {
+            if (m != null) io.github.j0p3s.debloater.debug.DebugLog.info(tag,
+                runCatching { getApplication<Application>().resources.getResourceEntryName(m.resource) }.getOrDefault(m.resource.toString()) + " " + m.args)
+        }
+        viewModelScope.launch { message.collect { record("message", it) } }
+        viewModelScope.launch { androidx.compose.runtime.snapshotFlow { cache.notice }.collect { record("cache", it) } }
+        viewModelScope.launch { androidx.compose.runtime.snapshotFlow { leftovers.notice }.collect { record("leftovers", it) } }
         refreshApps()
         refreshSessions()
         maybeAutoUpdateLists()
@@ -139,9 +153,11 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
             _listUpdate.value = try {
                 val report = listUpdater.update { step -> _listUpdate.value = ListUpdateState.Running(step) }
                 refreshApps()
+                io.github.j0p3s.debloater.debug.DebugLog.info("lists", report.results.joinToString("\n") { "${it.name}: ${it.status} ${it.detail}".trim() })
                 if (silent && report.anyUpdated) _message.value = UiMessage(R.string.message_lists_updated, listOf(report.packages))
                 ListUpdateState.Done(report)
             } catch (t: Throwable) {
+                io.github.j0p3s.debloater.debug.DebugLog.error("lists", "List update failed", t)
                 ListUpdateState.Failed(t.message ?: t.toString())
             }
         }
@@ -163,6 +179,39 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
         if (System.currentTimeMillis() - last > 7L * 24 * 60 * 60 * 1000) updateLists(silent = true)
     }
 
+    var configuringAccess by mutableStateOf(false); private set
+    var accessSetupRevision by mutableStateOf(0); private set
+    val accessSetupLog = io.github.j0p3s.debloater.debug.DebugLog.Mirror("access")
+
+    fun configureAccessWithShizuku() {
+        if(configuringAccess || engine.isRunning || cache.busy || leftovers.busy || !ShizukuManager.isReady()) return
+        configuringAccess = true
+        accessSetupLog.clear()
+        viewModelScope.launch {
+            try {
+                val pkg = getApplication<Application>().packageName
+                check(PackageRepository.isValidPackageName(pkg))
+                val user = repo.userId
+                val usage = ShizukuManager.execCache("appops set --user $user $pkg GET_USAGE_STATS allow")
+                accessSetupLog += "Usage Access: ${if(repo.hasUsageAccess()) "OK" else "FAIL ${usage.output}"}"
+                val get = ShizukuManager.execCache("settings --user $user get secure enabled_accessibility_services")
+                check(get.isSuccess) { get.output }
+                val service = "$pkg/${io.github.j0p3s.debloater.cache.SettingsCacheService::class.java.name}"
+                val merged = io.github.j0p3s.debloater.data.PermissionSetupPolicy.addService(get.stdout, service)
+                val write = ShizukuManager.execCache("settings --user $user put secure enabled_accessibility_services '$merged'")
+                check(write.isSuccess) { write.output }
+                val enable = ShizukuManager.execCache("settings --user $user put secure accessibility_enabled 1")
+                check(enable.isSuccess) { enable.output }
+                val connected = kotlinx.coroutines.withTimeoutOrNull(5000) {
+                    io.github.j0p3s.debloater.cache.SettingsCacheService.available.first { it }
+                } == true
+                accessSetupLog += if(connected) "Accessibility: OK (service connected)" else "Accessibility: not connected; manual setup required"
+            } catch(error: kotlinx.coroutines.CancellationException) { throw error }
+            catch(error: Exception) { accessSetupLog += "FAIL: ${error.message}; use manual setup" }
+            finally { configuringAccess = false; accessSetupRevision++ }
+        }
+    }
+
     fun grantUsageAccessWithShizuku() {
         viewModelScope.launch {
             val pkg = getApplication<Application>().packageName
@@ -175,13 +224,13 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     // ------------------------------------------------------------ navigation
 
     fun navigate(screen: Screen) {
-        if (cache.busy) return
+        if (cache.busy || leftovers.busy) return
         _backStack.value = _backStack.value + screen
     }
 
     /** Returns false when there is nothing to go back to. */
     fun back(): Boolean {
-        if (cache.busy) return true
+        if (cache.busy || leftovers.busy) return true
         val stack = _backStack.value
         if (stack.last() == Screen.OPERATION && engine.isRunning) return true
         if (stack.size <= 1) return false
@@ -191,6 +240,73 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun consumeMessage() { _message.value = null }
+
+    // ---------------------------------------------------------------- debug reports
+
+    sealed interface DebugExport {
+        data object Idle : DebugExport
+        data object Working : DebugExport
+        data class Saved(val name: String) : DebugExport
+        data class Failed(val reason: String) : DebugExport
+    }
+    private val _debugExport = MutableStateFlow<DebugExport>(DebugExport.Idle)
+    val debugExport: StateFlow<DebugExport> = _debugExport.asStateFlow()
+    private val _debugLogSize = MutableStateFlow(0L)
+    val debugLogSize: StateFlow<Long> = _debugLogSize.asStateFlow()
+    fun refreshDebugLogSize() { _debugLogSize.value = io.github.j0p3s.debloater.debug.DebugLog.size() }
+
+    private suspend fun debugReport(): String = withContext(Dispatchers.IO) {
+        val app = getApplication<Application>()
+        io.github.j0p3s.debloater.debug.DebugLog.buildReport(app, backups.listLogs(),
+            "Shizuku: ${shizukuStatus.value}, server uid ${ShizukuManager.serverUid.value}\n" +
+                "Usage access: ${runCatching { repo.hasUsageAccess() }.getOrDefault(false)}\n" +
+                "Settings cache assistant connected: ${io.github.j0p3s.debloater.cache.SettingsCacheService.available.value}\n" +
+                "Expert mode: ${prefs.expertMode.value}, keep data: ${prefs.keepData.value}\n" +
+                "Lists: ${if (listUpdater.usesDownloadedLists) "downloaded" else "built-in"}")
+    }
+
+    private fun runDebugExport(block: suspend (String) -> String) {
+        if (_debugExport.value is DebugExport.Working) return
+        _debugExport.value = DebugExport.Working
+        viewModelScope.launch {
+            _debugExport.value = try {
+                DebugExport.Saved(block(debugReport()))
+            } catch (e: kotlinx.coroutines.CancellationException) { throw e }
+            catch (e: Exception) {
+                io.github.j0p3s.debloater.debug.DebugLog.error("debug", "Saving debug report failed", e)
+                DebugExport.Failed(e.message ?: e.javaClass.simpleName)
+            }
+            refreshDebugLogSize()
+        }
+    }
+
+    /** Saves a new report file into the remembered folder. */
+    fun saveDebugReport(folder: android.net.Uri) = runDebugExport { text ->
+        withContext(Dispatchers.IO) { io.github.j0p3s.debloater.debug.DebugLog.saveToTree(getApplication(), folder, text) }
+    }
+
+    /** Writes a report to a private cache file and opens the Android share sheet for it. */
+    fun shareDebugReport(context: android.content.Context) = runDebugExport { text ->
+        val app = getApplication<Application>()
+        val name = io.github.j0p3s.debloater.debug.DebugLog.fileName()
+        val file = withContext(Dispatchers.IO) {
+            val dir = java.io.File(app.cacheDir, "debug-export").apply { deleteRecursively(); mkdirs() }
+            java.io.File(dir, name).apply { writeText(text) }
+        }
+        val uri = androidx.core.content.FileProvider.getUriForFile(app, "${app.packageName}.debugfiles", file)
+        val send = android.content.Intent(android.content.Intent.ACTION_SEND)
+            .setType("text/plain")
+            .putExtra(android.content.Intent.EXTRA_STREAM, uri)
+            .putExtra(android.content.Intent.EXTRA_SUBJECT, name)
+            .addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        context.startActivity(android.content.Intent.createChooser(send, name))
+        name
+    }
+
+    fun clearDebugLog() {
+        viewModelScope.launch(Dispatchers.IO) { io.github.j0p3s.debloater.debug.DebugLog.clear(); refreshDebugLogSize() }
+        _debugExport.value = DebugExport.Idle
+    }
 
     // ------------------------------------------------------------ data
 
@@ -246,7 +362,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     private fun start(apps: List<AppInfo>, action: Action, dryRun: Boolean, keepData: Boolean) {
-        if (engine.isRunning || cache.busy) return
+        if (engine.isRunning || cache.busy || leftovers.busy || configuringAccess) return
         lastRequest = LastRequest.Run(apps.map { it.packageName }, action, keepData)
         if (!dryRun) {
             _debloatSelection.value = emptySet()
@@ -309,7 +425,7 @@ class MainViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     private fun startRestore(items: List<RestoreItem>, dryRun: Boolean, title: String) {
-        if (engine.isRunning || cache.busy) return
+        if (engine.isRunning || cache.busy || leftovers.busy || configuringAccess) return
         lastRequest = LastRequest.Restore(items, title)
         if (_backStack.value.last() != Screen.OPERATION) navigate(Screen.OPERATION)
         viewModelScope.launch {

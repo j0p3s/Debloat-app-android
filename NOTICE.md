@@ -15,5 +15,10 @@ GPL-3.0 app. Anyone redistributing the app must keep the ADL data available unde
 
 Ideas taken from System App Remover (no code copied): marking packages that usually cannot be uninstalled
 on a given ROM, and retrying failed removals with another command (here: Disable).
+The optional Settings cache assistant independently implements the Accessibility-based Settings workflow
+used by [SD Maid SE AppCleaner](https://github.com/d4rken-org/sdmaid-se/tree/main/app-tool-appcleaner).
+No SD Maid source code, translations, documentation or visual assets are bundled.
+The App leftovers tool also independently follows the ownership-checking approach of
+[SD Maid SE CorpseFinder](https://github.com/d4rken-org/sdmaid-se/tree/main/app-tool-corpsefinder), without copying code or forensic data.
 
 To update the UAD-NG and ADL lists run `tools/update_uad_list.sh` and `tools/update_adl_list.sh`.

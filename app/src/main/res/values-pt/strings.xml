@@ -294,6 +294,7 @@
     <string name="cache_shared">Grupo de cache partilhado. Todas as apps listadas são selecionadas em conjunto.</string>
     <string name="cache_log">Registo de comandos de cache</string>
     <string name="cache_copy_log">Copiar o registo de cache</string>
+    <string name="copy_log">Copiar o registo</string>
     <string name="cache_confirm_title">Limpar a cache de %1$d app(s)?</string>
     <string name="cache_confirm_help">Apaga só caches temporárias. Os dados das apps e as contas são mantidos. A eliminação da cache não pode ser desfeita nem restaurada a partir das cópias de debloat. As apps podem reconstruir as caches e abrir mais devagar da próxima vez. Cache medida: %1$s; o espaço realmente libertado pode ser diferente.</string>
     <string name="cache_scan_done">Análise concluída. %1$d grupo(s) de cache não puderam ser medidos.</string>
@@ -321,7 +322,7 @@
     <string name="guide_cleanup_uninstall_instead">Desinstalar em vez disso</string>
     <string name="guide_finish">Vamos lá</string>
     <string name="guide_help_a_disable_remove">Desativar: a app fica no telefone mas não pode ser executada. É o mais seguro e totalmente reversível, mas não liberta espaço.\nRemover: a app é desinstalada para si. Com \"Manter os dados\" pode voltar exatamente como estava; com \"Apagar os dados\" liberta mais espaço, mas os dados desaparecem.</string>
-    <string name="guide_help_a_privacy">Não precisa de root. A internet só é usada quando pede para atualizar as listas de debloat (Definições), e nunca nada é enviado.</string>
+    <string name="guide_help_a_privacy">Não precisa de root. A internet só é usada quando o pede: para atualizar as listas de debloat ou procurar uma atualização da app (Definições). Nunca nada é enviado.</string>
     <string name="guide_help_a_problem">Abra \"Cópias e restauro\", encontre a cópia mais recente e toque em Restaurar. Se não tem a certeza de qual app foi a causa, use \"Restaurar tudo\".</string>
     <string name="guide_help_a_reboot">É normal sem root: abra o Shizuku e toque novamente em Iniciar (o Wi-Fi tem de estar ligado). As suas alterações não são afetadas; só as novas alterações precisam do Shizuku.</string>
     <string name="guide_help_a_safe">Sim, se ficar pelas apps \"Recomendado\" e usar \"Desativar\". Antes de cada alteração a app guarda uma cópia de segurança, e as partes críticas do sistema estão bloqueadas para nunca poderem ser removidas. Tudo pode ser desfeito.</string>
@@ -382,4 +383,77 @@
     <string name="cache_refreshing">A atualizar as apps limpas</string>
     <string name="cache_stopped">Parado. Os resultados podem ser parciais. As limpezas feitas não são anuladas; uma limpeza em curso pode ainda terminar.</string>
     <string name="cache_partial">Medições parciais; os tamanhos indisponíveis não entram no total.</string>
+
+    <!-- Optional Settings UI cache clearing -->
+    <string name="cache_clear_method">Método de limpeza</string>
+    <string name="cache_shizuku_method">Shizuku (comando só de cache)</string>
+    <string name="cache_settings_method">Assistente das Definições (Acessibilidade)</string>
+    <string name="cache_settings_help">Abre as definições Android e prime Limpar cache nas apps do utilizador ou do sistema selecionadas, como faria manualmente. Não precisa de Shizuku. Para em segurança em ecrãs desconhecidos.</string>
+    <string name="cache_settings_enable">Ativar assistente das Definições</string>
+    <string name="cache_settings_enable_help">Ative o assistente nas definições de Acessibilidade do Android, regresse e confirme a limpeza. Ativar o acesso não inicia a limpeza.</string>
+    <string name="cache_settings_warning">O assistente controlará as Definições para as apps abaixo e premirá apenas Limpar cache. Mantenha o ecrã desbloqueado e evite tocar nas Definições. Use Cancelar na barra flutuante para parar. As apps e contas são mantidas, mas a cache limpa não pode ser guardada nem restaurada. Ecrãs incompatíveis ou resultados incertos param o lote. Continuar?</string>
+    <string name="cache_settings_disclosure">O acesso opcional de Acessibilidade permite ao Debloater ler os controlos visíveis das Definições do Android e premir Armazenamento e Limpar cache, apenas para as apps que selecionar e confirmar. O conteúdo do ecrã não é guardado nem enviado. O botão flutuante Cancelar fica visível durante a limpeza. Pode desativar o serviço na Acessibilidade a qualquer momento.</string>
+    <string name="cache_settings_running">A limpar cache: %1$s</string>
+
+    <!-- Reviewed app leftovers and recovery -->
+    <string name="leftovers_title">Resíduos de aplicações</string>
+    <string name="leftovers_nav_help">Encontrar pastas de apps desinstaladas</string>
+    <string name="leftovers_help">Encontre possíveis resíduos, reveja os caminhos e mova as pastas selecionadas para recuperação. Nada é selecionado ou eliminado automaticamente.</string>
+    <string name="leftovers_scope">Só o armazenamento principal do utilizador atual: Android/data, Android/obb e Android/media. As apps instaladas, desativadas e com registos mantidos estão protegidas. Pastas desconhecidas e áreas inacessíveis são ignoradas.</string>
+    <string name="leftovers_scan">Procurar resíduos</string>
+    <string name="leftovers_needs_shizuku">O Shizuku tem de estar ativo e autorizado para análise e recuperação.</string>
+    <string name="leftovers_scan_done">Possíveis pastas residuais: %1$d</string>
+    <string name="leftovers_stop_help">Cancelar para após a operação de ficheiros atual. As ações concluídas não são anuladas.</string>
+    <string name="leftovers_partial">Análise parcial: alguns locais ou pastas não puderam ser verificados.</string>
+    <string name="leftovers_move">Mover para recuperação</string>
+    <string name="leftovers_recovery">Recuperação de resíduos</string>
+    <string name="leftovers_recovery_help">A recuperação mantém os ficheiros no armazenamento partilhado e não liberta espaço. Restaure-os ou elimine os registos individualmente após revisão.</string>
+    <string name="leftovers_load_recovery">Carregar registos de recuperação</string>
+    <string name="leftovers_restore">Restaurar pasta</string>
+    <string name="leftovers_delete">Eliminar permanentemente</string>
+    <string name="leftovers_restore_warning">Restaurar esta pasta para o local original? As pastas existentes nunca são substituídas nem unidas. Suspenda outras operações de ficheiros.</string>
+    <string name="leftovers_delete_warning">Eliminar permanentemente estes ficheiros para libertar espaço? Podem conter ficheiros pessoais. Esta ação é irreversível e não ficará nenhuma cópia de segurança.</string>
+    <string name="leftovers_move_warning">Estas pastas podem conter ficheiros pessoais. Reveja cada caminho. As pastas selecionadas serão movidas para .DebloaterRecovery no armazenamento partilhado, com os locais originais registados. Podem ser recuperadas, mas só a eliminação permanente liberta espaço. Evite instalar ou desinstalar apps durante a operação. Continuar?</string>
+    <string name="leftovers_action_done">Concluídas: %1$d · Falhadas: %2$d</string>
+
+    <string name="permissions_ready">Disponível</string>
+    <string name="permissions_automatic">Concedida pelo Android na instalação, sem pedido separado. Verifica a autorização, não a ligação à Internet.</string>
+    <string name="permissions_missing">Indisponível — reveja a configuração</string>
+    <string name="permissions_title">Permissões</string>
+    <string name="permissions_usage">Acesso à utilização (medições opcionais)</string>
+    <string name="permissions_validate">Validar acesso</string>
+    <string name="cache_settings_remaining">Processadas: %1$d / %2$d · Restantes (incluindo a atual): %3$d</string>
+
+    <string name="ota_title">App updates</string>
+    <string name="ota_help">Check official GitHub releases. Downloads use your connection and continue in Android Downloads. Installation requires Android confirmation; no automatic installation.</string>
+    <string name="ota_check">Check for updates</string>
+    <string name="ota_download">Download update</string>
+    <string name="ota_current">You have the latest version.</string>
+    <string name="ota_error">Update check or download failed. Check your connection and try again.</string>
+    <string name="ota_done">Download complete. Open the Android download notification or the APK in a file manager to install.</string>
+
+    <string name="permissions_auto">Configurar acessos com Shizuku</string>
+    <string name="permissions_auto_help">Após confirmação, conceder Acesso à utilização e tentar ativar apenas o assistente de cache. Os serviços de Acessibilidade existentes são mantidos. O Android pode exigir configuração manual. Isto não inicia a limpeza.</string>
+    <string name="permissions_auto_result">Resultados da configuração (detalhes técnicos podem estar em inglês)</string>
+    <string name="debug_title">Depuração</string>
+    <string name="debug_help">O Debloater regista neste telemóvel os registos de todas as ferramentas (debloat, restauro, cache, restos, configuração de permissões), todos os comandos Shizuku, mensagens, erros e falhas. Nada é enviado a menos que guarde ou partilhe um relatório. Os relatórios incluem nomes de pacotes e detalhes do dispositivo.</string>
+    <string name="debug_log_size">Tamanho do registo de depuração: %1$s</string>
+    <string name="debug_save_folder">Guardar na pasta</string>
+    <string name="debug_choose_folder">Escolher pasta</string>
+    <string name="debug_folder">Pasta: %1$s</string>
+    <string name="debug_share">Exportar / partilhar</string>
+    <string name="debug_clear">Limpar registo de depuração</string>
+    <string name="debug_saved">Relatório criado: %1$s</string>
+    <string name="debug_failed">Não foi possível guardar o relatório: %1$s</string>
+    <string name="debug_working">A recolher registos…</string>
+    <string name="cache_shell_ignored">O Android provavelmente ignorou o comando de cache enviado pelo Shizuku: o tamanho da cache não mudou nada. Em alguns telemóveis, o utilizador shell não pode limpar caches. Use o método Definições. (Se a app estava aberta, também pode ter voltado a encher a cache.)</string>
+    <string name="cache_fallback_title">O Shizuku não conseguiu limpar %1$d app(s)</string>
+    <string name="cache_fallback_help">O Android não limpou estas caches através do Shizuku. Selecione as apps a limpar com o método Definições. O aviso habitual do assistente das Definições aparece antes de começar.</string>
+    <string name="cache_fallback_failed">Falharam com o Shizuku</string>
+    <string name="cache_fallback_untried">Não tentadas: o Android ignorou o Shizuku neste telemóvel</string>
+    <string name="cache_fallback_use_settings">Usar método Definições</string>
+    <string name="cache_fallback_not_now">Agora não</string>
+    <string name="cache_residue">A última limpeza deixou %1$s. O Android conta isto como cache, mas Limpar cache não o removeu (ou a app voltou a enchê-la de imediato). Normalmente só limpar o armazenamento da app ou reinstalá-la liberta este espaço.</string>
+    <string name="cache_residue_folder">Conteúdo real da pasta de cache no armazenamento partilhado (medido com Shizuku): %1$s</string>
+    <string name="cache_residue_total">Ainda indicado após a última limpeza, provavelmente não removível com Limpar cache: %1$s</string>
 </resources>

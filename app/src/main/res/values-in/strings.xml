@@ -294,6 +294,7 @@
     <string name="cache_shared">Grup cache bersama. Semua aplikasi yang tercantum dipilih bersama.</string>
     <string name="cache_log">Log perintah cache</string>
     <string name="cache_copy_log">Salin log cache</string>
+    <string name="copy_log">Salin log</string>
     <string name="cache_confirm_title">Hapus cache %1$d aplikasi?</string>
     <string name="cache_confirm_help">Hanya menghapus cache sementara. Data aplikasi dan akun tetap disimpan. Penghapusan cache tidak bisa diurungkan atau dipulihkan dari cadangan debloat. Aplikasi bisa membangun ulang cache dan terbuka lebih lambat lain kali. Cache terukur: %1$s; ruang yang benar-benar dikosongkan bisa berbeda.</string>
     <string name="cache_scan_done">Pemindaian selesai. %1$d grup cache tidak bisa diukur.</string>
@@ -321,7 +322,7 @@
     <string name="guide_cleanup_uninstall_instead">Uninstall saja</string>
     <string name="guide_finish">Ayo mulai</string>
     <string name="guide_help_a_disable_remove">Nonaktifkan: aplikasi tetap di ponsel tetapi tidak bisa berjalan. Paling aman dan sepenuhnya bisa dikembalikan, tetapi tidak mengosongkan ruang.\nHapus: aplikasi di-uninstall untuk Anda. Dengan \"Simpan data\" aplikasi bisa kembali persis seperti semula; dengan \"Hapus data\" Anda mengosongkan lebih banyak ruang, tetapi datanya hilang.</string>
-    <string name="guide_help_a_privacy">Tidak perlu root. Internet hanya dipakai saat Anda meminta pembaruan daftar debloat (Setelan), dan tidak ada yang pernah diunggah.</string>
+    <string name="guide_help_a_privacy">Tidak perlu root. Internet hanya dipakai saat Anda memintanya: untuk memperbarui daftar debloat atau memeriksa pembaruan aplikasi (Setelan). Tidak ada yang pernah diunggah.</string>
     <string name="guide_help_a_problem">Buka \"Cadangan &amp; pemulihan\", cari cadangan terbaru, dan ketuk Pulihkan. Jika tidak yakin aplikasi mana penyebabnya, gunakan \"Pulihkan semua\".</string>
     <string name="guide_help_a_reboot">Itu normal tanpa root: buka Shizuku dan ketuk Mulai lagi (Wi-Fi harus aktif). Perubahan Anda tidak terpengaruh; hanya perubahan baru yang memerlukan Shizuku.</string>
     <string name="guide_help_a_safe">Ya, jika Anda hanya memilih aplikasi \"Disarankan\" dan memakai \"Nonaktifkan\". Sebelum setiap perubahan, aplikasi menyimpan cadangan, dan bagian penting sistem dikunci sehingga tidak pernah bisa dihapus. Semuanya bisa diurungkan.</string>
@@ -382,4 +383,77 @@
     <string name="cache_refreshing">Memperbarui aplikasi yang dibersihkan</string>
     <string name="cache_stopped">Dihentikan. Hasil mungkin sebagian. Pembersihan selesai tidak dibatalkan; proses berjalan mungkin masih selesai.</string>
     <string name="cache_partial">Pengukuran sebagian; ukuran tidak tersedia tidak dihitung.</string>
+
+    <!-- Optional Settings UI cache clearing -->
+    <string name="cache_clear_method">Metode pembersihan</string>
+    <string name="cache_shizuku_method">Shizuku (perintah khusus cache)</string>
+    <string name="cache_settings_method">Asisten Setelan (Aksesibilitas)</string>
+    <string name="cache_settings_help">Membuka setelan aplikasi Android dan menekan Hapus cache untuk aplikasi pengguna atau sistem yang dipilih, seperti tindakan manual. Tidak perlu Shizuku. Berhenti dengan aman pada layar yang tidak dikenal.</string>
+    <string name="cache_settings_enable">Aktifkan asisten Setelan</string>
+    <string name="cache_settings_enable_help">Aktifkan asisten di setelan Aksesibilitas Android, kembali ke sini lalu konfirmasi pembersihan. Mengaktifkan akses tidak memulai pembersihan.</string>
+    <string name="cache_settings_warning">Asisten akan mengontrol Setelan untuk aplikasi di bawah dan hanya menekan Hapus cache. Biarkan layar terbuka dan jangan sentuh Setelan. Tekan Batal pada bilah mengambang untuk berhenti. Aplikasi dan akun tetap tersimpan, tetapi cache yang dihapus tidak dapat dicadangkan atau dipulihkan. Layar yang tidak didukung atau hasil tidak pasti menghentikan seluruh proses. Lanjutkan?</string>
+    <string name="cache_settings_disclosure">Akses Aksesibilitas opsional memungkinkan Debloater membaca kontrol Setelan Android yang terlihat dan menekan Penyimpanan serta Hapus cache, hanya untuk aplikasi yang Anda pilih dan konfirmasi. Isi layar tidak disimpan atau dikirim. Tombol Batal mengambang tetap terlihat selama pembersihan. Anda dapat menonaktifkan layanan kapan saja di setelan Aksesibilitas.</string>
+    <string name="cache_settings_running">Menghapus cache: %1$s</string>
+
+    <!-- Reviewed app leftovers and recovery -->
+    <string name="leftovers_title">Sisa aplikasi</string>
+    <string name="leftovers_nav_help">Temukan folder dari aplikasi yang dihapus</string>
+    <string name="leftovers_help">Temukan kemungkinan sisa, periksa jalurnya, lalu pindahkan folder pilihan ke pemulihan. Tidak ada yang dipilih atau dihapus secara otomatis.</string>
+    <string name="leftovers_scope">Hanya penyimpanan utama pengguna saat ini: Android/data, Android/obb dan Android/media. Paket terpasang, nonaktif dan catatan yang dipertahankan dilindungi. Folder tidak dikenal dan area yang tidak dapat diakses dilewati.</string>
+    <string name="leftovers_scan">Pindai sisa aplikasi</string>
+    <string name="leftovers_needs_shizuku">Shizuku harus aktif dan diizinkan untuk pemindaian dan pemulihan.</string>
+    <string name="leftovers_scan_done">Kemungkinan folder sisa: %1$d</string>
+    <string name="leftovers_stop_help">Batal menghentikan setelah operasi berkas terbatas saat ini. Tindakan selesai tidak dibatalkan.</string>
+    <string name="leftovers_partial">Pemindaian sebagian: beberapa lokasi atau folder tidak dapat diperiksa.</string>
+    <string name="leftovers_move">Pindahkan ke pemulihan</string>
+    <string name="leftovers_recovery">Pemulihan sisa</string>
+    <string name="leftovers_recovery_help">Pemulihan menyimpan berkas di penyimpanan bersama dan tidak mengosongkan ruang. Pulihkan atau hapus permanen setiap catatan setelah ditinjau.</string>
+    <string name="leftovers_load_recovery">Muat catatan pemulihan</string>
+    <string name="leftovers_restore">Pulihkan folder</string>
+    <string name="leftovers_delete">Hapus permanen</string>
+    <string name="leftovers_restore_warning">Pulihkan folder ini ke lokasi asal? Folder yang ada tidak pernah ditimpa atau digabungkan. Jeda operasi berkas lain.</string>
+    <string name="leftovers_delete_warning">Hapus permanen berkas pemulihan ini untuk mengosongkan ruang? Berkas pribadi mungkin ada di dalamnya. Ini tidak dapat dibatalkan dan tidak ada cadangan yang tersisa.</string>
+    <string name="leftovers_move_warning">Folder ini mungkin berisi berkas pribadi. Periksa setiap jalur. Folder pilihan akan dipindahkan ke .DebloaterRecovery di penyimpanan bersama dengan lokasi asal dicatat. Berkas dapat dipulihkan, tetapi ruang baru kosong setelah penghapusan permanen. Jangan memasang atau menghapus aplikasi selama operasi. Lanjutkan?</string>
+    <string name="leftovers_action_done">Selesai: %1$d · Gagal: %2$d</string>
+
+    <string name="permissions_ready">Available</string>
+    <string name="permissions_automatic">Granted by Android at installation; no separate permission prompt. This checks authorization, not network connectivity.</string>
+    <string name="permissions_missing">Not available — review setup</string>
+    <string name="permissions_title">Permissions</string>
+    <string name="permissions_usage">Usage Access (optional measurements)</string>
+    <string name="permissions_validate">Validate access</string>
+    <string name="cache_settings_remaining">Diproses: %1$d / %2$d · Tersisa (termasuk saat ini): %3$d</string>
+
+    <string name="ota_title">App updates</string>
+    <string name="ota_help">Check official GitHub releases. Downloads use your connection and continue in Android Downloads. Installation requires Android confirmation; no automatic installation.</string>
+    <string name="ota_check">Check for updates</string>
+    <string name="ota_download">Download update</string>
+    <string name="ota_current">You have the latest version.</string>
+    <string name="ota_error">Update check or download failed. Check your connection and try again.</string>
+    <string name="ota_done">Download complete. Open the Android download notification or the APK in a file manager to install.</string>
+
+    <string name="permissions_auto">Atur akses dengan Shizuku</string>
+    <string name="permissions_auto_help">Setelah konfirmasi, berikan akses penggunaan dan coba aktifkan hanya asisten cache. Layanan Aksesibilitas yang ada dipertahankan. Android mungkin memerlukan pengaturan manual. Pembersihan tidak dimulai.</string>
+    <string name="permissions_auto_result">Hasil (detail teknis mungkin dalam bahasa Inggris)</string>
+    <string name="debug_title">Debug</string>
+    <string name="debug_help">Debloater mencatat log semua alat (debloat, pemulihan, cache, sisa file, penyiapan izin), setiap perintah Shizuku, pesan, error, dan crash di ponsel ini. Tidak ada yang dikirim kecuali Anda menyimpan atau membagikan laporan. Laporan berisi nama paket dan detail perangkat.</string>
+    <string name="debug_log_size">Ukuran log debug: %1$s</string>
+    <string name="debug_save_folder">Simpan ke folder</string>
+    <string name="debug_choose_folder">Pilih folder</string>
+    <string name="debug_folder">Folder: %1$s</string>
+    <string name="debug_share">Ekspor / bagikan</string>
+    <string name="debug_clear">Hapus log debug</string>
+    <string name="debug_saved">Laporan dibuat: %1$s</string>
+    <string name="debug_failed">Tidak dapat menyimpan laporan: %1$s</string>
+    <string name="debug_working">Mengumpulkan log…</string>
+    <string name="cache_shell_ignored">Android kemungkinan mengabaikan perintah cache yang dikirim melalui Shizuku: ukuran cache sama sekali tidak berubah. Di beberapa ponsel pengguna shell tidak boleh menghapus cache. Gunakan metode Setelan. (Jika aplikasi sedang terbuka, aplikasi itu juga mungkin mengisi ulang cache-nya.)</string>
+    <string name="cache_fallback_title">Shizuku tidak dapat menghapus %1$d aplikasi</string>
+    <string name="cache_fallback_help">Android tidak menghapus cache ini melalui Shizuku. Pilih aplikasi yang akan dihapus dengan metode Setelan. Peringatan asisten Setelan yang biasa muncul sebelum dimulai.</string>
+    <string name="cache_fallback_failed">Gagal dengan Shizuku</string>
+    <string name="cache_fallback_untried">Tidak dicoba: Android mengabaikan Shizuku di ponsel ini</string>
+    <string name="cache_fallback_use_settings">Gunakan metode Setelan</string>
+    <string name="cache_fallback_not_now">Nanti saja</string>
+    <string name="cache_residue">Pembersihan terakhir menyisakan %1$s. Android menghitungnya sebagai cache, tetapi Hapus cache tidak menghapusnya (atau aplikasi langsung mengisinya lagi). Biasanya hanya menghapus penyimpanan aplikasi atau memasang ulang yang membebaskan ruang ini.</string>
+    <string name="cache_residue_folder">Isi sebenarnya folder cache di penyimpanan bersama (diukur dengan Shizuku): %1$s</string>
+    <string name="cache_residue_total">Masih dihitung setelah pembersihan terakhir, kemungkinan tidak bisa dihapus dengan Hapus cache: %1$s</string>
 </resources>

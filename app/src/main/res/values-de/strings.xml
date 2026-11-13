@@ -294,6 +294,7 @@
     <string name="cache_shared">Gemeinsame Cache-Gruppe. Alle aufgeführten Apps werden zusammen ausgewählt.</string>
     <string name="cache_log">Cache-Befehlsprotokoll</string>
     <string name="cache_copy_log">Cache-Protokoll kopieren</string>
+    <string name="copy_log">Protokoll kopieren</string>
     <string name="cache_confirm_title">Caches von %1$d App(s) leeren?</string>
     <string name="cache_confirm_help">Nur temporäre Caches werden gelöscht. App-Daten und Konten bleiben erhalten. Das Leeren ist nicht rückgängig zu machen; Debloat-Sicherungen stellen keine Caches wieder her. Apps können Caches neu aufbauen und langsamer starten. Gemessener Cache: %1$s; freigegebener Speicher kann abweichen.</string>
     <string name="cache_scan_done">Scan abgeschlossen. %1$d Cache-Gruppe(n) konnten nicht gemessen werden.</string>
@@ -321,7 +322,7 @@
     <string name="guide_cleanup_uninstall_instead">Stattdessen deinstallieren</string>
     <string name="guide_finish">Los geht\'s</string>
     <string name="guide_help_a_disable_remove">Deaktivieren: Die App bleibt auf dem Handy, kann aber nicht laufen. Am sichersten und vollständig umkehrbar, gibt aber keinen Speicher frei.\nEntfernen: Die App wird für Sie deinstalliert. Mit „App-Daten behalten“ kann sie genau wie vorher zurückkommen; mit „App-Daten löschen“ geben Sie mehr Speicher frei, aber die Daten sind weg.</string>
-    <string name="guide_help_a_privacy">Kein Root. Das Internet wird nur genutzt, wenn Sie die Debloat-Listen aktualisieren (Einstellungen), und es wird nie etwas hochgeladen.</string>
+    <string name="guide_help_a_privacy">Kein Root. Das Internet wird nur genutzt, wenn Sie es verlangen: zum Aktualisieren der Debloat-Listen oder zur Suche nach einem App-Update (Einstellungen). Es wird nie etwas hochgeladen.</string>
     <string name="guide_help_a_problem">Öffnen Sie „Sichern und wiederherstellen“, suchen Sie die neueste Sicherung und tippen Sie auf Wiederherstellen. Wenn Sie nicht wissen, welche App die Ursache war, verwenden Sie „Alles wiederherstellen“.</string>
     <string name="guide_help_a_reboot">Das ist ohne Root normal: Öffnen Sie Shizuku und tippen Sie erneut auf Starten (WLAN muss an sein). Ihre Änderungen sind nicht betroffen; nur neue Änderungen brauchen Shizuku.</string>
     <string name="guide_help_a_safe">Ja, wenn Sie bei den „Empfohlen“-Apps bleiben und „Deaktivieren“ verwenden. Vor jeder Änderung erstellt die App eine Sicherung, und kritische Systemteile sind gesperrt, damit sie nie entfernt werden können. Alles lässt sich rückgängig machen.</string>
@@ -382,4 +383,77 @@
     <string name="cache_refreshing">Geleerte Apps aktualisieren</string>
     <string name="cache_stopped">Gestoppt. Ergebnisse können unvollständig sein. Bereits geleerte Caches bleiben gelöscht; laufendes Leeren kann noch enden.</string>
     <string name="cache_partial">Teilweise Messung; unbekannte Größen sind ausgeschlossen.</string>
+
+    <!-- Optional Settings UI cache clearing -->
+    <string name="cache_clear_method">Bereinigungsmethode</string>
+    <string name="cache_shizuku_method">Shizuku (nur Cache-Befehl)</string>
+    <string name="cache_settings_method">Einstellungsassistent (Bedienungshilfen)</string>
+    <string name="cache_settings_help">Öffnet die Android-Einstellungen und drückt Cache leeren für ausgewählte Benutzer- oder System-Apps, wie bei manueller Bedienung. Shizuku ist nicht nötig. Unbekannte Ansichten stoppen den Ablauf.</string>
+    <string name="cache_settings_enable">Einstellungsassistent aktivieren</string>
+    <string name="cache_settings_enable_help">Aktiviere den Assistenten in den Android-Bedienungshilfen, kehre zurück und bestätige die Bereinigung. Das Aktivieren startet keine Bereinigung.</string>
+    <string name="cache_settings_warning">Der Assistent steuert die Einstellungen für die unten aufgeführten Apps und drückt nur Cache leeren. Lass den Bildschirm entsperrt und berühre die Einstellungen nicht. Mit Abbrechen in der schwebenden Leiste kannst du stoppen. Apps und Konten bleiben erhalten, geleerter Cache lässt sich jedoch nicht sichern oder wiederherstellen. Unbekannte Ansichten oder unsichere Ergebnisse stoppen den Stapel. Fortfahren?</string>
+    <string name="cache_settings_disclosure">Der optionale Zugriff auf Bedienungshilfen erlaubt Debloater, sichtbare Android-Einstellungen zu lesen und Speicher sowie Cache leeren zu drücken, nur für ausgewählte und bestätigte Apps. Bildschirminhalte werden nicht gespeichert oder gesendet. Während der Bereinigung bleibt eine schwebende Abbrechen-Schaltfläche sichtbar. Du kannst den Dienst jederzeit in den Bedienungshilfen deaktivieren.</string>
+    <string name="cache_settings_running">Cache wird geleert: %1$s</string>
+
+    <!-- Reviewed app leftovers and recovery -->
+    <string name="leftovers_title">App-Reste</string>
+    <string name="leftovers_nav_help">Ordner deinstallierter Apps finden</string>
+    <string name="leftovers_help">Finde mögliche Reste, prüfe die Pfade und verschiebe ausgewählte Ordner zur Wiederherstellung. Nichts wird automatisch ausgewählt oder gelöscht.</string>
+    <string name="leftovers_scope">Nur der primäre Speicher des aktuellen Nutzers: Android/data, Android/obb und Android/media. Installierte, deaktivierte und als Paketdatensatz erhaltene Apps sind geschützt. Unbekannte Ordner und unzugängliche Bereiche werden übersprungen.</string>
+    <string name="leftovers_scan">App-Reste suchen</string>
+    <string name="leftovers_needs_shizuku">Shizuku muss für Suche und Wiederherstellung laufen und autorisiert sein.</string>
+    <string name="leftovers_scan_done">Mögliche Restordner: %1$d</string>
+    <string name="leftovers_stop_help">Abbrechen stoppt nach dem laufenden Dateivorgang. Abgeschlossene Aktionen werden nicht rückgängig gemacht.</string>
+    <string name="leftovers_partial">Unvollständige Suche: Einige Orte oder Ordner konnten nicht geprüft werden.</string>
+    <string name="leftovers_move">Zur Wiederherstellung verschieben</string>
+    <string name="leftovers_recovery">Wiederherstellung von App-Resten</string>
+    <string name="leftovers_recovery_help">Die Wiederherstellung bewahrt Dateien im gemeinsamen Speicher auf und gibt keinen Platz frei. Stelle sie wieder her oder lösche einzelne Einträge nach Prüfung endgültig.</string>
+    <string name="leftovers_load_recovery">Wiederherstellungseinträge laden</string>
+    <string name="leftovers_restore">Ordner wiederherstellen</string>
+    <string name="leftovers_delete">Endgültig löschen</string>
+    <string name="leftovers_restore_warning">Diesen Ordner am ursprünglichen Ort wiederherstellen? Vorhandene Ordner werden nie überschrieben oder zusammengeführt. Pausiere andere Dateivorgänge.</string>
+    <string name="leftovers_delete_warning">Diese Dateien endgültig löschen, um Platz freizugeben? Sie können persönliche Dateien enthalten. Dies ist unwiderruflich und es bleibt keine Sicherung.</string>
+    <string name="leftovers_move_warning">Diese Ordner können persönliche Dateien enthalten. Prüfe jeden Pfad. Ausgewählte Ordner werden mit gespeicherten Ursprungsorten nach .DebloaterRecovery im gemeinsamen Speicher verschoben. Sie sind wiederherstellbar, geben aber erst nach endgültigem Löschen Platz frei. Installiere oder deinstalliere währenddessen keine Apps. Fortfahren?</string>
+    <string name="leftovers_action_done">Abgeschlossen: %1$d · Fehlgeschlagen: %2$d</string>
+
+    <string name="permissions_ready">Available</string>
+    <string name="permissions_automatic">Granted by Android at installation; no separate permission prompt. This checks authorization, not network connectivity.</string>
+    <string name="permissions_missing">Not available — review setup</string>
+    <string name="permissions_title">Permissions</string>
+    <string name="permissions_usage">Usage Access (optional measurements)</string>
+    <string name="permissions_validate">Validate access</string>
+    <string name="cache_settings_remaining">Bearbeitet: %1$d / %2$d · Verbleibend (einschließlich aktueller App): %3$d</string>
+
+    <string name="ota_title">App updates</string>
+    <string name="ota_help">Check official GitHub releases. Downloads use your connection and continue in Android Downloads. Installation requires Android confirmation; no automatic installation.</string>
+    <string name="ota_check">Check for updates</string>
+    <string name="ota_download">Download update</string>
+    <string name="ota_current">You have the latest version.</string>
+    <string name="ota_error">Update check or download failed. Check your connection and try again.</string>
+    <string name="ota_done">Download complete. Open the Android download notification or the APK in a file manager to install.</string>
+
+    <string name="permissions_auto">Zugriffe mit Shizuku einrichten</string>
+    <string name="permissions_auto_help">Nach Bestätigung wird der Nutzungszugriff gewährt und nur der Cache-Assistent zu aktivieren versucht. Vorhandene Bedienungshilfen bleiben erhalten. Android kann manuelle Einrichtung verlangen. Die Bereinigung startet nicht.</string>
+    <string name="permissions_auto_result">Ergebnisse (technische Details können auf Englisch sein)</string>
+    <string name="debug_title">Debug</string>
+    <string name="debug_help">Debloater speichert auf diesem Telefon Protokolle aller Werkzeuge (Debloat, Wiederherstellung, Cache, Überreste, Berechtigungseinrichtung), jeden Shizuku-Befehl, Meldungen, Fehler und Abstürze. Es wird nichts gesendet, außer Sie speichern oder teilen einen Bericht. Berichte enthalten Paketnamen und Gerätedetails.</string>
+    <string name="debug_log_size">Größe des Debug-Protokolls: %1$s</string>
+    <string name="debug_save_folder">In Ordner speichern</string>
+    <string name="debug_choose_folder">Ordner wählen</string>
+    <string name="debug_folder">Ordner: %1$s</string>
+    <string name="debug_share">Exportieren / teilen</string>
+    <string name="debug_clear">Debug-Protokoll löschen</string>
+    <string name="debug_saved">Bericht erstellt: %1$s</string>
+    <string name="debug_failed">Bericht konnte nicht gespeichert werden: %1$s</string>
+    <string name="debug_working">Protokolle werden gesammelt…</string>
+    <string name="cache_shell_ignored">Android hat den über Shizuku gesendeten Cache-Befehl wahrscheinlich ignoriert: Die Cache-Größe hat sich gar nicht geändert. Auf manchen Telefonen darf der Shell-Benutzer keine Caches leeren. Verwenden Sie die Einstellungen-Methode. (War die App geöffnet, kann sie ihren Cache auch wieder gefüllt haben.)</string>
+    <string name="cache_fallback_title">Shizuku konnte %1$d App(s) nicht leeren</string>
+    <string name="cache_fallback_help">Android hat diese Caches über Shizuku nicht geleert. Wählen Sie die Apps, die stattdessen mit der Einstellungen-Methode geleert werden sollen. Vor dem Start folgt die übliche Warnung des Einstellungen-Assistenten.</string>
+    <string name="cache_fallback_failed">Mit Shizuku fehlgeschlagen</string>
+    <string name="cache_fallback_untried">Nicht versucht: Android hat Shizuku auf diesem Telefon ignoriert</string>
+    <string name="cache_fallback_use_settings">Einstellungen-Methode verwenden</string>
+    <string name="cache_fallback_not_now">Nicht jetzt</string>
+    <string name="cache_residue">Die letzte Bereinigung hat %1$s übrig gelassen. Android zählt das als Cache, aber Cache leeren hat es nicht entfernt (oder die App hat ihn sofort wieder gefüllt). Meist gibt nur das Löschen des App-Speichers oder eine Neuinstallation den Platz frei.</string>
+    <string name="cache_residue_folder">Tatsächlicher Inhalt ihres Cache-Ordners im gemeinsamen Speicher (mit Shizuku gemessen): %1$s</string>
+    <string name="cache_residue_total">Nach der letzten Bereinigung noch gemeldet, wahrscheinlich nicht mit Cache leeren entfernbar: %1$s</string>
 </resources>
