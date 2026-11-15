@@ -4,6 +4,8 @@
 - Maintain Debloater (Shizuku debloating with backups). Recent work: cache clearing on the user's phone (RedMagic OS 11 / Android 16), the Debug log tool, and a text/layout review (1.12.9).
 
 ## Current status
+
+- 1.30.0 is the only published release. Earlier release builds (1.10.0 to 1.12.9) were deleted from GitHub Releases for security reasons; their tags were removed too (commits remain).
 - **1.12.9 / versionCode 34 is published** (release v1.12.9, APK `Debloater-v1.12.9.apk`, commit `61a4037`, workflow run 121 green). It is a text and layout review with no behaviour change; details in `docs/RELEASE-1.12.9.md`.
 - **PR #19** (`ccr-d8c5609f-bq6ov9` → `main`, "Bring main up to date with v1.12.9") is open; the user marked it ready for review on 2026-11-13. CI is green. Only the user merges it. After a merge, keep working on this branch as before (never force-push).
 - 1.12.9 layout changes were compiled, linted and unit-tested only. **Nobody has looked at them on a device**: ask the user for screenshots of Home, Cache scanner, App leftovers and a dark-mode operation result.

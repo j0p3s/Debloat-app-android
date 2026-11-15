@@ -4,6 +4,7 @@
 
 - Add a start-up screen asking for support, with a **Buy me a coffee** link and a **Continue** button. It shows once per app start.
 - Translate the new screen into all 11 supported languages.
+- Security: all earlier release builds (1.10.0 to 1.12.9) were removed from the GitHub Releases page; 1.30.0 is the only published build.
 
 ## 1.12.9 — 2026-11-10
 
