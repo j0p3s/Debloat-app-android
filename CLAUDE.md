@@ -23,7 +23,7 @@ CI (`.github/workflows/build.yml`) runs the same order: translations â†’ tests â
 - Never produce or hand out a locally signed release APK, and never generate a new keystore. Release signing happens only in CI from the `ANDROID_KEYSTORE_BASE64`/`ANDROID_KEYSTORE_PASSWORD` secrets; the certificate is pinned in `config/release-certificate.sha256`. `preReleaseBuild` deliberately fails when credentials are missing.
 - Debug builds use the `io.github.j0p3s.debloater.debug` app ID so they coexist with the release app.
 - Release: bump `versionCode`/`versionName` in `app/build.gradle.kts`, add `docs/RELEASE-<versionName>.md` (CI fails without it; it becomes the release notes), add a `CHANGELOG.md` entry and update the README "Current release" links. Then trigger the "Build APK" workflow with `publish_release=true` (pushing tags is blocked by the session git proxy).
-- Work happens on `ccr-d8c5609f-bq6ov9`, not `main` (stale). Other sessions push there too: pull first, never force-push.
+- Work happens on `main` (the former `ccr-d8c5609f-bq6ov9` branch was merged in PR #19). Pull first and never force-push.
 
 ## Architecture
 

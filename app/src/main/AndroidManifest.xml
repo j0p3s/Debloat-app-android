@@ -16,6 +16,9 @@
         android:name="android.permission.PACKAGE_USAGE_STATS"
         tools:ignore="ProtectedPermissions" />
 
+    <!-- Lets Debloater hand its downloaded update APK to Android's installer (the user still confirms). -->
+    <uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES" />
+
     <queries>
         <package android:name="moe.shizuku.privileged.api" />
         <package android:name="com.android.settings" />

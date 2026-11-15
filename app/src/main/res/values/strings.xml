@@ -385,6 +385,10 @@
     <string name="cache_refreshing">Refreshing cleared apps</string>
     <string name="cache_stopped">Stopped. Results may be partial. Completed clears are not undone; an in-flight clear may still finish.</string>
     <string name="cache_partial">Partial measurements; unavailable sizes are excluded.</string>
+    <string name="splash_support_title">Support the developer</string>
+    <string name="splash_support_text">Debloater is free and open source. If it helped you, you can support its development by buying me a coffee.</string>
+    <string name="splash_coffee">Buy me a coffee</string>
+    <string name="splash_continue">Continue</string>
 
     <!-- Optional Settings UI cache clearing -->
     <string name="cache_clear_method">Clearing method</string>
@@ -432,7 +436,7 @@
     <string name="ota_download">Download update</string>
     <string name="ota_current">You have the latest version.</string>
     <string name="ota_error">Update check or download failed. Check your connection and try again.</string>
-    <string name="ota_done">Download complete. Open the Android download notification or the APK in a file manager to install.</string>
+    <string name="ota_done">Download complete. Tap Install to update Debloater.</string>
 
     <string name="permissions_auto">Set up access with Shizuku</string>
     <string name="permissions_auto_help">After confirmation, grant Usage Access and try enabling only the cache assistant. Existing Accessibility services are preserved. Android may require manual setup. This does not start cleaning.</string>
@@ -458,4 +462,9 @@
     <string name="cache_residue">Last clear left %1$s. Android counts this as cache, but Clear cache did not remove it (or the app refilled it at once). Usually only clearing the app’s storage or reinstalling frees it.</string>
     <string name="cache_residue_folder">Real content of its cache folder on shared storage (measured with Shizuku): %1$s</string>
     <string name="cache_residue_total">Still reported after the last clear, likely not removable with Clear cache: %1$s</string>
+    <string name="splash_dont_show">Don\'t show this screen again</string>
+    <string name="ota_install">Install</string>
+    <string name="ota_install_permission">Allow Debloater to install apps in the Android settings that just opened, then come back and tap Install again.</string>
+    <string name="ota_file_missing">Downloaded file not found</string>
+    <string name="ota_download_error">Android download error: %1$d</string>
 </resources>

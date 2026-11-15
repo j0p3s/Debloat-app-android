@@ -1,5 +1,31 @@
 # Changelog
 
+## 1.34.0 — 2026-11-15
+
+- **Language fixes:** the Permissions screen and the App updates card (including its error messages) were still in English in most languages. They are now translated in all 11 supported languages, and the Indonesian "Uninstall" label too.
+- Settings now starts with a **Support the developer** section with a **Buy me a coffee** button.
+- Operation logs, saved backup data and shell commands stay in English by design.
+- Security: 1.34.0 is the only build published on the GitHub Releases page; all earlier release builds were removed. Older entries below are kept as history only.
+
+- Settings now starts with a **Support the developer** section with a **Buy me a coffee** button.
+
+## 1.32.0 — 2026-11-15
+
+- **Install button for app updates:** once an update has finished downloading in Settings → App updates, an **Install** button opens Android's installer. If Android has not yet allowed Debloater to install apps, the button opens that setting first and asks you to tap Install again. The button disappears once the downloaded version is installed.
+- New permission `REQUEST_INSTALL_PACKAGES`, used only to hand the downloaded update to Android's installer. You still confirm the installation, and Android only accepts an update signed with the same key.
+- Translated into all 11 supported languages.
+
+## 1.31.0 — 2026-11-15
+
+- The support screen now appears once after each install or update instead of at every start, and has a **Don't show this screen again** checkbox.
+- Add a **Buy me a coffee** button to the top bar and the bottom of the Home screen.
+
+## 1.30.0 — 2026-11-15
+
+- Add a start-up screen asking for support, with a **Buy me a coffee** link and a **Continue** button. It shows once per app start.
+- Translate the new screen into all 11 supported languages.
+- Security: all earlier release builds (1.10.0 to 1.12.9) were removed from the GitHub Releases page; 1.30.0 is the only published build.
+
 ## 1.12.9 — 2026-11-10
 
 Text and layout review; no behaviour change in debloat, restore or cleaning.

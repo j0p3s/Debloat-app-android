@@ -1,6 +1,8 @@
 # Debloater (Shizuku)
 
-**Current release: [1.12.9](https://github.com/j0p3s/Debloat-app-android/releases/tag/v1.12.9)** · [Download APK](https://github.com/j0p3s/Debloat-app-android/releases/download/v1.12.9/Debloater-v1.12.9.apk) · [Release notes](docs/RELEASE-1.12.9.md) · [Changelog](CHANGELOG.md)
+**Current release: [1.34.0](https://github.com/j0p3s/Debloat-app-android/releases/tag/v1.34.0)** · [Download APK](https://github.com/j0p3s/Debloat-app-android/releases/download/v1.34.0/Debloater-v1.34.0.apk) · [Release notes](docs/RELEASE-1.34.0.md) · [Changelog](CHANGELOG.md)
+
+> **Notice:** for security reasons, all earlier release builds (1.10.0 to 1.32.0) were removed from the Releases page. **1.34.0 is the only available build.** Download APKs only from this repository's Releases page. The source history of earlier versions remains in git.
 
 An Android app that debloats **any Android version from Android 11 to Android 17** without root, using
 [Shizuku](https://shizuku.rikka.app/). It also works as a normal app manager, so you can remove any user app.
@@ -17,6 +19,9 @@ An Android app that debloats **any Android version from Android 11 to Android 17
   setup steps with buttons for each one. **Clean up my phone** (first entry on the home screen) lists the
   Recommended apps for this phone, preselected, with Test and Disable as the main actions. A **Help** page
   (question-mark icon) answers common questions in plain language and can show the welcome again.
+- **Support screen**: a start-up screen, shown after you install or update the app, asks for support and links to
+  [Buy Me a Coffee](https://buymeacoffee.com/j0p3s). Tick **Don't show this screen again** to hide it for good.
+  The Home screen also has a **Buy me a coffee** button in the top bar and at the bottom.
 - **Compact dashboard**: device and storage information lead the home screen, followed by grouped
   navigation and tier statistics. The getting-started guide and secondary settings expand on demand.
   Light and dark themes use an emerald palette; selected apps have a tinted background.

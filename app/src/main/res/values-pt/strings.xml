@@ -383,6 +383,10 @@
     <string name="cache_refreshing">A atualizar as apps limpas</string>
     <string name="cache_stopped">Parado. Os resultados podem ser parciais. As limpezas feitas não são anuladas; uma limpeza em curso pode ainda terminar.</string>
     <string name="cache_partial">Medições parciais; os tamanhos indisponíveis não entram no total.</string>
+    <string name="splash_support_title">Apoiar o programador</string>
+    <string name="splash_support_text">O Debloater é gratuito e de código aberto. Se te foi útil, podes apoiar o desenvolvimento a pagar-me um café.</string>
+    <string name="splash_coffee">Paga-me um café</string>
+    <string name="splash_continue">Continuar</string>
 
     <!-- Optional Settings UI cache clearing -->
     <string name="cache_clear_method">Método de limpeza</string>
@@ -424,13 +428,13 @@
     <string name="permissions_validate">Validar acesso</string>
     <string name="cache_settings_remaining">Processadas: %1$d / %2$d · Restantes (incluindo a atual): %3$d</string>
 
-    <string name="ota_title">App updates</string>
-    <string name="ota_help">Check official GitHub releases. Downloads use your connection and continue in Android Downloads. Installation requires Android confirmation; no automatic installation.</string>
-    <string name="ota_check">Check for updates</string>
-    <string name="ota_download">Download update</string>
-    <string name="ota_current">You have the latest version.</string>
-    <string name="ota_error">Update check or download failed. Check your connection and try again.</string>
-    <string name="ota_done">Download complete. Open the Android download notification or the APK in a file manager to install.</string>
+    <string name="ota_title">Atualizações da app</string>
+    <string name="ota_help">Verifica as versões oficiais no GitHub. As transferências usam a tua ligação e continuam nas Transferências do Android. A instalação requer confirmação do Android; não há instalação automática.</string>
+    <string name="ota_check">Procurar atualizações</string>
+    <string name="ota_download">Transferir atualização</string>
+    <string name="ota_current">Tens a versão mais recente.</string>
+    <string name="ota_error">Falha ao procurar ou transferir a atualização. Verifica a tua ligação e tenta novamente.</string>
+    <string name="ota_done">Transferência concluída. Toca em Instalar para atualizar o Debloater.</string>
 
     <string name="permissions_auto">Configurar acessos com Shizuku</string>
     <string name="permissions_auto_help">Após confirmação, conceder Acesso à utilização e tentar ativar apenas o assistente de cache. Os serviços de Acessibilidade existentes são mantidos. O Android pode exigir configuração manual. Isto não inicia a limpeza.</string>
@@ -456,4 +460,9 @@
     <string name="cache_residue">A última limpeza deixou %1$s. O Android conta isto como cache, mas Limpar cache não o removeu (ou a app voltou a enchê-la de imediato). Normalmente só limpar o armazenamento da app ou reinstalá-la liberta este espaço.</string>
     <string name="cache_residue_folder">Conteúdo real da pasta de cache no armazenamento partilhado (medido com Shizuku): %1$s</string>
     <string name="cache_residue_total">Ainda indicado após a última limpeza, provavelmente não removível com Limpar cache: %1$s</string>
+    <string name="splash_dont_show">Não mostrar este ecrã novamente</string>
+    <string name="ota_install">Instalar</string>
+    <string name="ota_install_permission">Permite que o Debloater instale aplicações nas definições do Android que acabaram de abrir e volta a tocar em Instalar.</string>
+    <string name="ota_file_missing">Ficheiro transferido não encontrado</string>
+    <string name="ota_download_error">Erro de transferência do Android: %1$d</string>
 </resources>

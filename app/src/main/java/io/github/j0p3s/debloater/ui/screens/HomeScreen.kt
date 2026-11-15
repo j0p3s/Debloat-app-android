@@ -27,6 +27,7 @@ import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.CleaningServices
 import androidx.compose.material.icons.automirrored.filled.FactCheck
 import androidx.compose.material.icons.filled.Cached
+import androidx.compose.material.icons.filled.Coffee
 import androidx.compose.material.icons.filled.FolderDelete
 import androidx.compose.material.icons.filled.Memory
 import androidx.compose.material.icons.filled.Refresh
@@ -80,6 +81,9 @@ fun HomeScreen(vm: MainViewModel) {
             TopAppBar(
                 title = { Text("Debloater") },
                 actions = {
+                    IconButton(onClick = { openSupportPage(ctx) }) {
+                        Icon(Icons.Filled.Coffee, stringResource(R.string.splash_coffee), tint = MaterialTheme.colorScheme.primary)
+                    }
                     IconButton(onClick = { vm.navigate(Screen.HELP) }) {
                         Icon(Icons.AutoMirrored.Filled.HelpOutline, stringResource(R.string.guide_help_title))
                     }
@@ -204,6 +208,14 @@ fun HomeScreen(vm: MainViewModel) {
             }
             if (sdk !in 30..37) Text(stringResource(R.string.android_untested), color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
             GettingStartedCard()
+            androidx.compose.material3.OutlinedButton(
+                onClick = { openSupportPage(ctx) },
+                modifier = Modifier.fillMaxWidth(),
+            ) {
+                Icon(androidx.compose.material.icons.Icons.Filled.Coffee, null, Modifier.size(18.dp))
+                androidx.compose.foundation.layout.Spacer(Modifier.width(8.dp))
+                Text(stringResource(R.string.splash_coffee))
+            }
         }
     }
 }

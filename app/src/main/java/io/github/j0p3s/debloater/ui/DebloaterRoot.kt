@@ -5,8 +5,12 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import io.github.j0p3s.debloater.BuildConfig
 import io.github.j0p3s.debloater.ui.components.ConfirmOperationDialog
 import io.github.j0p3s.debloater.ui.screens.AppManagerScreen
 import io.github.j0p3s.debloater.ui.screens.BackupsScreen
@@ -23,6 +27,18 @@ fun DebloaterRoot(vm: MainViewModel) {
     val message by vm.message.collectAsStateWithLifecycle()
     val onboardingDone by vm.prefs.onboardingDone.collectAsStateWithLifecycle()
     val ctx = LocalContext.current
+    // Decided once per launch: shown after a fresh install or an update, unless the user opted out.
+    val showSplash = rememberSaveable { !vm.prefs.splashHidden.value && vm.prefs.splashSeenVersion != BuildConfig.VERSION_CODE }
+    var splashDone by rememberSaveable { mutableStateOf(false) }
+
+    if (showSplash && !splashDone) {
+        io.github.j0p3s.debloater.ui.screens.SplashScreen { dontShowAgain ->
+            vm.prefs.splashSeenVersion = BuildConfig.VERSION_CODE
+            if (dontShowAgain) vm.prefs.setSplashHidden(true)
+            splashDone = true
+        }
+        return
+    }
 
     // First launch (or "show the welcome guide again" from Help): language, how it works, Shizuku setup.
     if (!onboardingDone) {

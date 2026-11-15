@@ -21,4 +21,4 @@ Install **Debloater-v1.10.2.apk** over the current Debloater app. App data and b
 - [Pull-request checks](https://github.com/j0p3s/Debloat-app-android/actions/runs/41769994180).
 - Certificate SHA-256: `50b9cebb9f7ec6df5b0d38b5dd18bf7ccb7a124950106ff9187dfa23a64c9fb2`.
 - APK hashes are included in the attached **SHA256SUMS.txt**.
-- [Full changelog](https://github.com/j0p3s/Debloat-app-android/blob/v1.10.2/CHANGELOG.md).
+- [Full changelog](https://github.com/j0p3s/Debloat-app-android/blob/main/CHANGELOG.md).
