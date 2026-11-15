@@ -384,4 +384,8 @@
     <string name="cache_refreshing">Refreshing cleared apps</string>
     <string name="cache_stopped">Stopped. Results may be partial. Completed clears are not undone; an in-flight clear may still finish.</string>
     <string name="cache_partial">Partial measurements; unavailable sizes are excluded.</string>
+    <string name="splash_support_title">Support the developer</string>
+    <string name="splash_support_text">Debloater is free and open source. If it helped you, you can support its development by buying me a coffee.</string>
+    <string name="splash_coffee">Buy me a coffee</string>
+    <string name="splash_continue">Continue</string>
 </resources>

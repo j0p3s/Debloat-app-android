@@ -382,4 +382,8 @@
     <string name="cache_refreshing">Memperbarui aplikasi yang dibersihkan</string>
     <string name="cache_stopped">Dihentikan. Hasil mungkin sebagian. Pembersihan selesai tidak dibatalkan; proses berjalan mungkin masih selesai.</string>
     <string name="cache_partial">Pengukuran sebagian; ukuran tidak tersedia tidak dihitung.</string>
+    <string name="splash_support_title">Dukung pengembang</string>
+    <string name="splash_support_text">Debloater gratis dan open source. Jika aplikasi ini membantu, Anda bisa mendukung pengembangannya dengan mentraktir saya kopi.</string>
+    <string name="splash_coffee">Traktir saya kopi</string>
+    <string name="splash_continue">Lanjutkan</string>
 </resources>

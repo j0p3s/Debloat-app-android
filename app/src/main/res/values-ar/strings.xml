@@ -382,4 +382,8 @@
     <string name="cache_refreshing">تحديث التطبيقات التي تم تنظيفها</string>
     <string name="cache_stopped">تم الإيقاف. قد تكون النتائج جزئية. لا يتم التراجع عن التنظيف المكتمل وقد تكتمل العملية الجارية.</string>
     <string name="cache_partial">قياسات جزئية؛ الأحجام غير المتاحة مستبعدة.</string>
+    <string name="splash_support_title">ادعم المطوّر</string>
+    <string name="splash_support_text">Debloater مجاني ومفتوح المصدر. إذا أفادك، يمكنك دعم تطويره بشراء قهوة لي.</string>
+    <string name="splash_coffee">اشترِ لي قهوة</string>
+    <string name="splash_continue">متابعة</string>
 </resources>

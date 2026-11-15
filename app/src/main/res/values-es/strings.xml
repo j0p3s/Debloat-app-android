@@ -382,4 +382,8 @@
     <string name="cache_refreshing">Actualizando las apps limpiadas</string>
     <string name="cache_stopped">Detenido. Los resultados pueden ser parciales. Las limpiezas hechas no se deshacen; una en curso puede terminar.</string>
     <string name="cache_partial">Mediciones parciales; se excluyen tamaños no disponibles.</string>
+    <string name="splash_support_title">Apoya al desarrollador</string>
+    <string name="splash_support_text">Debloater es gratuita y de código abierto. Si te ha servido, puedes apoyar su desarrollo invitándome a un café.</string>
+    <string name="splash_coffee">Invítame a un café</string>
+    <string name="splash_continue">Continuar</string>
 </resources>

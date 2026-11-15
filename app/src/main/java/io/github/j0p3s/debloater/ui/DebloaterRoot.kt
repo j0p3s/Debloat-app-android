@@ -5,6 +5,9 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.j0p3s.debloater.ui.components.ConfirmOperationDialog
@@ -23,6 +26,12 @@ fun DebloaterRoot(vm: MainViewModel) {
     val message by vm.message.collectAsStateWithLifecycle()
     val onboardingDone by vm.prefs.onboardingDone.collectAsStateWithLifecycle()
     val ctx = LocalContext.current
+    var splashDone by rememberSaveable { mutableStateOf(false) }
+
+    if (!splashDone) {
+        io.github.j0p3s.debloater.ui.screens.SplashScreen { splashDone = true }
+        return
+    }
 
     // First launch (or "show the welcome guide again" from Help): language, how it works, Shizuku setup.
     if (!onboardingDone) {

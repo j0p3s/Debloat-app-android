@@ -382,4 +382,8 @@
     <string name="cache_refreshing">Geleerte Apps aktualisieren</string>
     <string name="cache_stopped">Gestoppt. Ergebnisse können unvollständig sein. Bereits geleerte Caches bleiben gelöscht; laufendes Leeren kann noch enden.</string>
     <string name="cache_partial">Teilweise Messung; unbekannte Größen sind ausgeschlossen.</string>
+    <string name="splash_support_title">Entwickler unterstützen</string>
+    <string name="splash_support_text">Debloater ist kostenlos und Open Source. Wenn dir die App geholfen hat, kannst du die Entwicklung mit einem Kaffee unterstützen.</string>
+    <string name="splash_coffee">Spendier mir einen Kaffee</string>
+    <string name="splash_continue">Weiter</string>
 </resources>

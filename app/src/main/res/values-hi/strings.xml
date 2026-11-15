@@ -382,4 +382,8 @@
     <string name="cache_refreshing">साफ किए गए ऐप अपडेट हो रहे हैं</string>
     <string name="cache_stopped">रोका गया। परिणाम आंशिक हो सकते हैं। पूरी हुई सफाई वापस नहीं होती; जारी सफाई अभी पूरी हो सकती है।</string>
     <string name="cache_partial">आंशिक माप; अनुपलब्ध आकार शामिल नहीं हैं।</string>
+    <string name="splash_support_title">डेवलपर का समर्थन करें</string>
+    <string name="splash_support_text">Debloater मुफ़्त और ओपन सोर्स है। अगर इससे आपको मदद मिली, तो मुझे कॉफ़ी पिलाकर इसके विकास में सहयोग कर सकते हैं।</string>
+    <string name="splash_coffee">मुझे एक कॉफ़ी पिलाएँ</string>
+    <string name="splash_continue">जारी रखें</string>
 </resources>

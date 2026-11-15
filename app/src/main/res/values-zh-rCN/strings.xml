@@ -382,4 +382,8 @@
     <string name="cache_refreshing">正在更新已清理应用</string>
     <string name="cache_stopped">已停止。结果可能不完整。已完成的清理无法撤销，进行中的清理可能仍会完成。</string>
     <string name="cache_partial">部分测量；不包含无法获取的大小。</string>
+    <string name="splash_support_title">支持开发者</string>
+    <string name="splash_support_text">Debloater 免费且开源。如果它对你有帮助，欢迎请我喝杯咖啡来支持开发。</string>
+    <string name="splash_coffee">请我喝杯咖啡</string>
+    <string name="splash_continue">继续</string>
 </resources>

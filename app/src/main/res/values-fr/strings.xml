@@ -382,4 +382,8 @@
     <string name="cache_refreshing">Actualisation des applications nettoyées</string>
     <string name="cache_stopped">Arrêté. Résultats potentiellement partiels. Les caches déjà vidés ne sont pas restaurés ; un effacement en cours peut encore se terminer.</string>
     <string name="cache_partial">Mesures partielles ; tailles indisponibles exclues.</string>
+    <string name="splash_support_title">Soutenir le développeur</string>
+    <string name="splash_support_text">Debloater est gratuit et open source. S\'il vous a été utile, vous pouvez soutenir son développement en m\'offrant un café.</string>
+    <string name="splash_coffee">Offrez-moi un café</string>
+    <string name="splash_continue">Continuer</string>
 </resources>
