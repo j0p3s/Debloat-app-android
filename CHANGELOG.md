@@ -1,6 +1,6 @@
 # Changelog
 
-## Unreleased
+## 1.31.0 — 2026-11-15
 
 - The support screen now appears once after each install or update instead of at every start, and has a **Don't show this screen again** checkbox.
 - Add a **Buy me a coffee** button to the top bar and the bottom of the Home screen.
