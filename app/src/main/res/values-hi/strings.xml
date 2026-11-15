@@ -434,7 +434,7 @@
     <string name="ota_download">Download update</string>
     <string name="ota_current">You have the latest version.</string>
     <string name="ota_error">Update check or download failed. Check your connection and try again.</string>
-    <string name="ota_done">Download complete. Open the Android download notification or the APK in a file manager to install.</string>
+    <string name="ota_done">डाउनलोड पूरा हुआ। Debloater अपडेट करने के लिए इंस्टॉल पर टैप करें।</string>
 
     <string name="permissions_auto">Shizuku से ऐक्सेस सेट करें</string>
     <string name="permissions_auto_help">पुष्टि के बाद उपयोग का ऐक्सेस देता है और केवल कैश सहायक चालू करने का प्रयास करता है। मौजूदा सुलभता सेवाएँ बनी रहती हैं। Android में मैन्युअल सेटअप की ज़रूरत हो सकती है। सफ़ाई शुरू नहीं होती।</string>
@@ -461,4 +461,6 @@
     <string name="cache_residue_folder">शेयर्ड स्टोरेज में उसके कैश फ़ोल्डर की असली सामग्री (Shizuku से मापी गई): %1$s</string>
     <string name="cache_residue_total">पिछली सफ़ाई के बाद भी गिना जा रहा, शायद कैश साफ़ करके नहीं हटेगा: %1$s</string>
     <string name="splash_dont_show">यह स्क्रीन दोबारा न दिखाएँ</string>
+    <string name="ota_install">इंस्टॉल करें</string>
+    <string name="ota_install_permission">अभी खुली Android सेटिंग्स में Debloater को ऐप इंस्टॉल करने की अनुमति दें, फिर वापस आकर फिर से इंस्टॉल पर टैप करें।</string>
 </resources>

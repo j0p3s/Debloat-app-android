@@ -434,7 +434,7 @@
     <string name="ota_download">Download update</string>
     <string name="ota_current">You have the latest version.</string>
     <string name="ota_error">Update check or download failed. Check your connection and try again.</string>
-    <string name="ota_done">Download complete. Open the Android download notification or the APK in a file manager to install.</string>
+    <string name="ota_done">Téléchargement terminé. Touchez Installer pour mettre à jour Debloater.</string>
 
     <string name="permissions_auto">Configurer les accès avec Shizuku</string>
     <string name="permissions_auto_help">Après confirmation, accorde l’accès aux données d’utilisation et tente d’activer uniquement l’assistant de cache. Les services d’accessibilité existants sont conservés. Android peut exiger une configuration manuelle. Aucun nettoyage ne démarre.</string>
@@ -461,4 +461,6 @@
     <string name="cache_residue_folder">Contenu réel de son dossier cache sur le stockage partagé (mesuré avec Shizuku) : %1$s</string>
     <string name="cache_residue_total">Encore signalé après le dernier nettoyage, probablement impossible à supprimer avec Vider le cache : %1$s</string>
     <string name="splash_dont_show">Ne plus afficher cet écran</string>
+    <string name="ota_install">Installer</string>
+    <string name="ota_install_permission">Autorisez Debloater à installer des applications dans les réglages Android qui viennent de s\'ouvrir, puis revenez et touchez à nouveau Installer.</string>
 </resources>

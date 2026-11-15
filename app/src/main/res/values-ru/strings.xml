@@ -434,7 +434,7 @@
     <string name="ota_download">Download update</string>
     <string name="ota_current">You have the latest version.</string>
     <string name="ota_error">Update check or download failed. Check your connection and try again.</string>
-    <string name="ota_done">Download complete. Open the Android download notification or the APK in a file manager to install.</string>
+    <string name="ota_done">Загрузка завершена. Нажмите «Установить», чтобы обновить Debloater.</string>
 
     <string name="permissions_auto">Настроить доступ через Shizuku</string>
     <string name="permissions_auto_help">После подтверждения предоставляет доступ к статистике использования и пытается включить только помощник очистки кэша. Существующие службы специальных возможностей сохраняются. Android может потребовать ручную настройку. Очистка не запускается.</string>
@@ -461,4 +461,6 @@
     <string name="cache_residue_folder">Фактическое содержимое папки кеша в общем хранилище (измерено через Shizuku): %1$s</string>
     <string name="cache_residue_total">Всё ещё учитывается после последней очистки, вероятно не удаляется через «Очистить кеш»: %1$s</string>
     <string name="splash_dont_show">Больше не показывать этот экран</string>
+    <string name="ota_install">Установить</string>
+    <string name="ota_install_permission">Разрешите Debloater устанавливать приложения в только что открывшихся настройках Android, затем вернитесь и снова нажмите «Установить».</string>
 </resources>

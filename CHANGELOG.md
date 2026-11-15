@@ -1,5 +1,11 @@
 # Changelog
 
+## 1.32.0 — 2026-11-15
+
+- **Install button for app updates:** once an update has finished downloading in Settings → App updates, an **Install** button opens Android's installer. If Android has not yet allowed Debloater to install apps, the button opens that setting first and asks you to tap Install again. The button disappears once the downloaded version is installed.
+- New permission `REQUEST_INSTALL_PACKAGES`, used only to hand the downloaded update to Android's installer. You still confirm the installation, and Android only accepts an update signed with the same key.
+- Translated into all 11 supported languages.
+
 ## 1.31.0 — 2026-11-15
 
 - The support screen now appears once after each install or update instead of at every start, and has a **Don't show this screen again** checkbox.

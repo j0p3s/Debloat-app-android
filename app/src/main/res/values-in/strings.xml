@@ -434,7 +434,7 @@
     <string name="ota_download">Download update</string>
     <string name="ota_current">You have the latest version.</string>
     <string name="ota_error">Update check or download failed. Check your connection and try again.</string>
-    <string name="ota_done">Download complete. Open the Android download notification or the APK in a file manager to install.</string>
+    <string name="ota_done">Unduhan selesai. Ketuk Instal untuk memperbarui Debloater.</string>
 
     <string name="permissions_auto">Atur akses dengan Shizuku</string>
     <string name="permissions_auto_help">Setelah konfirmasi, berikan akses penggunaan dan coba aktifkan hanya asisten cache. Layanan Aksesibilitas yang ada dipertahankan. Android mungkin memerlukan pengaturan manual. Pembersihan tidak dimulai.</string>
@@ -461,4 +461,6 @@
     <string name="cache_residue_folder">Isi sebenarnya folder cache di penyimpanan bersama (diukur dengan Shizuku): %1$s</string>
     <string name="cache_residue_total">Masih dihitung setelah pembersihan terakhir, kemungkinan tidak bisa dihapus dengan Hapus cache: %1$s</string>
     <string name="splash_dont_show">Jangan tampilkan layar ini lagi</string>
+    <string name="ota_install">Instal</string>
+    <string name="ota_install_permission">Izinkan Debloater menginstal aplikasi di pengaturan Android yang baru terbuka, lalu kembali dan ketuk Instal lagi.</string>
 </resources>

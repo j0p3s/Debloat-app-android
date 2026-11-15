@@ -1,6 +1,6 @@
 # Debloater (Shizuku)
 
-**Current release: [1.31.0](https://github.com/j0p3s/Debloat-app-android/releases/tag/v1.31.0)** · [Download APK](https://github.com/j0p3s/Debloat-app-android/releases/download/v1.31.0/Debloater-v1.31.0.apk) · [Release notes](docs/RELEASE-1.31.0.md) · [Changelog](CHANGELOG.md)
+**Current release: [1.32.0](https://github.com/j0p3s/Debloat-app-android/releases/tag/v1.32.0)** · [Download APK](https://github.com/j0p3s/Debloat-app-android/releases/download/v1.32.0/Debloater-v1.32.0.apk) · [Release notes](docs/RELEASE-1.32.0.md) · [Changelog](CHANGELOG.md)
 
 > **Notice:** for security reasons, all earlier release builds (1.10.0 to 1.12.9) were removed from the Releases page. **The latest version is the only available build.** Download APKs only from this repository's Releases page. The source history of earlier versions remains in git.
 

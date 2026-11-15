@@ -52,6 +52,7 @@ fun AppUpdateSetting() {
     var percent by remember { mutableIntStateOf(0) }
     var failed by remember { mutableStateOf(false) }
     var detail by remember { mutableStateOf("") }
+    var needsInstallPermission by remember { mutableStateOf(false) }
     LaunchedEffect(downloadId) {
         if(downloadId < 0) return@LaunchedEffect
         while(true) {
@@ -148,7 +149,7 @@ fun AppUpdateSetting() {
                                 .setDestinationInExternalFilesDir(context, Environment.DIRECTORY_DOWNLOADS, "Debloater-$tag-${System.currentTimeMillis()}.apk")
                             status = DownloadManager.STATUS_PENDING; percent = 0
                             downloadId = manager.enqueue(request)
-                            prefs.edit().putLong("download", downloadId).apply()
+                            prefs.edit().putLong("download", downloadId).putString("download_tag", tag).apply()
                         } catch(error: Exception) { failed = true; detail = error.message.orEmpty() }
                     }) { Text(stringResource(R.string.ota_download)) }
                 } else Text(stringResource(R.string.ota_current), style = MaterialTheme.typography.bodySmall)
@@ -157,7 +158,28 @@ fun AppUpdateSetting() {
                 Text("$percent %")
                 TextButton(onClick = { manager.remove(downloadId); prefs.edit().remove("download").apply(); downloadId = -1; status = 0 }) { Text(stringResource(R.string.cancel)) }
             }
-            if(status == DownloadManager.STATUS_SUCCESSFUL) Text(stringResource(R.string.ota_done), style = MaterialTheme.typography.bodySmall)
+            // Offer Install only while the downloaded version is still newer than the running one.
+            val downloadedTag = prefs.getString("download_tag", null)
+            if(status == DownloadManager.STATUS_SUCCESSFUL && downloadedTag != null && AppReleasePolicy.newer(downloadedTag, BuildConfig.VERSION_NAME)) {
+                Text(stringResource(R.string.ota_done), style = MaterialTheme.typography.bodySmall)
+                Button(onClick = {
+                    val apk = manager.getUriForDownloadedFile(downloadId)
+                    if(apk == null) { failed = true; detail = "Downloaded file not found" }
+                    else if(!context.packageManager.canRequestPackageInstalls()) {
+                        needsInstallPermission = true
+                        runCatching { context.startActivity(android.content.Intent(android.provider.Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES,
+                            Uri.parse("package:${context.packageName}"))) }
+                    } else {
+                        needsInstallPermission = false
+                        try {
+                            context.startActivity(android.content.Intent(android.content.Intent.ACTION_VIEW)
+                                .setDataAndType(apk, "application/vnd.android.package-archive")
+                                .addFlags(android.content.Intent.FLAG_GRANT_READ_URI_PERMISSION or android.content.Intent.FLAG_ACTIVITY_NEW_TASK))
+                        } catch(error: Exception) { failed = true; detail = error.message.orEmpty() }
+                    }
+                }) { Text(stringResource(R.string.ota_install)) }
+                if(needsInstallPermission) Text(stringResource(R.string.ota_install_permission), style = MaterialTheme.typography.bodySmall)
+            }
         }
     }
 }

@@ -5,7 +5,7 @@
 
 ## Current status
 
-- 1.31.0 is the latest release (1.30.0 may also still be listed). Earlier release builds (1.10.0 to 1.12.9) were deleted from GitHub Releases for security reasons; their tags were removed too (commits remain).
+- 1.32.0 is the latest release (1.30.0 and 1.31.0 may also still be listed). Earlier release builds (1.10.0 to 1.12.9) were deleted from GitHub Releases for security reasons; their tags were removed too (commits remain).
 - **1.30.0 / versionCode 35 is published** (release v1.30.0, APK `Debloater-v1.30.0.apk`, commit `02e2325`, workflow run 130 green). It adds a start-up support screen (`ui/screens/SplashScreen.kt`, shown from `DebloaterRoot` once per app start, links to buymeacoffee.com/j0p3s) on top of 1.12.9; details in `docs/RELEASE-1.30.0.md`. Signed with the same permanent key as before (certificate pinned in `config/release-certificate.sha256`); no key rotation happened.
 - **PR #19 is merged**: `main` now contains the whole 1.12.9 line plus 1.30.0. Work on `main`.
 - 1.12.9 layout changes and the 1.30.0 splash screen were compiled, linted and unit-tested only. **Nobody has looked at them on a device**: ask the user for screenshots of Home, Cache scanner, App leftovers and a dark-mode operation result.
@@ -52,7 +52,7 @@
 4. For a new release:
    - bump `versionCode`/`versionName`;
    - add `docs/RELEASE-x.md` and a CHANGELOG entry;
-   - run `sed -i '3s/1.31.0/x/g' README.md`;
+   - run `sed -i '3s/1.32.0/x/g' README.md`;
    - run `python3 tools/check_translations.py` and the unit tests;
    - commit, push and trigger the workflow;
    - verify with `get_release_by_tag`.

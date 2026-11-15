@@ -434,7 +434,7 @@
     <string name="ota_download">Download update</string>
     <string name="ota_current">You have the latest version.</string>
     <string name="ota_error">Update check or download failed. Check your connection and try again.</string>
-    <string name="ota_done">Download complete. Open the Android download notification or the APK in a file manager to install.</string>
+    <string name="ota_done">اكتمل التنزيل. اضغط تثبيت لتحديث Debloater.</string>
 
     <string name="permissions_auto">إعداد الوصول عبر Shizuku</string>
     <string name="permissions_auto_help">بعد التأكيد يمنح الوصول إلى الاستخدام ويحاول تفعيل مساعد ذاكرة التخزين المؤقت فقط. تبقى خدمات إمكانية الوصول الحالية محفوظة. قد يتطلب Android إعداداً يدوياً. لا يبدأ التنظيف.</string>
@@ -461,4 +461,6 @@
     <string name="cache_residue_folder">المحتوى الفعلي لمجلد ذاكرة التخزين المؤقت في التخزين المشترك (مقيس عبر Shizuku): %1$s</string>
     <string name="cache_residue_total">ما زال محتسبًا بعد آخر مسح، وغالبًا لا يُزال بمحو ذاكرة التخزين المؤقت: %1$s</string>
     <string name="splash_dont_show">عدم عرض هذه الشاشة مرة أخرى</string>
+    <string name="ota_install">تثبيت</string>
+    <string name="ota_install_permission">اسمح لـ Debloater بتثبيت التطبيقات في إعدادات Android التي فُتحت للتو، ثم عد واضغط تثبيت مرة أخرى.</string>
 </resources>

@@ -434,7 +434,7 @@
     <string name="ota_download">Download update</string>
     <string name="ota_current">You have the latest version.</string>
     <string name="ota_error">Update check or download failed. Check your connection and try again.</string>
-    <string name="ota_done">Download complete. Open the Android download notification or the APK in a file manager to install.</string>
+    <string name="ota_done">下载完成。点按“安装”以更新 Debloater。</string>
 
     <string name="permissions_auto">通过 Shizuku 配置权限</string>
     <string name="permissions_auto_help">确认后授予使用情况访问权限，并尝试仅启用缓存助手。保留现有无障碍服务。Android 可能仍要求手动设置。不会开始清理。</string>
@@ -461,4 +461,6 @@
     <string name="cache_residue_folder">共享存储中其缓存文件夹的实际内容（通过 Shizuku 测量）：%1$s</string>
     <string name="cache_residue_total">上次清除后仍被计入，可能无法通过“清除缓存”删除：%1$s</string>
     <string name="splash_dont_show">不再显示此页面</string>
+    <string name="ota_install">安装</string>
+    <string name="ota_install_permission">请在刚打开的 Android 设置中允许 Debloater 安装应用，然后返回并再次点按“安装”。</string>
 </resources>
