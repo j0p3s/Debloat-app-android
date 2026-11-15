@@ -81,6 +81,9 @@ fun HomeScreen(vm: MainViewModel) {
             TopAppBar(
                 title = { Text("Debloater") },
                 actions = {
+                    IconButton(onClick = { openSupportPage(ctx) }) {
+                        Icon(Icons.Filled.Coffee, stringResource(R.string.splash_coffee), tint = MaterialTheme.colorScheme.primary)
+                    }
                     IconButton(onClick = { vm.navigate(Screen.HELP) }) {
                         Icon(Icons.AutoMirrored.Filled.HelpOutline, stringResource(R.string.guide_help_title))
                     }

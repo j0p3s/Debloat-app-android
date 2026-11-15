@@ -21,7 +21,7 @@ An Android app that debloats **any Android version from Android 11 to Android 17
   (question-mark icon) answers common questions in plain language and can show the welcome again.
 - **Support screen**: a start-up screen, shown after you install or update the app, asks for support and links to
   [Buy Me a Coffee](https://buymeacoffee.com/j0p3s). Tick **Don't show this screen again** to hide it for good.
-  The Home screen also has a **Buy me a coffee** button.
+  The Home screen also has a **Buy me a coffee** button in the top bar and at the bottom.
 - **Compact dashboard**: device and storage information lead the home screen, followed by grouped
   navigation and tier statistics. The getting-started guide and secondary settings expand on demand.
   Light and dark themes use an emerald palette; selected apps have a tinted background.
