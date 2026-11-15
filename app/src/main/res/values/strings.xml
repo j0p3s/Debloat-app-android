@@ -465,4 +465,6 @@
     <string name="splash_dont_show">Don\'t show this screen again</string>
     <string name="ota_install">Install</string>
     <string name="ota_install_permission">Allow Debloater to install apps in the Android settings that just opened, then come back and tap Install again.</string>
+    <string name="ota_file_missing">Downloaded file not found</string>
+    <string name="ota_download_error">Android download error: %1$d</string>
 </resources>

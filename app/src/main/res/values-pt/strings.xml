@@ -428,12 +428,12 @@
     <string name="permissions_validate">Validar acesso</string>
     <string name="cache_settings_remaining">Processadas: %1$d / %2$d · Restantes (incluindo a atual): %3$d</string>
 
-    <string name="ota_title">App updates</string>
-    <string name="ota_help">Check official GitHub releases. Downloads use your connection and continue in Android Downloads. Installation requires Android confirmation; no automatic installation.</string>
-    <string name="ota_check">Check for updates</string>
-    <string name="ota_download">Download update</string>
-    <string name="ota_current">You have the latest version.</string>
-    <string name="ota_error">Update check or download failed. Check your connection and try again.</string>
+    <string name="ota_title">Atualizações da app</string>
+    <string name="ota_help">Verifica as versões oficiais no GitHub. As transferências usam a tua ligação e continuam nas Transferências do Android. A instalação requer confirmação do Android; não há instalação automática.</string>
+    <string name="ota_check">Procurar atualizações</string>
+    <string name="ota_download">Transferir atualização</string>
+    <string name="ota_current">Tens a versão mais recente.</string>
+    <string name="ota_error">Falha ao procurar ou transferir a atualização. Verifica a tua ligação e tenta novamente.</string>
     <string name="ota_done">Transferência concluída. Toca em Instalar para atualizar o Debloater.</string>
 
     <string name="permissions_auto">Configurar acessos com Shizuku</string>
@@ -463,4 +463,6 @@
     <string name="splash_dont_show">Não mostrar este ecrã novamente</string>
     <string name="ota_install">Instalar</string>
     <string name="ota_install_permission">Permite que o Debloater instale aplicações nas definições do Android que acabaram de abrir e volta a tocar em Instalar.</string>
+    <string name="ota_file_missing">Ficheiro transferido não encontrado</string>
+    <string name="ota_download_error">Erro de transferência do Android: %1$d</string>
 </resources>

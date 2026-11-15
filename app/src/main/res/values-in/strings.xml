@@ -9,7 +9,7 @@
     <string name="remove">Hapus</string>
     <string name="enable">Aktifkan</string>
     <string name="restore">Pulihkan</string>
-    <string name="uninstall">Uninstall</string>
+    <string name="uninstall">Hapus instalasi</string>
     <string name="test">Uji</string>
     <string name="select_all">Pilih semua</string>
     <string name="clear">Bersihkan</string>
@@ -420,20 +420,20 @@
     <string name="leftovers_move_warning">Folder ini mungkin berisi berkas pribadi. Periksa setiap jalur. Folder pilihan akan dipindahkan ke .DebloaterRecovery di penyimpanan bersama dengan lokasi asal dicatat. Berkas dapat dipulihkan, tetapi ruang baru kosong setelah penghapusan permanen. Jangan memasang atau menghapus aplikasi selama operasi. Lanjutkan?</string>
     <string name="leftovers_action_done">Selesai: %1$d · Gagal: %2$d</string>
 
-    <string name="permissions_ready">Available</string>
-    <string name="permissions_automatic">Granted by Android at installation; no separate permission prompt. This checks authorization, not network connectivity.</string>
-    <string name="permissions_missing">Not available — review setup</string>
-    <string name="permissions_title">Permissions</string>
-    <string name="permissions_usage">Usage Access (optional measurements)</string>
-    <string name="permissions_validate">Validate access</string>
+    <string name="permissions_ready">Tersedia</string>
+    <string name="permissions_automatic">Diberikan Android saat pemasangan; tidak ada permintaan izin terpisah. Ini memeriksa otorisasi, bukan konektivitas jaringan.</string>
+    <string name="permissions_missing">Tidak tersedia — periksa pengaturan</string>
+    <string name="permissions_title">Izin</string>
+    <string name="permissions_usage">Akses Penggunaan (pengukuran opsional)</string>
+    <string name="permissions_validate">Validasi akses</string>
     <string name="cache_settings_remaining">Diproses: %1$d / %2$d · Tersisa (termasuk saat ini): %3$d</string>
 
-    <string name="ota_title">App updates</string>
-    <string name="ota_help">Check official GitHub releases. Downloads use your connection and continue in Android Downloads. Installation requires Android confirmation; no automatic installation.</string>
-    <string name="ota_check">Check for updates</string>
-    <string name="ota_download">Download update</string>
-    <string name="ota_current">You have the latest version.</string>
-    <string name="ota_error">Update check or download failed. Check your connection and try again.</string>
+    <string name="ota_title">Pembaruan aplikasi</string>
+    <string name="ota_help">Periksa rilis resmi GitHub. Unduhan memakai koneksi Anda dan berlanjut di Unduhan Android. Pemasangan memerlukan konfirmasi Android; tidak ada pemasangan otomatis.</string>
+    <string name="ota_check">Periksa pembaruan</string>
+    <string name="ota_download">Unduh pembaruan</string>
+    <string name="ota_current">Anda sudah memakai versi terbaru.</string>
+    <string name="ota_error">Pemeriksaan atau pengunduhan pembaruan gagal. Periksa koneksi Anda lalu coba lagi.</string>
     <string name="ota_done">Unduhan selesai. Ketuk Instal untuk memperbarui Debloater.</string>
 
     <string name="permissions_auto">Atur akses dengan Shizuku</string>
@@ -463,4 +463,6 @@
     <string name="splash_dont_show">Jangan tampilkan layar ini lagi</string>
     <string name="ota_install">Instal</string>
     <string name="ota_install_permission">Izinkan Debloater menginstal aplikasi di pengaturan Android yang baru terbuka, lalu kembali dan ketuk Instal lagi.</string>
+    <string name="ota_file_missing">File unduhan tidak ditemukan</string>
+    <string name="ota_download_error">Kesalahan unduhan Android: %1$d</string>
 </resources>

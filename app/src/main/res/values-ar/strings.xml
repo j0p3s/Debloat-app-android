@@ -420,20 +420,20 @@
     <string name="leftovers_move_warning">قد تحتوي هذه المجلدات على ملفات شخصية. راجع كل مسار. ستنقل المجلدات المحددة إلى .DebloaterRecovery في التخزين المشترك مع تسجيل مواقعها الأصلية. يمكن استردادها لكنها لا تحرر مساحة قبل الحذف الدائم. تجنب تثبيت التطبيقات أو إلغاء تثبيتها أثناء العملية. هل تريد المتابعة؟</string>
     <string name="leftovers_action_done">مكتملة: %1$d · فاشلة: %2$d</string>
 
-    <string name="permissions_ready">Available</string>
-    <string name="permissions_automatic">Granted by Android at installation; no separate permission prompt. This checks authorization, not network connectivity.</string>
-    <string name="permissions_missing">Not available — review setup</string>
-    <string name="permissions_title">Permissions</string>
-    <string name="permissions_usage">Usage Access (optional measurements)</string>
-    <string name="permissions_validate">Validate access</string>
+    <string name="permissions_ready">متاح</string>
+    <string name="permissions_automatic">تمنحه Android عند التثبيت؛ لا يوجد طلب إذن منفصل. يتحقق هذا من التفويض وليس من اتصال الشبكة.</string>
+    <string name="permissions_missing">غير متاح — راجع الإعداد</string>
+    <string name="permissions_title">الأذونات</string>
+    <string name="permissions_usage">الوصول إلى الاستخدام (قياسات اختيارية)</string>
+    <string name="permissions_validate">التحقق من الوصول</string>
     <string name="cache_settings_remaining">تمت المعالجة: %1$d / %2$d · المتبقي (بما فيه الحالي): %3$d</string>
 
-    <string name="ota_title">App updates</string>
-    <string name="ota_help">Check official GitHub releases. Downloads use your connection and continue in Android Downloads. Installation requires Android confirmation; no automatic installation.</string>
-    <string name="ota_check">Check for updates</string>
-    <string name="ota_download">Download update</string>
-    <string name="ota_current">You have the latest version.</string>
-    <string name="ota_error">Update check or download failed. Check your connection and try again.</string>
+    <string name="ota_title">تحديثات التطبيق</string>
+    <string name="ota_help">تحقق من إصدارات GitHub الرسمية. تستخدم التنزيلات اتصالك وتستمر في تنزيلات Android. يتطلب التثبيت تأكيدًا من Android؛ لا يوجد تثبيت تلقائي.</string>
+    <string name="ota_check">التحقق من وجود تحديثات</string>
+    <string name="ota_download">تنزيل التحديث</string>
+    <string name="ota_current">لديك أحدث إصدار.</string>
+    <string name="ota_error">فشل التحقق من التحديث أو تنزيله. تحقق من اتصالك وحاول مرة أخرى.</string>
     <string name="ota_done">اكتمل التنزيل. اضغط تثبيت لتحديث Debloater.</string>
 
     <string name="permissions_auto">إعداد الوصول عبر Shizuku</string>
@@ -463,4 +463,6 @@
     <string name="splash_dont_show">عدم عرض هذه الشاشة مرة أخرى</string>
     <string name="ota_install">تثبيت</string>
     <string name="ota_install_permission">اسمح لـ Debloater بتثبيت التطبيقات في إعدادات Android التي فُتحت للتو، ثم عد واضغط تثبيت مرة أخرى.</string>
+    <string name="ota_file_missing">لم يتم العثور على الملف الذي تم تنزيله</string>
+    <string name="ota_download_error">خطأ في تنزيل Android: %1$d</string>
 </resources>

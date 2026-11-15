@@ -420,20 +420,20 @@
     <string name="leftovers_move_warning">Ces dossiers peuvent contenir des fichiers personnels. Vérifiez chaque chemin. Ils seront déplacés vers .DebloaterRecovery dans le stockage partagé avec leurs emplacements initiaux enregistrés. Ils restent récupérables, mais seul l’effacement définitif libère de l’espace. Évitez d’installer ou désinstaller des applications pendant l’opération. Continuer ?</string>
     <string name="leftovers_action_done">Terminées : %1$d · Échecs : %2$d</string>
 
-    <string name="permissions_ready">Available</string>
-    <string name="permissions_automatic">Granted by Android at installation; no separate permission prompt. This checks authorization, not network connectivity.</string>
-    <string name="permissions_missing">Not available — review setup</string>
-    <string name="permissions_title">Permissions</string>
-    <string name="permissions_usage">Usage Access (optional measurements)</string>
-    <string name="permissions_validate">Validate access</string>
+    <string name="permissions_ready">Disponible</string>
+    <string name="permissions_automatic">Accordée par Android à l\'installation ; aucune demande d\'autorisation distincte. Cela vérifie l\'autorisation, pas la connexion réseau.</string>
+    <string name="permissions_missing">Indisponible — vérifiez la configuration</string>
+    <string name="permissions_title">Autorisations</string>
+    <string name="permissions_usage">Accès à l\'utilisation (mesures facultatives)</string>
+    <string name="permissions_validate">Vérifier l\'accès</string>
     <string name="cache_settings_remaining">Traitées : %1$d / %2$d · Restantes (actuelle comprise) : %3$d</string>
 
-    <string name="ota_title">App updates</string>
-    <string name="ota_help">Check official GitHub releases. Downloads use your connection and continue in Android Downloads. Installation requires Android confirmation; no automatic installation.</string>
-    <string name="ota_check">Check for updates</string>
-    <string name="ota_download">Download update</string>
-    <string name="ota_current">You have the latest version.</string>
-    <string name="ota_error">Update check or download failed. Check your connection and try again.</string>
+    <string name="ota_title">Mises à jour de l\'appli</string>
+    <string name="ota_help">Vérifie les versions officielles sur GitHub. Les téléchargements utilisent votre connexion et se poursuivent dans les téléchargements Android. L\'installation nécessite une confirmation d\'Android ; aucune installation automatique.</string>
+    <string name="ota_check">Rechercher des mises à jour</string>
+    <string name="ota_download">Télécharger la mise à jour</string>
+    <string name="ota_current">Vous avez la dernière version.</string>
+    <string name="ota_error">La recherche ou le téléchargement de la mise à jour a échoué. Vérifiez votre connexion et réessayez.</string>
     <string name="ota_done">Téléchargement terminé. Touchez Installer pour mettre à jour Debloater.</string>
 
     <string name="permissions_auto">Configurer les accès avec Shizuku</string>
@@ -463,4 +463,6 @@
     <string name="splash_dont_show">Ne plus afficher cet écran</string>
     <string name="ota_install">Installer</string>
     <string name="ota_install_permission">Autorisez Debloater à installer des applications dans les réglages Android qui viennent de s\'ouvrir, puis revenez et touchez à nouveau Installer.</string>
+    <string name="ota_file_missing">Fichier téléchargé introuvable</string>
+    <string name="ota_download_error">Erreur de téléchargement Android : %1$d</string>
 </resources>

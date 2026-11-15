@@ -62,7 +62,7 @@ fun AppUpdateSetting() {
                         val state = cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_STATUS))
                         val bytes = cursor.getLong(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR))
                         val total = cursor.getLong(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_TOTAL_SIZE_BYTES))
-                        if(state == DownloadManager.STATUS_FAILED) detail = "Android download error: ${cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_REASON))}"
+                        if(state == DownloadManager.STATUS_FAILED) detail = context.getString(R.string.ota_download_error, cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_REASON)))
                         state to if(total > 0) ((bytes * 100 / total).coerceIn(0,100)).toInt() else 0
                     }
                 }
@@ -164,7 +164,7 @@ fun AppUpdateSetting() {
                 Text(stringResource(R.string.ota_done), style = MaterialTheme.typography.bodySmall)
                 Button(onClick = {
                     val apk = manager.getUriForDownloadedFile(downloadId)
-                    if(apk == null) { failed = true; detail = "Downloaded file not found" }
+                    if(apk == null) { failed = true; detail = context.getString(R.string.ota_file_missing) }
                     else if(!context.packageManager.canRequestPackageInstalls()) {
                         needsInstallPermission = true
                         runCatching { context.startActivity(android.content.Intent(android.provider.Settings.ACTION_MANAGE_UNKNOWN_APP_SOURCES,

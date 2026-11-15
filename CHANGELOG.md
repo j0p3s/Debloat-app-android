@@ -1,6 +1,10 @@
 # Changelog
 
-## Unreleased
+## 1.34.0 — 2026-11-15
+
+- **Language fixes:** the Permissions screen and the App updates card (including its error messages) were still in English in most languages. They are now translated in all 11 supported languages, and the Indonesian "Uninstall" label too.
+- Settings now starts with a **Support the developer** section with a **Buy me a coffee** button.
+- Operation logs, saved backup data and shell commands stay in English by design.
 
 - Settings now starts with a **Support the developer** section with a **Buy me a coffee** button.
 

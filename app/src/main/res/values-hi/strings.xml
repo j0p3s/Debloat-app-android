@@ -420,20 +420,20 @@
     <string name="leftovers_move_warning">इन फ़ोल्डर में निजी फ़ाइल हो सकती हैं। हर पथ जाँचें। चुने फ़ोल्डर मूल स्थान दर्ज करके साझा स्टोरेज के .DebloaterRecovery में जाएँगे। उन्हें वापस लाया जा सकता है, लेकिन स्थायी रूप से हटाने तक जगह खाली नहीं होगी। कार्रवाई के दौरान ऐप इंस्टॉल या अनइंस्टॉल न करें। जारी रखें?</string>
     <string name="leftovers_action_done">पूरी हुईं: %1$d · विफल: %2$d</string>
 
-    <string name="permissions_ready">Available</string>
-    <string name="permissions_automatic">Granted by Android at installation; no separate permission prompt. This checks authorization, not network connectivity.</string>
-    <string name="permissions_missing">Not available — review setup</string>
-    <string name="permissions_title">Permissions</string>
-    <string name="permissions_usage">Usage Access (optional measurements)</string>
-    <string name="permissions_validate">Validate access</string>
+    <string name="permissions_ready">उपलब्ध</string>
+    <string name="permissions_automatic">Android इंस्टॉल के समय देता है; अलग से अनुमति का संकेत नहीं आता। यह अधिकार जाँचता है, नेटवर्क कनेक्टिविटी नहीं।</string>
+    <string name="permissions_missing">उपलब्ध नहीं — सेटअप देखें</string>
+    <string name="permissions_title">अनुमतियाँ</string>
+    <string name="permissions_usage">उपयोग एक्सेस (वैकल्पिक माप)</string>
+    <string name="permissions_validate">एक्सेस जाँचें</string>
     <string name="cache_settings_remaining">प्रक्रिया पूरी: %1$d / %2$d · शेष (मौजूदा सहित): %3$d</string>
 
-    <string name="ota_title">App updates</string>
-    <string name="ota_help">Check official GitHub releases. Downloads use your connection and continue in Android Downloads. Installation requires Android confirmation; no automatic installation.</string>
-    <string name="ota_check">Check for updates</string>
-    <string name="ota_download">Download update</string>
-    <string name="ota_current">You have the latest version.</string>
-    <string name="ota_error">Update check or download failed. Check your connection and try again.</string>
+    <string name="ota_title">ऐप अपडेट</string>
+    <string name="ota_help">आधिकारिक GitHub रिलीज़ जाँचें। डाउनलोड आपके कनेक्शन का उपयोग करते हैं और Android डाउनलोड में जारी रहते हैं। इंस्टॉल के लिए Android की पुष्टि ज़रूरी है; स्वचालित इंस्टॉल नहीं होता।</string>
+    <string name="ota_check">अपडेट जाँचें</string>
+    <string name="ota_download">अपडेट डाउनलोड करें</string>
+    <string name="ota_current">आपके पास नवीनतम संस्करण है।</string>
+    <string name="ota_error">अपडेट की जाँच या डाउनलोड विफल रहा। अपना कनेक्शन जाँचें और फिर प्रयास करें।</string>
     <string name="ota_done">डाउनलोड पूरा हुआ। Debloater अपडेट करने के लिए इंस्टॉल पर टैप करें।</string>
 
     <string name="permissions_auto">Shizuku से ऐक्सेस सेट करें</string>
@@ -463,4 +463,6 @@
     <string name="splash_dont_show">यह स्क्रीन दोबारा न दिखाएँ</string>
     <string name="ota_install">इंस्टॉल करें</string>
     <string name="ota_install_permission">अभी खुली Android सेटिंग्स में Debloater को ऐप इंस्टॉल करने की अनुमति दें, फिर वापस आकर फिर से इंस्टॉल पर टैप करें।</string>
+    <string name="ota_file_missing">डाउनलोड की गई फ़ाइल नहीं मिली</string>
+    <string name="ota_download_error">Android डाउनलोड त्रुटि: %1$d</string>
 </resources>

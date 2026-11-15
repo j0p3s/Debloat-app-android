@@ -420,20 +420,20 @@
     <string name="leftovers_move_warning">В этих папках могут быть личные файлы. Проверьте все пути. Выбранные папки будут перемещены в .DebloaterRecovery в общем хранилище с записью исходных путей. Они восстановимы, но место освободится только после окончательного удаления. Не устанавливайте и не удаляйте приложения во время операции. Продолжить?</string>
     <string name="leftovers_action_done">Выполнено: %1$d · Ошибок: %2$d</string>
 
-    <string name="permissions_ready">Available</string>
-    <string name="permissions_automatic">Granted by Android at installation; no separate permission prompt. This checks authorization, not network connectivity.</string>
-    <string name="permissions_missing">Not available — review setup</string>
-    <string name="permissions_title">Permissions</string>
-    <string name="permissions_usage">Usage Access (optional measurements)</string>
-    <string name="permissions_validate">Validate access</string>
+    <string name="permissions_ready">Доступно</string>
+    <string name="permissions_automatic">Предоставляется Android при установке; отдельного запроса разрешения нет. Проверяется авторизация, а не подключение к сети.</string>
+    <string name="permissions_missing">Недоступно — проверьте настройку</string>
+    <string name="permissions_title">Разрешения</string>
+    <string name="permissions_usage">Доступ к данным об использовании (необязательные измерения)</string>
+    <string name="permissions_validate">Проверить доступ</string>
     <string name="cache_settings_remaining">Обработано: %1$d / %2$d · Осталось (включая текущее): %3$d</string>
 
-    <string name="ota_title">App updates</string>
-    <string name="ota_help">Check official GitHub releases. Downloads use your connection and continue in Android Downloads. Installation requires Android confirmation; no automatic installation.</string>
-    <string name="ota_check">Check for updates</string>
-    <string name="ota_download">Download update</string>
-    <string name="ota_current">You have the latest version.</string>
-    <string name="ota_error">Update check or download failed. Check your connection and try again.</string>
+    <string name="ota_title">Обновления приложения</string>
+    <string name="ota_help">Проверка официальных релизов на GitHub. Загрузка использует ваше подключение и продолжается в загрузках Android. Для установки нужно подтверждение Android; автоматической установки нет.</string>
+    <string name="ota_check">Проверить обновления</string>
+    <string name="ota_download">Скачать обновление</string>
+    <string name="ota_current">У вас последняя версия.</string>
+    <string name="ota_error">Не удалось проверить или скачать обновление. Проверьте подключение и повторите попытку.</string>
     <string name="ota_done">Загрузка завершена. Нажмите «Установить», чтобы обновить Debloater.</string>
 
     <string name="permissions_auto">Настроить доступ через Shizuku</string>
@@ -463,4 +463,6 @@
     <string name="splash_dont_show">Больше не показывать этот экран</string>
     <string name="ota_install">Установить</string>
     <string name="ota_install_permission">Разрешите Debloater устанавливать приложения в только что открывшихся настройках Android, затем вернитесь и снова нажмите «Установить».</string>
+    <string name="ota_file_missing">Скачанный файл не найден</string>
+    <string name="ota_download_error">Ошибка загрузки Android: %1$d</string>
 </resources>
