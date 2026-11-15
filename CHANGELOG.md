@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- Settings now starts with a **Support the developer** section with a **Buy me a coffee** button.
+
 ## 1.32.0 — 2026-11-15
 
 - **Install button for app updates:** once an update has finished downloading in Settings → App updates, an **Install** button opens Android's installer. If Android has not yet allowed Debloater to install apps, the button opens that setting first and asks you to tap Install again. The button disappears once the downloaded version is installed.

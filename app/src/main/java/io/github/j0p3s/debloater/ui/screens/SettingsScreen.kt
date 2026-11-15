@@ -14,7 +14,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Coffee
 import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Card
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
@@ -81,6 +84,18 @@ fun SettingsScreen(vm: MainViewModel) {
             Modifier.padding(pad).fillMaxSize().verticalScroll(rememberScrollState()).padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
+            Card {
+                Column(Modifier.fillMaxWidth().padding(14.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                    Text(stringResource(R.string.splash_support_title), style = MaterialTheme.typography.titleMedium)
+                    Text(stringResource(R.string.splash_support_text), style = MaterialTheme.typography.bodySmall)
+                    val supportCtx = LocalContext.current
+                    Button(onClick = { openSupportPage(supportCtx) }, modifier = Modifier.fillMaxWidth()) {
+                        Icon(Icons.Filled.Coffee, null, Modifier.size(18.dp))
+                        Spacer(Modifier.width(8.dp))
+                        Text(stringResource(R.string.splash_coffee))
+                    }
+                }
+            }
             io.github.j0p3s.debloater.ui.components.LanguageSetting()
             io.github.j0p3s.debloater.ui.components.AppUpdateSetting()
             OutlinedButton(onClick = { vm.navigate(io.github.j0p3s.debloater.ui.Screen.PERMISSIONS) }, modifier = Modifier.fillMaxWidth()) {
