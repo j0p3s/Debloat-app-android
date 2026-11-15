@@ -1,14 +1,14 @@
 # Project handoff — 2026-11-15
 
 ## Goal
-- Maintain Debloater (Shizuku debloating with backups). Recent work: cache clearing on the user's phone (RedMagic OS 11 / Android 16), the Debug log tool, and a text/layout review (1.12.9) and the support splash screen (1.30.0).
+- Maintain Debloater (Shizuku debloating with backups). Recent work: cache clearing on the user's phone (RedMagic OS 11 / Android 16), the Debug log tool, and a text/layout review (1.12.9), the support splash screen and Install button (1.30 to 1.32) and the language fixes (1.34.0).
 
 ## Current status
 
-- 1.34.0 is the latest release (older 1.30.x to 1.32.0 releases may also still be listed). Earlier release builds (1.10.0 to 1.12.9) were deleted from GitHub Releases for security reasons; their tags were removed too (commits remain).
-- **1.30.0 / versionCode 35 is published** (release v1.30.0, APK `Debloater-v1.30.0.apk`, commit `02e2325`, workflow run 130 green). It adds a start-up support screen (`ui/screens/SplashScreen.kt`, shown from `DebloaterRoot` once per app start, links to buymeacoffee.com/j0p3s) on top of 1.12.9; details in `docs/RELEASE-1.30.0.md`. Signed with the same permanent key as before (certificate pinned in `config/release-certificate.sha256`); no key rotation happened.
-- **PR #19 is merged**: `main` now contains the whole 1.12.9 line plus 1.30.0. Work on `main`.
-- 1.12.9 layout changes and the 1.30.0 splash screen were compiled, linted and unit-tested only. **Nobody has looked at them on a device**: ask the user for screenshots of Home, Cache scanner, App leftovers and a dark-mode operation result.
+- **1.34.0 / versionCode 38 is the only published release** (release v1.34.0, APK `Debloater-v1.34.0.apk`, commit `d5a6d53`, workflow run 141 green). All earlier releases (1.10.0 to 1.32.0) were deleted from GitHub Releases for security reasons, with their tags; the commits remain. Details in `docs/RELEASE-1.34.0.md`.
+- 1.34.0 adds, on top of 1.12.9: a support screen shown once per update (`ui/screens/SplashScreen.kt`, opt-out checkbox), Buy me a coffee buttons (Home top bar and bottom, Settings section), an Install button after an app-update download (`REQUEST_INSTALL_PACKAGES`) and translations of the Permissions and App updates text. Signed with the same permanent key as before; no key rotation happened.
+- **PR #19 is merged**: `main` contains the whole 1.12.9 line plus everything up to 1.34.0. Work on `main`.
+- 1.12.9 layout changes and the 1.30 to 1.34 screens (support screen, Install button, Settings section) were compiled, linted and unit-tested only. **Nobody has looked at them on a device**: ask the user for screenshots of Home, Cache scanner, App leftovers and a dark-mode operation result.
 - Done and confirmed by user reports: Debug section in Options (1.12.0), Settings-assistant cache clearing (Telegram 1 GB→4 KB etc.), Shizuku-failure fallback dialog (1.12.5), leftover-cache marking (1.12.6), Select shown skips leftovers (1.12.7).
 - 1.12.8 (fallback dialog leaves leftover-cache apps unticked) is **not yet tested on the phone**.
 - Nothing in progress.
@@ -46,8 +46,8 @@
 - Release files: `app/build.gradle.kts:23-24`, `docs/RELEASE-<ver>.md`, `CHANGELOG.md`, `README.md` line 3.
 
 ## Next steps
-1. Ask the user for 1.30.0 screenshots (splash screen, Home, Cache scanner, App leftovers, an operation result in dark mode) and fix anything that looks off.
-2. Ask the user to test the 1.12.8 fallback dialog (still in 1.30.0): make Shizuku fail and check that Clash of Clans/SmartThings start unticked in the fallback dialog. Ask for a debug report (Options → Debug → Save).
+1. Ask the user for 1.34.0 screenshots (support screen, Home, Settings, Cache scanner, App leftovers, an operation result in dark mode) and fix anything that looks off.
+2. Ask the user to test the 1.12.8 fallback dialog (still in 1.34.0): make Shizuku fail and check that Clash of Clans/SmartThings start unticked in the fallback dialog. Ask for a debug report (Options → Debug → Save).
 3. Analyse any new report: look for START/SIZE/RESIDUE/OFFER lines with tag `cache`.
 4. For a new release:
    - bump `versionCode`/`versionName`;

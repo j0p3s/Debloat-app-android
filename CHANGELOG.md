@@ -5,6 +5,7 @@
 - **Language fixes:** the Permissions screen and the App updates card (including its error messages) were still in English in most languages. They are now translated in all 11 supported languages, and the Indonesian "Uninstall" label too.
 - Settings now starts with a **Support the developer** section with a **Buy me a coffee** button.
 - Operation logs, saved backup data and shell commands stay in English by design.
+- Security: 1.34.0 is the only build published on the GitHub Releases page; all earlier release builds were removed. Older entries below are kept as history only.
 
 - Settings now starts with a **Support the developer** section with a **Buy me a coffee** button.
 
