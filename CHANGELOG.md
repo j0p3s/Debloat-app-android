@@ -1,5 +1,10 @@
 # Changelog
 
+## 1.11.0 â€” 2026-11-15
+
+- Add a start-up screen asking for support, with a **Buy me a coffee** link and a **Continue** button.
+- Translate the new screen into all 11 supported languages.
+
 ## 1.10.3 — 2026-11-04
 
 - Measure only the selected cache category using two bounded workers and progressive partial results.
