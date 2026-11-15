@@ -44,6 +44,9 @@ private val FAQ = listOf(
     R.string.guide_help_q_space to R.string.guide_help_a_space,
     R.string.guide_help_q_problem to R.string.guide_help_a_problem,
     R.string.guide_help_q_privacy to R.string.guide_help_a_privacy,
+    R.string.cache_settings_method to R.string.cache_settings_warning,
+    R.string.leftovers_title to R.string.leftovers_help,
+    R.string.leftovers_recovery to R.string.leftovers_recovery_help,
 )
 
 /** Plain-language answers to the questions beginners ask most. */

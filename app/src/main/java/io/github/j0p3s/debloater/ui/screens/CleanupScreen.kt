@@ -102,7 +102,7 @@ fun CleanupScreen(vm: MainViewModel) {
                 Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(10.dp)) {
                     Text(stringResource(R.string.guide_cleanup_steps), style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
                     Text(stringResource(R.string.guide_cleanup_intro), style = MaterialTheme.typography.bodyLarge)
-                    Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)) {
+                    Card(Modifier.fillMaxWidth(), colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)) {
                         Text(stringResource(R.string.guide_cleanup_tip), Modifier.padding(12.dp), style = MaterialTheme.typography.bodyMedium)
                     }
                     if (status != ShizukuStatus.READY) {

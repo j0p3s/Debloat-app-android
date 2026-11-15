@@ -108,7 +108,7 @@ fun AdlCheckScreen(vm: MainViewModel) {
         LazyColumn(Modifier.padding(pad).fillMaxSize()) {
             item {
                 Column(Modifier.padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    Card {
+                    Card(Modifier.fillMaxWidth()) {
                         Column(Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
                             Text(
                                 stringResource(R.string.adl_coverage, listed.size, apps.size),
@@ -147,11 +147,11 @@ fun AdlCheckScreen(vm: MainViewModel) {
                             FilterChip(category == c, { category = if (category == c) null else c }, label = { Text("${stringResource(c.titleRes)} (${visibleCount(listed, c, showChanged)})") })
                         }
                     }
-                    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), itemVerticalAlignment = Alignment.CenterVertically) {
                         FilterChip(showChanged, { showChanged = !showChanged }, label = { Text(stringResource(R.string.show_changed)) })
                         SortMenu(sort, vm.prefs::setSort)
                     }
-                    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), itemVerticalAlignment = Alignment.CenterVertically) {
                         Text(stringResource(R.string.apps_size, visible.size, formatSize(visible.sumOf { it.totalBytes })), style = MaterialTheme.typography.labelMedium)
                         TextButton(onClick = {
                             vm.setDebloatSelection(selection + visible.filter { isSelectable(it, expert) && it.state == AppState.ENABLED }.map { it.packageName })
@@ -174,10 +174,10 @@ fun AdlCheckScreen(vm: MainViewModel) {
                     AppRow(app, app.packageName in selection, selectable, onToggle = toggle, onClick = toggle, onInfo = { details = app })
                     Row(Modifier.padding(start = 64.dp, bottom = 4.dp), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
                         Text(
-                            stringResource(R.string.adl_alternatives, stringResource(AdlCategory.entries.first { it.key == app.entry!!.adlRemoval }.titleRes), app.entry?.alternatives?.size ?: 0),
+                            stringResource(R.string.adl_alternatives, AdlCategory.entries.firstOrNull { it.key == app.entry?.adlRemoval }?.let { stringResource(it.titleRes) } ?: app.entry?.adlRemoval.orEmpty(), app.entry?.alternatives?.size ?: 0),
                             style = MaterialTheme.typography.labelSmall,
                         )
-                        TextButton(onClick = { open(app.entry!!.adlUrl) }) { Text(stringResource(R.string.view_adl)) }
+                        TextButton(onClick = { app.entry?.adlUrl?.let { open(it) } }) { Text(stringResource(R.string.view_adl)) }
                     }
                 }
                 HorizontalDivider()

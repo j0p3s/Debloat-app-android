@@ -2,6 +2,7 @@ package io.github.j0p3s.debloater
 
 import io.github.j0p3s.debloater.data.CacheGroup
 import io.github.j0p3s.debloater.data.CachePolicy
+import io.github.j0p3s.debloater.data.CacheResidue
 import io.github.j0p3s.debloater.data.CacheSort
 import io.github.j0p3s.debloater.data.CacheScope
 import io.github.j0p3s.debloater.shizuku.ShellResult
@@ -10,6 +11,71 @@ import org.junit.Test
 import java.util.UUID
 
 class CachePolicyTest {
+    @Test fun residueIsMarkedOnlyWhenMostOfALargeCacheRemains() {
+        // RedMagic OS 11 report: Clash of Clans and SmartThings unchanged after a confirmed Settings clear.
+        assertEquals(2_221_027_328L, CachePolicy.residueAfterClear(2_221_027_328, 2_221_027_328))
+        assertEquals(340_840_448L, CachePolicy.residueAfterClear(340_840_448, 340_840_448))
+        // Telegram and Instagram really cleared.
+        assertNull(CachePolicy.residueAfterClear(1_045_032_960, 4_096))
+        assertNull(CachePolicy.residueAfterClear(88_363_008, 12_288))
+        // Small leftovers are normal.
+        assertNull(CachePolicy.residueAfterClear(5_000_000, 5_000_000))
+        assertNull(CachePolicy.residueAfterClear(null, 50_000_000))
+    }
+
+    @Test fun residueStopsApplyingOnceNewClearableCacheAppears() {
+        val r = CacheResidue(2_221_027_328, 0)
+        assertTrue(CachePolicy.residueApplies(r, 2_222_620_672))
+        assertFalse(CachePolicy.residueApplies(r, 2_400_000_000))
+        assertFalse(CachePolicy.residueApplies(r, 0))
+        assertFalse(CachePolicy.residueApplies(null, 2_221_027_328))
+        assertEquals(r.copy(sharedFolderBytes = 4096), CacheResidue.decode(r.copy(sharedFolderBytes = 4096).encode()))
+        assertEquals(r, CacheResidue.decode(r.encode()))
+        assertNull(CacheResidue.decode("garbage"))
+    }
+
+    @Test fun duOutputParsing() {
+        assertEquals(12L * 1024, CachePolicy.parseDuKb(ShellResult(0, "12\t/storage/emulated/0/Android/data/a.b/cache\n", "")))
+        assertEquals(0L, CachePolicy.parseDuKb(ShellResult(1, "", "du: /storage/emulated/0/Android/data/a.b/cache: No such file or directory")))
+        assertNull(CachePolicy.parseDuKb(ShellResult(1, "", "du: Permission denied")))
+        assertEquals("/storage/emulated/0/Android/data/com.supercell.clashofclans/cache", CachePolicy.sharedCacheDir(0, "com.supercell.clashofclans"))
+    }
+
+    @Test fun fallbackOffersFailedAndUntriedGroupsButNeverEmptyCaches() {
+        val volume = UUID.randomUUID()
+        fun g(uid: Int, vararg pkgs: String, bytes: Long? = 100) = CacheGroup(uid, volume, pkgs.toList(), pkgs.first(), false, bytes)
+        val coc = g(1, "com.supercell.clashofclans")
+        val shared = g(2, "a.one", "a.two")
+        val empty = g(3, "z.empty", bytes = 0)
+        val ok = g(4, "ok.app")
+        val offer = CachePolicy.fallback(listOf(coc, shared, empty, ok), failed = listOf("com.supercell.clashofclans"), untried = listOf("a.two", "z.empty"))!!
+        assertEquals(listOf(coc), offer.failed)
+        assertEquals(listOf(shared), offer.untried)
+        assertNull(CachePolicy.fallback(listOf(coc, ok), failed = emptyList(), untried = emptyList()))
+        // A group that failed is never listed twice.
+        assertEquals(emptyList<CacheGroup>(), CachePolicy.fallback(listOf(coc), listOf("com.supercell.clashofclans"), listOf("com.supercell.clashofclans"))!!.untried)
+    }
+
+    @Test fun unchangedSizeAfterTimeoutIsReportedAsLikelyIgnored() {
+        // RedMagic OS 11, Clash of Clans force-stopped: identical to the byte 75 s later.
+        assertTrue(CachePolicy.likelyIgnored(2_222_620_672, 2_222_620_672))
+        assertFalse(CachePolicy.likelyIgnored(2_222_620_672, 2_221_027_328))
+        assertFalse(CachePolicy.likelyIgnored(2_222_620_672, null))
+        assertFalse(CachePolicy.likelyIgnored(null, 5))
+        assertFalse(CachePolicy.likelyIgnored(0, 0))
+    }
+
+    @Test fun timedOutClearCountsOnlyWhenTheCacheReallyShrank() {
+        assertTrue(CachePolicy.clearedAfterTimeout(2_200_000_000, 0))
+        assertTrue(CachePolicy.clearedAfterTimeout(2_200_000_000, 40_000_000))
+        assertFalse(CachePolicy.clearedAfterTimeout(2_200_000_000, 2_100_000_000))
+        assertFalse(CachePolicy.clearedAfterTimeout(2_200_000_000, null))
+        assertTrue(CachePolicy.clearedAfterTimeout(null, 0))
+        // Seen on RedMagic OS 11: 282624 bytes of empty cache folders left after the clear.
+        assertTrue(CachePolicy.clearedAfterTimeout(null, 282_624))
+        assertFalse(CachePolicy.clearedAfterTimeout(null, 5_000_000))
+    }
+
     private fun help(text: String, code: Int = 0) = ShellResult(code, text, "")
     private fun row(label: String, bytes: Long?) = CacheGroup(label.hashCode(), UUID(0, 0), listOf("p.$label"), label, false, bytes)
 

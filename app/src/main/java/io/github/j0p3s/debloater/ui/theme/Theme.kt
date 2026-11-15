@@ -58,6 +58,9 @@ fun levelColor(level: SafetyLevel, dark: Boolean): Color = when (level) {
     SafetyLevel.UNKNOWN -> if (dark) Color(0xFFBDBDBD) else Color(0xFF616161)
 }
 
-val OkColor = Color(0xFF2E7D32)
-val WarnColor = Color(0xFFEF8F00)
-val ErrorColor = Color(0xFFD32F2F)
+/** Status colours for text and tints; lighter in dark mode so they stay readable on dark surfaces. */
+val OkColor: Color @Composable get() = if (isSystemInDarkTheme()) Color(0xFF7FD69A) else Color(0xFF2E7D32)
+val WarnColor: Color @Composable get() = if (isSystemInDarkTheme()) Color(0xFFFFB74D) else Color(0xFFB45F06)
+val ErrorColor: Color @Composable get() = if (isSystemInDarkTheme()) Color(0xFFFF8A80) else Color(0xFFD32F2F)
+/** Fixed badge background that always carries white content. */
+val OkBadgeColor = Color(0xFF2E7D32)

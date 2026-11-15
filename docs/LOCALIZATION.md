@@ -44,3 +44,7 @@ does not replace reading a package's source warning. Native speaker review is we
 
 The UI retains the existing Material theme. The changes focus on action placement, a short getting
 started guide, an initial Recommended filter, readable wrapping actions, and explicit test limits.
+
+## Cleaning tools
+
+The Settings cache assistant and App leftovers controls, permission disclosure and safety warnings are translated in all supported locales. Technical action logs and filesystem errors remain in English. The assistant reads control labels and target app names using the system locale rather than Debloater’s selected interface language; unrecognized Settings layouts stop safely.

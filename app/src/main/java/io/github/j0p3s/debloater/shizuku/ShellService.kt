@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.os.ParcelFileDescriptor
 import androidx.annotation.Keep
 import io.github.j0p3s.debloater.IShellService
+import io.github.j0p3s.debloater.leftovers.LeftoverStore
 import java.io.File
 import java.io.FileInputStream
 import java.io.InputStream
@@ -36,6 +37,30 @@ class ShellService : IShellService.Stub {
 
     override fun exec(command: String): Bundle = run(command, null)
     override fun execCache(command: String): Bundle = run(command, null, 15L)
+
+    @Synchronized
+    override fun leftovers(action: String, userId: Int, argument: String): Bundle = try {
+        require(userId in 0..9999) { "Invalid Android user" }
+        val store = LeftoverStore(File("/storage/emulated/$userId")) {
+            // Include other users, disabled packages and retained/uninstalled package records.
+            val inventory = run("pm list packages -u --user all", null, 15L)
+            check(inventory.getInt(KEY_EXIT, -1) == 0 && inventory.getString(KEY_STDERR).isNullOrBlank()) { "Cannot verify package owners" }
+            val lines = inventory.getString(KEY_STDOUT).orEmpty().lineSequence().filter { it.isNotBlank() }.toList()
+            check(lines.isNotEmpty() && lines.all { it.startsWith("package:") && Regex("[A-Za-z0-9_.]+").matches(it.removePrefix("package:")) }) {
+                "Incomplete package inventory; refusing cleanup"
+            }
+            lines.map { it.removePrefix("package:") }.toSet().also { check("android" in it) { "Missing system package inventory" } }
+        }
+        val output = when(action) {
+            "scan" -> store.scan().toString()
+            "recovery" -> store.recoveryList().toString()
+            "quarantine" -> store.quarantine(argument)
+            "restore" -> { store.restore(argument); "Restored without overwriting files" }
+            "purge" -> { store.purge(argument); "Permanently deleted recovery payload" }
+            else -> error("Unknown leftovers action")
+        }
+        result(0, output, "")
+    } catch (error: Exception) { result(1, "", error.message.orEmpty()) }
 
     override fun installApks(
         apks: Array<ParcelFileDescriptor>,
@@ -89,8 +114,15 @@ class ShellService : IShellService.Stub {
             val process = ProcessBuilder("sh", "-c", command).start()
             val stdout = StringBuilder()
             val stderr = StringBuilder()
-            val outReader = thread { stdout.append(process.inputStream.bufferedReader().readText()) }
-            val errReader = thread { stderr.append(process.errorStream.bufferedReader().readText()) }
+            val readFailure = java.util.concurrent.atomic.AtomicReference<Throwable?>(null)
+            // Killing a timed-out process closes its pipes. Never let reader exceptions
+            // escape a worker thread and crash the entire privileged service.
+            val outReader = thread {
+                CommandOutputReader.capture(process.inputStream, stdout, readFailure)
+            }
+            val errReader = thread {
+                CommandOutputReader.capture(process.errorStream, stderr, readFailure)
+            }
             process.outputStream.use { os -> stdin?.copyTo(os) }
             val finished = process.waitFor(timeoutSeconds, TimeUnit.SECONDS)
             if (!finished) {
@@ -99,6 +131,7 @@ class ShellService : IShellService.Stub {
                 return result(124, stdout.toString(), "Timed out after ${timeoutSeconds}s; outcome unknown\n$stderr")
             }
             outReader.join(); errReader.join()
+            readFailure.get()?.let { return result(-1, stdout.toString(), "Command output read failed: ${it.message}") }
             result(process.exitValue(), stdout.toString(), stderr.toString())
         } catch (t: Throwable) {
             result(-1, "", t.toString())

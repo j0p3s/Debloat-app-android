@@ -1,10 +1,14 @@
-# Debloater 1.11.0 — support screen
+# Debloater 1.11.0
 
-- New start-up screen with a short message supporting the developer and a **Buy me a coffee** link (buymeacoffee.com/j0p3s). Tap **Continue** to go on to the app; it shows once per app start.
-- Translated into all 11 supported languages.
+Release date: 2026-11-05 · versionCode 16 · Android 11+
 
-Version 1.11.0, code 16. Existing app ID and permanent signer retained. Installs over 1.10.3 and keeps app data/backups.
+- Optional Settings cache assistant uses Android Accessibility to navigate to Storage and press Clear cache for selected user/system apps.
+- Requires disclosure, manual service enablement and a per-batch warning. Shows a floating Cancel button, verifies identities/controls and stops on uncertain screens/results.
+- Adds App leftovers with ownership checks, reviewed selections, persistent recovery, non-overwriting restore and separately confirmed permanent deletion.
+- Updates supported languages, README, changelog, notices and tool setup/limitation guides.
 
-## Installation and verification
-Download **Debloater-v1.11.0.apk**. APK integrity hashes are attached in **SHA256SUMS.txt**.
-CI runs translation checks, unit tests, debug build, Android lint, release signing guard, signed release build and certificate verification.
+Usage Access measures cache sizes; Shizuku remains available for cache-only commands and is required for leftovers. Shared recovery does not free space until permanently deleted. Cache clearing and permanent deletion cannot be undone.
+
+Settings-layout coverage and leftovers scope are conservative, rather than SD Maid's full manufacturer/forensic coverage. Physical-device compatibility and performance testing remain necessary.
+
+The release workflow validates translations, runs unit tests, builds the APKs, runs Android lint, checks that unsigned release builds are refused and verifies the pinned permanent signing certificate before publishing.

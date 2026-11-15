@@ -25,18 +25,18 @@ import androidx.compose.material.icons.filled.AutoFixHigh
 import androidx.compose.material.icons.filled.Backup
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.CleaningServices
-import androidx.compose.material.icons.filled.Error
-import androidx.compose.material.icons.filled.FactCheck
+import androidx.compose.material.icons.automirrored.filled.FactCheck
+import androidx.compose.material.icons.filled.Cached
+import androidx.compose.material.icons.filled.FolderDelete
+import androidx.compose.material.icons.filled.Memory
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material3.Button
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -50,12 +50,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.core.net.toUri
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import io.github.j0p3s.debloater.R
 import io.github.j0p3s.debloater.data.AppState
 import io.github.j0p3s.debloater.data.SafetyLevel
-import io.github.j0p3s.debloater.shizuku.ShizukuManager
 import io.github.j0p3s.debloater.shizuku.ShizukuStatus
 import io.github.j0p3s.debloater.ui.MainViewModel
 import io.github.j0p3s.debloater.ui.Screen
@@ -107,26 +105,10 @@ fun HomeScreen(vm: MainViewModel) {
             // Until Shizuku works, show the numbered setup steps instead of a short status line.
             if (!ready) io.github.j0p3s.debloater.ui.components.ShizukuSetupCard(status, uid, onRefresh = { vm.refreshShizuku() })
             if (ready) Card(colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.primaryContainer)) {
-                Column(Modifier.fillMaxWidth().padding(12.dp), verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(if (ready) Icons.Default.CheckCircle else Icons.Default.Error, null,
-                            Modifier.size(20.dp), tint = if (ready) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error)
-                        Spacer(Modifier.width(8.dp))
-                        Text(stringResource(R.string.shizuku_status, statusText(status)), Modifier.weight(1f), style = MaterialTheme.typography.labelLarge)
-                    }
-                    if (!ready) Text(statusHelp(status, uid), style = MaterialTheme.typography.bodySmall)
-                    when (status) {
-                        ShizukuStatus.PERMISSION_REQUIRED, ShizukuStatus.PERMISSION_DENIED ->
-                            Button(onClick = { ShizukuManager.requestPermission() }) { Text(stringResource(R.string.permission)) }
-                        ShizukuStatus.NOT_RUNNING, ShizukuStatus.OUTDATED -> Button(onClick = {
-                            ctx.packageManager.getLaunchIntentForPackage(ShizukuManager.SHIZUKU_PACKAGE)?.let { ctx.startActivity(it) }
-                        }) { Text(stringResource(R.string.open_shizuku)) }
-                        ShizukuStatus.NOT_INSTALLED -> FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            Button(onClick = { open(ctx, "market://details?id=${ShizukuManager.SHIZUKU_PACKAGE}", "https://play.google.com/store/apps/details?id=${ShizukuManager.SHIZUKU_PACKAGE}") }) { Text(stringResource(R.string.play_store)) }
-                            OutlinedButton(onClick = { open(ctx, "https://github.com/RikkaApps/Shizuku/releases", null) }) { Text(stringResource(R.string.github)) }
-                        }
-                        ShizukuStatus.READY -> {}
-                    }
+                Row(Modifier.fillMaxWidth().padding(12.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Icon(Icons.Default.CheckCircle, null, Modifier.size(20.dp), tint = MaterialTheme.colorScheme.primary)
+                    Spacer(Modifier.width(8.dp))
+                    Text(stringResource(R.string.shizuku_status, shizukuStatusText(status)), Modifier.weight(1f), style = MaterialTheme.typography.labelLarge)
                 }
             }
 
@@ -169,14 +151,21 @@ fun HomeScreen(vm: MainViewModel) {
                         else stringResource(R.string.guide_cleanup_found, candidates.size, formatSize(candidates.sumOf { it.totalBytes })),
                         primary = true,
                     ) { vm.navigate(Screen.CLEANUP) }
-                    androidx.compose.material3.HorizontalDivider(Modifier.padding(horizontal = 14.dp), color = MaterialTheme.colorScheme.outlineVariant)
+                    @Composable fun divider() = androidx.compose.material3.HorizontalDivider(Modifier.padding(horizontal = 14.dp), color = MaterialTheme.colorScheme.outlineVariant)
+                    divider()
                     NavTile(Icons.Default.CleaningServices, stringResource(R.string.debloat), stringResource(R.string.nav_debloat_help)) { vm.navigate(Screen.DEBLOAT) }
-                    androidx.compose.material3.HorizontalDivider(Modifier.padding(horizontal = 14.dp), color = MaterialTheme.colorScheme.outlineVariant)
+                    divider()
                     NavTile(Icons.Default.Apps, stringResource(R.string.app_manager), stringResource(R.string.nav_manager_help)) { vm.navigate(Screen.APP_MANAGER) }
-                    NavTile(Icons.Default.CleaningServices, stringResource(R.string.cache_user), stringResource(R.string.cache_user_help)) { vm.navigate(Screen.USER_CACHE) }
-                    NavTile(Icons.Default.CleaningServices, stringResource(R.string.cache_system), stringResource(R.string.cache_system_help)) { vm.navigate(Screen.SYSTEM_CACHE) }
+                    divider()
+                    NavTile(Icons.Default.Cached, stringResource(R.string.cache_user), stringResource(R.string.cache_user_help)) { vm.navigate(Screen.USER_CACHE) }
+                    divider()
+                    NavTile(Icons.Default.Memory, stringResource(R.string.cache_system), stringResource(R.string.cache_system_help)) { vm.navigate(Screen.SYSTEM_CACHE) }
+                    divider()
+                    NavTile(Icons.Default.FolderDelete, stringResource(R.string.leftovers_title), stringResource(R.string.leftovers_nav_help)) { vm.navigate(Screen.LEFTOVERS) }
+                    divider()
                     NavTile(Icons.Default.Backup, stringResource(R.string.backups_restore), stringResource(R.string.nav_backup_help, sessions.size)) { vm.navigate(Screen.BACKUPS) }
-                    NavTile(Icons.Default.FactCheck, stringResource(R.string.adl_check), stringResource(R.string.nav_adl_help)) { vm.navigate(Screen.ADL_CHECK) }
+                    divider()
+                    NavTile(Icons.AutoMirrored.Filled.FactCheck, stringResource(R.string.adl_check), stringResource(R.string.nav_adl_help)) { vm.navigate(Screen.ADL_CHECK) }
                 }
             }
 
@@ -206,8 +195,7 @@ fun HomeScreen(vm: MainViewModel) {
                     val dv = vm.repo.deviceVendor
                     Text(if (dv != null) stringResource(R.string.vendor_active, dv.name, apps.count { it.vendor == dv.name && it.state == AppState.ENABLED })
                         else stringResource(R.string.vendor_unknown, Build.BRAND), style = MaterialTheme.typography.bodySmall)
-                    Text(stringResource(if (sdk in 30..37) R.string.android_supported else R.string.android_untested),
-                        style = MaterialTheme.typography.bodySmall, color = if (sdk in 30..37) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.error)
+                    if (sdk in 30..37) Text(stringResource(R.string.android_supported), style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.primary)
                     val userApps = apps.filter { !it.isSystem && it.state != AppState.UNINSTALLED }
                     val systemApps = apps.filter { it.isSystem && it.state != AppState.UNINSTALLED }
                     Text(stringResource(R.string.user_count, userApps.size) + " · " + formatSize(userApps.sumOf { it.totalBytes }), style = MaterialTheme.typography.bodySmall)
@@ -238,15 +226,16 @@ private fun NavTile(icon: ImageVector, title: String, subtitle: String, primary:
                 tint = if (primary) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSecondaryContainer)
         }
         Spacer(Modifier.width(12.dp))
-        Column(Modifier.weight(1f)) {
+        Column(Modifier.weight(1f).padding(end = 8.dp)) {
             Text(title, style = MaterialTheme.typography.titleSmall, fontWeight = FontWeight.SemiBold)
             Text(subtitle, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
         Icon(Icons.AutoMirrored.Filled.ArrowForward, null, Modifier.size(20.dp), tint = MaterialTheme.colorScheme.outline)
     }
 }
+
 @Composable
-private fun statusText(s: ShizukuStatus) = when (s) {
+internal fun shizukuStatusText(s: ShizukuStatus) = when (s) {
     ShizukuStatus.NOT_INSTALLED -> stringResource(R.string.shizuku_missing)
     ShizukuStatus.NOT_RUNNING -> stringResource(R.string.shizuku_stopped)
     ShizukuStatus.PERMISSION_REQUIRED -> stringResource(R.string.shizuku_permission)
@@ -265,18 +254,12 @@ private fun statusHelp(s: ShizukuStatus, uid: Int) = when (s) {
     ShizukuStatus.READY -> stringResource(R.string.shizuku_ready_help, if (uid == 0) "root" else if (uid == 2000) "ADB shell" else "uid $uid")
 }
 
-private fun open(ctx: android.content.Context, uri: String, fallback: String?) {
-    try {
-        ctx.startActivity(Intent(Intent.ACTION_VIEW, uri.toUri()).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
-    } catch (_: Exception) {
-        fallback?.let { runCatching { ctx.startActivity(Intent(Intent.ACTION_VIEW, it.toUri()).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)) } }
-    }
-}
-
 @Composable
 private fun GettingStartedCard() {
-    io.github.j0p3s.debloater.ui.components.ExpandableSection(stringResource(R.string.show_guide)) {
-        Text(stringResource(R.string.start_steps), style = MaterialTheme.typography.bodySmall)
-        Text(stringResource(R.string.test_limits), style = MaterialTheme.typography.bodySmall)
+    Card {
+        io.github.j0p3s.debloater.ui.components.ExpandableSection(stringResource(R.string.show_guide)) {
+            Text(stringResource(R.string.start_steps), style = MaterialTheme.typography.bodySmall)
+            Text(stringResource(R.string.test_limits), style = MaterialTheme.typography.bodySmall)
+        }
     }
 }

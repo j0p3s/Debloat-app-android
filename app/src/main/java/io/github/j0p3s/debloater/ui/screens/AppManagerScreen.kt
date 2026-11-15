@@ -10,13 +10,11 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
@@ -136,7 +134,7 @@ fun AppManagerScreen(vm: MainViewModel) {
                         StateFilter.entries.forEach { FilterChip(stateFilter == it, { stateFilter = it }, label = { Text(stringResource(it.titleRes)) }) }
                     }
                     VendorChips(vendorCounts, vendor, vm.repo.deviceVendor?.name) { vendor = it }
-                    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    FlowRow(horizontalArrangement = Arrangement.spacedBy(8.dp), itemVerticalAlignment = Alignment.CenterVertically) {
                         Text(stringResource(R.string.apps_size, visible.size, formatSize(visible.sumOf { it.totalBytes })), style = MaterialTheme.typography.labelMedium)
                         SortMenu(sort, vm.prefs::setSort)
                         TextButton(onClick = { vm.setManagerSelection(selection + visible.filter { isSelectable(it, expert) }.map { it.packageName }) }) { Text(stringResource(R.string.select_all)) }
@@ -233,8 +231,7 @@ fun AppDetailsDialog(app: AppInfo, canModify: Boolean, vm: MainViewModel, onDism
                 if (!canModify && !app.isProtected) {
                     Text(stringResource(R.string.locked_help), color = MaterialTheme.colorScheme.error, style = MaterialTheme.typography.bodySmall)
                 }
-                Spacer(Modifier.width(4.dp))
-                Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.horizontalScroll(rememberScrollState())) {
+                Row(horizontalArrangement = Arrangement.spacedBy(6.dp), modifier = Modifier.padding(top = 4.dp).horizontalScroll(rememberScrollState())) {
                     if (canModify && app.state == AppState.ENABLED) {
                         OutlinedButton(onClick = { onDismiss(); vm.request(listOf(app), Action.DISABLE, true) }) { Text(stringResource(R.string.test)) }
                         OutlinedButton(onClick = { onDismiss(); vm.request(listOf(app), Action.DISABLE, false) }) { Text(stringResource(R.string.disable)) }
