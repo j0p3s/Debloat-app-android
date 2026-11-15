@@ -41,6 +41,19 @@ class Prefs(context: Context) {
         sp.edit { putBoolean(KEY_ONBOARDING, v) }; _onboardingDone.value = v
     }
 
+    private val _splashHidden = MutableStateFlow(sp.getBoolean(KEY_SPLASH_HIDDEN, false))
+    /** The user ticked "Don't show this screen again": the support splash is never shown. */
+    val splashHidden: StateFlow<Boolean> = _splashHidden.asStateFlow()
+
+    fun setSplashHidden(v: Boolean) {
+        sp.edit { putBoolean(KEY_SPLASH_HIDDEN, v) }; _splashHidden.value = v
+    }
+
+    /** versionCode for which the support splash was last shown (0 = never), so it appears once per update. */
+    var splashSeenVersion: Int
+        get() = sp.getInt(KEY_SPLASH_VERSION, 0)
+        set(v) = sp.edit { putInt(KEY_SPLASH_VERSION, v) }
+
     fun setExpertMode(v: Boolean) {
         sp.edit { putBoolean(KEY_EXPERT, v) }; _expertMode.value = v
     }
@@ -64,5 +77,7 @@ class Prefs(context: Context) {
         const val KEY_AUTO_UPDATE = "auto_update_lists"
         const val KEY_ONBOARDING = "onboarding_done"
         const val KEY_DEBUG_FOLDER = "debug_folder"
+        const val KEY_SPLASH_HIDDEN = "splash_hidden"
+        const val KEY_SPLASH_VERSION = "splash_seen_version"
     }
 }

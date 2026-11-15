@@ -1,5 +1,10 @@
 # Changelog
 
+## Unreleased
+
+- The support screen now appears once after each install or update instead of at every start, and has a **Don't show this screen again** checkbox.
+- Add a **Buy me a coffee** button to the Home screen.
+
 ## 1.30.0 — 2026-11-15
 
 - Add a start-up screen asking for support, with a **Buy me a coffee** link and a **Continue** button. It shows once per app start.
