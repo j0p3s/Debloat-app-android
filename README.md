@@ -19,6 +19,8 @@ An Android app that debloats **any Android version from Android 11 to Android 17
   setup steps with buttons for each one. **Clean up my phone** (first entry on the home screen) lists the
   Recommended apps for this phone, preselected, with Test and Disable as the main actions. A **Help** page
   (question-mark icon) answers common questions in plain language and can show the welcome again.
+- **Support screen**: a start-up screen (shown once per app start) asks for support and links to
+  [Buy Me a Coffee](https://buymeacoffee.com/j0p3s); **Continue** goes straight to the app.
 - **Compact dashboard**: device and storage information lead the home screen, followed by grouped
   navigation and tier statistics. The getting-started guide and secondary settings expand on demand.
   Light and dark themes use an emerald palette; selected apps have a tinted background.
